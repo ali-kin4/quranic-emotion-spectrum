@@ -1,0 +1,112 @@
+% Custom XeLaTeX/xepersian template for the Persian manuscript
+% Karim Jabbary & Ali Jabbary — Quranic Emotion Spectrum
+% Designed for compilation with XeLaTeX so xepersian can manage RTL.
+
+\documentclass[12pt,a4paper]{article}
+
+% Page geometry
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+
+% Fonts (XeLaTeX) ------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+
+% Latin (for inline English in citations, technical terms, references)
+\setmainfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+  Numbers     = Lining,
+]
+
+% Arabic font for Quranic insertions
+\newfontfamily\arabicfont{Amiri}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = amiri-regular,
+  BoldFont    = amiri-bold,
+  Script      = Arabic,
+]
+\newcommand{\textarabic}[1]{{\arabicfont #1}}
+\DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
+
+% xepersian — must come AFTER fontspec
+\usepackage{xepersian}
+\settextfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  BoldFont    = vazirmatn-bold,
+  Script      = Arabic,
+  Scale       = 1.0,
+]
+\setlatintextfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+]
+% Digits: keep Persian digits in body, Latin digits in math
+\setdigitfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  Script      = Arabic,
+]
+
+% Section formatting
+\usepackage[explicit]{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{#1}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.6em}{#1}
+\titlespacing*{\section}{0pt}{1.6ex plus 0.3ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 0.3ex minus 0.2ex}{0.8ex plus 0.2ex}
+
+% Spacing
+\usepackage{setspace}
+\setstretch{1.35}        % Persian needs more line spacing for clarity
+\setlength{\parskip}{0.3\baselineskip}
+\setlength{\parindent}{1.4em}
+
+% Pandoc compatibility macros
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{calc}
+\providecommand{\real}[1]{#1}
+\usepackage{xcolor}
+\providecommand{\pandocbounded}[1]{#1}
+
+% Tables, figures, captions
+\usepackage{graphicx}
+\graphicspath{{../../figures/}}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.25}
+
+% Lists
+\usepackage{enumitem}
+\setlist{leftmargin=1.6em,topsep=0.3ex,itemsep=0.3ex}
+
+% Hyperlinks (load near end)
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={پدیدارشناسی عواطف منفی در قرآن کریم},
+  pdfauthor={Karim Jabbary; Ali Jabbary},
+  pdfsubject={Quranic Studies; Cognitive Linguistics},
+  pdfkeywords={Quran; semantic field; cognitive linguistics; emotion regulation},
+  bookmarksdepth=2,
+  bookmarksnumbered=true,
+  colorlinks=false,
+}
+
+% Suppress orphan/widow lines
+\widowpenalty=10000
+\clubpenalty=10000
+
+\begin{document}
+
+$body$
+
+\end{document}

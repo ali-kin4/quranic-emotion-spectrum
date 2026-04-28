@@ -97,6 +97,10 @@ The three theoretical layers operate complementarily. Izutsu identifies the boun
 
 ---
 
+
+![**Figure 1.** The four-stage Quranic emotion-intensity continuum, organised along the dimension of action-intensity. Stage 1 (internal distress) -> Stage 2 (explicit anger) -> Stage 3 (explosive rage) -> Stage 4 (behavioural rebellion).](fig1_continuum.pdf){width=100%}
+
+
 ## 3. Methods
 
 ### 3.1. Corpus
@@ -172,6 +176,16 @@ Table 2 reports the principal distributional facts for the ten core roots. The t
 
 Aggregating across the four stages: Stage 1 = 60 attestations; Stage 2 = 28; Stage 3 = 15; Stage 4 = 145. The chi-squared test against the null of uniform distribution rejects (χ²(3) = 165.45, *p* < 0.001), confirming H1. The chi-squared test against the null of equal split between Stages 1+2+3 and Stage 4 rejects (χ²(1) = 7.11, *p* = 0.008), confirming H2. The corpus thus exhibits a strongly non-uniform allocation, weighted approximately 2.4× toward the rebellion stage. The interpretive significance of this asymmetry is taken up in §5.4.
 
+
+![**Figure 2.** Distribution of the 248 core attestations across the four phenomenological stages. Stage 4 is over-represented by a factor of approximately 2.4 relative to the sum of Stages 1-3, chi-squared(1) = 7.11, p = 0.008.](fig2_frequency_by_stage.pdf){width=85%}
+
+
+![**Figure 3.** Meccan/Medinan distribution per root. Two distributional extremes are visible: asaf attests exclusively in Meccan suras (5/0), while sakhat attests exclusively in Medinan suras (0/4; binomial p = 0.026 against the corpus baseline of 0.60 Meccan).](fig3_meccan_medinan.pdf){width=95%}
+
+
+![**Figure 4.** Morphological profile of the ten core roots. Stage 1 is verbally dominant (e.g., hzn with 88% verb forms), while Stage 2 shows nominalisation. The shift indexes a transition from process-language to state-language as we ascend the spectrum.](fig5_morphology_stack.pdf){width=95%}
+
+
 ### 4.3. Stage 1 — Internal Distress
 
 The lower bound of the continuum is occupied by three roots—*ḍ-y-q*, *ḥ-z-n*, *ʾ-s-f*—with sixty combined attestations. Each marks a distinct phenomenological mode within the inner-distress family.
@@ -246,6 +260,13 @@ The radical concentration of cross-field ties at *baghy* is striking. Of 36 tota
 **4.6.3. *Ṭughyān* and the appraisal-cognitive precondition (39 attestations; 29 Meccan / 10 Medinan).** The root *ṭ-gh-y* derives etymologically from the image of water flooding past its banks. Q. 96:6–7 (*kallā inna l-insāna la-yaṭghā an raʾāhu staġnā*) compresses an entire psychology of rebellion into a conditional: human *ṭughyān* arises from the perception of *istighnāʾ* (self-sufficiency). This is, structurally, an appraisal-theoretic claim—that a particular emotional-behavioural disposition is conditioned on a specific cognitive evaluation of the self—and it is fully congruent with the appraisal models of Lazarus (1991) and Scherer (2001, 2005). Qarizadeh et al.'s (2024) polysemy analysis of *ṭughyān* notes the cognitive structure but does not place it in the broader framework; the present paper extends their analysis by identifying *ṭughyān* as the cognitive-appraisal node of Stage 4.
 
 **4.6.4. *ʿUtuww* (10 attestations; 9 Meccan / 1 Medinan).** The most extreme lexeme of the spectrum. Glossed as "obstinate excess" (Ibn Manẓūr), "extreme self-aggrandisement in disobedience" (al-Rāghib), and "entrenched rebellious posture" (Mostafavi). Q. 25:21 collocates *ʿatū ʿutuwwan kabīrā* with *istakbarū fī anfusihim*, marking the lexeme as denoting rebellion that has crystallised into existential posture. The strongly Meccan distribution (9/1; binomial *p* = 0.06) reflects its rhetorical function as the terminal designation of those whose rejection of revelation has hardened beyond reach—a status repeatedly illustrated through the Meccan narratives of prior peoples (Nūḥ, ʿĀd, Thamūd, Pharaoh).
+
+
+![**Figure 5.** Aya-level co-occurrence network of the ten core roots. Edge weights represent shared verses. The densest single edge connects hzn-dyq (weight 3), validating the empirical reality of the Stage-1 cluster. Baghy operates as the principal bridging node between the emotional and moral-evaluation fields.](fig4_cooccurrence.pdf){width=95%}
+
+
+![**Figure 6.** Network-centrality measures for the ten core roots. Baghy attains the highest betweenness centrality (0.39), confirming its role as a pivot between the emotional field and the broader moral-evaluation field of the Quran.](fig7_centrality.pdf){width=95%}
+
 
 ### 4.7. Robustness checks: the umbrella moral terms
 
@@ -329,6 +350,10 @@ Discursive-contextual specialisation is, as far as we can establish, undocumente
 The most theoretically significant finding concerning conceptual metaphor is that Q. 67:8 (*takādu tamayyazu min al-ġayẓ*) instantiates the ANGER IS PRESSURIZED CONTAINER metaphor more transparently than any English exemplar in Lakoff and Kövecses's (1987) corpus. Where English idioms (*explode with rage*, *blow one's top*, *lose it*) report the *exit* of contained content, Q. 67:8 figures the *structural disintegration of the container itself* via the verb *tamayyaza* (m-y-z: to part, to sever).
 
 This finding has a methodological and a theoretical consequence. *Methodologically*, it implies that the historical depth of the conceptual-metaphor inventory is greater than has often been recognised; the container metaphor for anger is not a peculiarity of contemporary English but a cross-culturally robust cognitive structure attested in seventh-century Arabic with arguably greater clarity than in modern Western corpora. *Theoretically*, it strengthens the universalist claim within CMT: that the bodily-grounded image schemas (CONTAINER, FORCE, BALANCE) underwrite human emotion conceptualisation across cultures and historical periods.
+
+
+![**Figure 7.** The conceptual-metaphor architecture of ghayz-kazm-tamayyuz mapped onto the Lakoff-Kovecses (1987) PRESSURIZED-CONTAINER schema. Stage 2: open container (ghadab). Stage 3a: sealed container under pressure (ghayz + kazm, Q. 3:134). Stage 3b: container at the threshold of disintegration (tamayyuz, Q. 67:8).](fig6_metaphor_diagram.pdf){width=100%}
+
 
 ### 5.7. Implications for Qurʾānic translation
 

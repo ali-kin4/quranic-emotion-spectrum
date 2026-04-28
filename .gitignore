@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Editor backups
+*~
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build / output
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.bbl
+*.blg
+
+# Temp scratch — leave this dir gitignored for ad-hoc experiments
+scratch/
+
+# Claude Code harness state
+.claude/

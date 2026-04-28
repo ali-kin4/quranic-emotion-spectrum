@@ -1,0 +1,4 @@
+matplotlib>=3.10
+networkx>=3.0
+arabic_reshaper>=3.0
+python-bidi>=0.4

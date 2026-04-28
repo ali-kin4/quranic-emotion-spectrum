@@ -1,0 +1,17 @@
+root_bw,root_ar,english_gloss,persian_gloss,stage,stage_label,occurrences,meccan_hits,medinan_hits
+Dyq,ض-ي-ق,constriction / inner tightness,تنگی روانی، فشار درونی,1,Stage 1 — Internal Distress (Pre-Anger),13,9,4
+Hzn,ح-ز-ن,sorrow / persistent grief,اندوه پایدار,1,Stage 1 — Internal Distress (Pre-Anger),42,26,16
+Asf,أ-س-ف,regretful grief edged with anger,اندوه آمیخته با خشم خفیف,1,Stage 1 — Internal Distress (Pre-Anger),5,5,0
+sxT,س-خ-ط,moral displeasure / disapproval,ناخشنودی شدید اخلاقی,2,Stage 2 — Explicit Anger,4,0,4
+gDb,غ-ض-ب,active anger directed at a target,خشم آشکار,2,Stage 2 — Explicit Anger,24,13,11
+gyZ,غ-ي-ظ,compressed/boiling rage,خشم متراکم و فروخفته,3,Stage 3 — Explosive Rage,11,3,8
+myz,م-ي-ز,to split / burst apart (figurative collapse),از هم گسستن (در ترکیب «تمیّز من الغیظ»),3,Stage 3 — Explosive Rage,4,2,2
+bgy,ب-غ-ي,transgression / aggressive seeking,تجاوز، ستم,4,Stage 4 — Behavioural Rebellion,96,55,41
+Tgy,ط-غ-ي,overflowing rebellion / tyranny,سرکشی، طغیان,4,Stage 4 — Behavioural Rebellion,39,29,10
+Etw,ع-ت-و,"obstinate, arrogant defiance",سرکشی لجوجانه,4,Stage 4 — Behavioural Rebellion,10,9,1
+krh,ك-ر-ه,"aversion, disliking",کراهت,1,Stage 1 — Internal Distress (Pre-Anger),41,14,27
+$nA,ش-ن-أ,intense hatred,بغض شدید,2,Stage 2 — Explicit Anger,3,1,2
+jrm,ج-ر-م,criminal/sinful action,جرم، گناه,4,Stage 4 — Behavioural Rebellion,66,60,6
+fsq,ف-س-ق,moral deviance / breaking out of bounds,فسق,4,Stage 4 — Behavioural Rebellion,54,20,34
+Zlm,ظ-ل-م,oppression / wrongdoing,ظلم,4,Stage 4 — Behavioural Rebellion,315,211,104
+Edw,ع-د-و,"enmity, hostile transgression",دشمنی، عداوت,4,Stage 4 — Behavioural Rebellion,106,47,59

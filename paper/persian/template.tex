@@ -53,6 +53,10 @@
   Script      = Arabic,
 ]
 
+% Section numbering — Persian manuscript uses manual numbering ("۳. روش")
+% so suppress LaTeX auto-numbers to prevent double prefixes.
+\setcounter{secnumdepth}{-1}
+
 % Section formatting
 \usepackage[explicit]{titlesec}
 \titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}
@@ -76,8 +80,11 @@
 
 % Tables, figures, captions
 \usepackage{graphicx}
-\graphicspath{{../../figures/}}
+\graphicspath{{../../figures_fa/}{../../figures/}}
 \usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+% Persianise the figure / table prefixes
+\renewcommand{\figurename}{شکل}
+\renewcommand{\tablename}{جدول}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}

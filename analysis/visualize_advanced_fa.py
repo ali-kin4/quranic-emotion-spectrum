@@ -1,8 +1,8 @@
-"""Generate the advanced (research-grade) figures.
+"""Generate the advanced (research-grade) figures (Persian-localized variant).
 
-    figures/fig5_morphology_stack.{pdf,png}     Per-root morphological breakdown
-    figures/fig6_metaphor_diagram.{pdf,png}     ANGER IS PRESSURIZED CONTAINER
-    figures/fig7_centrality.{pdf,png}           Centrality measures bar chart
+    figures_fa/fig5_morphology_stack.{pdf,png}     Per-root morphological breakdown
+    figures_fa/fig6_metaphor_diagram.{pdf,png}     خشم، ظرفی است تحت فشار
+    figures_fa/fig7_centrality.{pdf,png}           Centrality measures bar chart
 """
 from __future__ import annotations
 
@@ -23,10 +23,10 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR / "analysis"))
-from spectrum_roots import SPECTRUM, STAGE_LABELS_EN  # noqa: E402
+from spectrum_roots import SPECTRUM, STAGE_LABELS_FA as STAGE_LABELS  # noqa: E402
 
 CONC_DIR = ROOT_DIR / "data" / "concordance"
-FIG_DIR = ROOT_DIR / "figures"
+FIG_DIR = ROOT_DIR / "figures_fa"
 FIG_DIR.mkdir(exist_ok=True)
 
 
@@ -75,12 +75,13 @@ def fig5_morphology() -> None:
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     x = list(range(len(canonical)))
     bottoms = [0] * len(canonical)
+    # Persian POS labels
     categories = [
-        ("verb", "VERB",        "#4878CF"),
-        ("noun", "NOUN",        "#EE854A"),
-        ("adjective", "ADJ",    "#6ACC65"),
-        ("participle", "PCPL",  "#956CB4"),
-        ("other", "OTHER",      "#D5D5D5"),
+        ("verb",       ar("فعل"),    "#4878CF"),
+        ("noun",       ar("اسم"),    "#EE854A"),
+        ("adjective",  ar("صفت"),    "#6ACC65"),
+        ("participle", ar("اسم فاعل/مفعول"), "#956CB4"),
+        ("other",      ar("سایر"),    "#D5D5D5"),
     ]
     for key, label, color in categories:
         vals = [by_bw[bw][key] for bw in canonical]
@@ -100,14 +101,16 @@ def fig5_morphology() -> None:
 
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=12)
-    ax.set_ylabel("Number of attestations")
-    ax.set_title("Morphological breakdown of spectrum lexemes "
-                 "(verb / noun / adjective / participle)\n"
-                 "showing the predominantly verbal profile of "
-                 "internal-distress and rage stages, vs. the "
-                 "noun/participle-leaning rebellion stage",
-                 fontsize=11)
-    ax.legend(loc="upper right", ncol=5, fontsize=9, frameon=False)
+    ax.set_ylabel(ar("تعداد بسامد"))
+    # Add headroom so the title and legend don't collide with tall bars / n-labels
+    max_total = max(by_bw[bw]["total"] for bw in canonical)
+    ax.set_ylim(0, max_total * 1.25)
+    ax.set_title(ar("پروفایل ریخت‌شناختی واژگان طیف "
+                    "(فعل / اسم / صفت / اسم فاعل-مفعول)") + "\n"
+                 + ar("نشان‌دهندهٔ غلبه فعلی در مراحل آزردگی و خشم در "
+                      "برابر غلبه اسمی در مرحله عصیان"),
+                 fontsize=11, pad=14)
+    ax.legend(loc="upper left", ncol=5, fontsize=9, frameon=False)
 
     out = FIG_DIR / "fig5_morphology_stack.pdf"
     plt.savefig(out)
@@ -126,26 +129,32 @@ def fig6_metaphor() -> None:
     ax.set_ylim(0, 8)
     ax.axis("off")
 
-    # Central frame title
-    ax.text(5, 7.6, "ANGER IS A PRESSURIZED CONTAINER",
+    # Central frame title (Persian)
+    ax.text(5, 7.6, ar("خشم، ظرفی است تحت فشار"),
             ha="center", va="center", fontsize=13, fontweight="bold")
-    ax.text(5, 7.2, "(Lakoff & Kövecses, 1987) — applied to the Qur'anic ġayẓ–kaẓm–tamayyuz triplet",
+    ax.text(5, 7.2,
+            ar("(Lakoff & Kövecses, 1987) — اعمال‌شده بر سه‌گانهٔ غَیظ–کَظم–تَمَیُّز در قرآن"),
             ha="center", va="center", fontsize=10, color="dimgray", style="italic")
 
-    # Three vessel states across the bottom
+    # Three vessel states across the bottom (Persian labels)
     vessel_states = [
         # (x, y, color, fluid_height, label_top, label_bottom, ar_label)
-        (1.5, 3.5, "#FFC857", 0.4, "Stage 2: ġaḍab",
-         "Open / unsealed vessel;\nemotion present but not pressurized.",
+        (1.5, 3.5, "#FFC857", 0.4,
+         ar("مرحله ۲: غَضَب"),
+         ar("ظرف باز / بدون مهر؛")
+         + "\n" + ar("هیجان حاضر است اما تحت فشار نیست."),
          "غَضَب"),
-        (5.0, 3.5, "#E76F51", 0.7, "Stage 3a: ġayẓ + kaẓm",
-         "Sealed vessel; pressure rising;\nagent restrains via kaẓm (Q. 3:134,\n"
-         + ar("وَالْكَاظِمِينَ الْغَيْظَ") + ").",
+        (5.0, 3.5, "#E76F51", 0.7,
+         ar("مرحله ۳ (الف): غَیظ + کَظم"),
+         ar("ظرف مهر شده؛ فشار در حال افزایش؛")
+         + "\n" + ar("کنشگر با کَظم خود را مهار می‌کند (آل‌عمران ۳:۱۳۴،")
+         + "\n" + ar("وَالْكَاظِمِينَ الْغَيْظَ") + ").",
          "غَيْظ + كَظْم"),
-        (8.5, 3.5, "#9D2933", 0.95, "Stage 3b: tamayyuz",
-         "Container collapse (Q. 67:8):\n"
+        (8.5, 3.5, "#9D2933", 0.95,
+         ar("مرحله ۳ (ب): تَمَیُّز"),
+         ar("گسستن ظرف (مُلک ۶۷:۸):") + "\n"
          + ar("تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ") + "\n"
-         "— the vessel itself splits.",
+         + ar("— خود ظرف از هم می‌شکافد."),
          "تَمَيُّز"),
     ]
 
@@ -164,7 +173,7 @@ def fig6_metaphor() -> None:
         if fh > 0.5:
             ax.plot([cx - 0.7, cx + 0.7], [cy + 0.9, cy + 0.9],
                     color="black", linewidth=2)
-            ax.text(cx, cy + 1.05, "(sealed)", ha="center", va="bottom",
+            ax.text(cx, cy + 1.05, ar("(مهر شده)"), ha="center", va="bottom",
                     fontsize=8, style="italic", color="dimgray")
             # Steam/pressure escape arrows for tamayyuz state
             if fh > 0.9:
@@ -172,7 +181,7 @@ def fig6_metaphor() -> None:
                 ax.plot([cx - 0.6, cx - 0.4, cx - 0.5, cx - 0.3, cx - 0.5],
                         [cy + 0.4, cy + 0.6, cy + 0.55, cy + 0.75, cy + 0.85],
                         color="black", linewidth=1.5)
-                ax.text(cx + 0.85, cy + 0.5, "burst",
+                ax.text(cx + 0.85, cy + 0.5, ar("انفجار"),
                         fontsize=8, color="darkred", fontweight="bold")
         # Arabic label inside vessel
         ax.text(cx, cy - 1.45, ar(arabic), ha="center", va="center",
@@ -189,15 +198,15 @@ def fig6_metaphor() -> None:
                     connectionstyle="arc3,rad=0.0")
     ax.annotate("", xy=(4.2, 3.5), xytext=(2.3, 3.5), arrowprops=arrow_kw)
     ax.annotate("", xy=(7.7, 3.5), xytext=(5.8, 3.5), arrowprops=arrow_kw)
-    ax.text(3.25, 3.85, "intensifies", ha="center", va="bottom",
+    ax.text(3.25, 3.85, ar("تشدید"), ha="center", va="bottom",
             fontsize=9, color="gray", style="italic")
-    ax.text(6.75, 3.85, "containment\nbreaks", ha="center", va="bottom",
+    ax.text(6.75, 3.85, ar("شکستن مهار"), ha="center", va="bottom",
             fontsize=9, color="gray", style="italic")
 
-    # Side annotation: source-domain / target-domain mapping
+    # Side annotation: source-domain / target-domain mapping (Persian)
     ax.text(5, 0.5,
-            "Source domain (CONTAINER): vessel · seal · pressure · burst   →   "
-            "Target domain (ANGER): kaẓm-restrained ġayẓ · tamayyuz-collapse",
+            ar("حوزهٔ مبدأ (ظرف): ظرف · مهر · فشار · انفجار   →   "
+               "حوزهٔ مقصد (خشم): غَیظِ مهارشده با کَظم · گسستِ تَمَیُّز"),
             ha="center", va="center", fontsize=9.5, color="black",
             bbox=dict(boxstyle="round,pad=0.4", fc="#F5F0E1",
                       ec="dimgray", linewidth=0.6))
@@ -238,8 +247,8 @@ def fig7_centrality() -> None:
     axes[0].bar(x, deg, color=colors, edgecolor="black", linewidth=0.6)
     axes[0].set_xticks(x)
     axes[0].set_xticklabels(labels, fontsize=11)
-    axes[0].set_ylabel("Weighted degree")
-    axes[0].set_title("(a) Weighted degree (sum of co-occurrence ties)")
+    axes[0].set_ylabel(ar("درجه وزنی"))
+    axes[0].set_title(ar("الف) مرکزیت درجه"))
     for xi, v in enumerate(deg):
         axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=8)
 
@@ -248,8 +257,8 @@ def fig7_centrality() -> None:
     axes[1].bar(x, btw, color=colors, edgecolor="black", linewidth=0.6)
     axes[1].set_xticks(x)
     axes[1].set_xticklabels(labels, fontsize=11)
-    axes[1].set_ylabel("Betweenness centrality")
-    axes[1].set_title("(b) Betweenness centrality (bridge-node strength)")
+    axes[1].set_ylabel(ar("مرکزیت بینابینی"))
+    axes[1].set_title(ar("ب) مرکزیت بینابینی"))
     for xi, v in enumerate(btw):
         axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=8)
 
@@ -258,13 +267,13 @@ def fig7_centrality() -> None:
     axes[2].bar(x, cls, color=colors, edgecolor="black", linewidth=0.6)
     axes[2].set_xticks(x)
     axes[2].set_xticklabels(labels, fontsize=11)
-    axes[2].set_ylabel("Closeness centrality")
-    axes[2].set_title("(c) Closeness centrality (proximity to all roots)")
+    axes[2].set_ylabel(ar("مرکزیت نزدیکی"))
+    axes[2].set_title(ar("ج) مرکزیت نزدیکی"))
     for xi, v in enumerate(cls):
         axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
 
-    fig.suptitle("Network-centrality measures on the aya-level "
-                 "co-occurrence graph (10 core roots)", fontsize=11.5)
+    fig.suptitle(ar("سنجه‌های مرکزیت شبکه برای ده ریشه کانونی"),
+                 fontsize=11.5)
     fig.tight_layout()
 
     out = FIG_DIR / "fig7_centrality.pdf"

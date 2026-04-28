@@ -1,11 +1,11 @@
-"""Generate the four publication figures.
+"""Generate the four publication figures (Persian-localized variant).
 
-    figures/fig1_continuum.pdf       — canonical four-stage spectrum
-    figures/fig2_frequency_by_stage.pdf — frequency bars (linear & log)
-    figures/fig3_meccan_medinan.pdf  — revelation-context distribution
-    figures/fig4_cooccurrence.pdf    — proximity co-occurrence network
+    figures_fa/fig1_continuum.pdf       — canonical four-stage spectrum
+    figures_fa/fig2_frequency_by_stage.pdf — frequency bars (linear & log)
+    figures_fa/fig3_meccan_medinan.pdf  — revelation-context distribution
+    figures_fa/fig4_cooccurrence.pdf    — proximity co-occurrence network
 
-All figures use a clean academic style with Arabic text rendering.
+All figures use a clean academic style with Arabic/Persian text rendering.
 """
 from __future__ import annotations
 
@@ -28,10 +28,10 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR / "analysis"))
-from spectrum_roots import SPECTRUM, STAGE_LABELS_EN  # noqa: E402
+from spectrum_roots import SPECTRUM, STAGE_LABELS_FA as STAGE_LABELS  # noqa: E402
 
 CONC_DIR = ROOT_DIR / "data" / "concordance"
-FIG_DIR = ROOT_DIR / "figures"
+FIG_DIR = ROOT_DIR / "figures_fa"
 FIG_DIR.mkdir(exist_ok=True)
 
 
@@ -42,7 +42,7 @@ def ar(text: str) -> str:
     return get_display(arabic_reshaper.reshape(text))
 
 
-# Academic style. Tahoma supports Arabic shaping on Windows; falls back gracefully.
+# Academic style. Tahoma supports Arabic/Persian shaping on Windows.
 plt.rcParams.update({
     "font.family": ["Tahoma", "DejaVu Sans"],
     "font.size": 10,
@@ -61,8 +61,19 @@ STAGE_COLORS = {
     1: "#4C72B0",  # blue   — internal distress
     2: "#DD8452",  # orange — explicit anger
     3: "#C44E52",  # red    — explosive rage
-    4: "#55A868",  # green  — rebellion (deliberately distinct from anger)
+    4: "#55A868",  # green  — rebellion
 }
+
+# Persian short-name (without "مرحله N — " prefix) for each stage
+STAGE_SHORT_FA = {
+    1: "آزردگی درونی",
+    2: "خشم آشکار",
+    3: "خشم انفجاری",
+    4: "عصیان رفتاری",
+}
+
+# Persian numerals for figure titles
+FA_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶", 7: "۷"}
 
 
 def load_summary() -> list[dict]:
@@ -92,11 +103,11 @@ def fig1_continuum(rows: list[dict]) -> None:
         ax.axhspan(1.2, 4.4, xmin=(x0 / 11), xmax=(x1 / 11),
                    facecolor=STAGE_COLORS[st], alpha=0.08, zorder=0)
         # Two-line stage label (number on top, name below)
-        ax.text((x0 + x1) / 2, 5.3, f"Stage {st}",
+        ax.text((x0 + x1) / 2, 5.3, ar(f"مرحله {FA_NUM[st]}"),
                 ha="center", va="center", fontsize=11, fontweight="bold",
                 color=STAGE_COLORS[st])
         ax.text((x0 + x1) / 2, 4.85,
-                STAGE_LABELS_EN[st].split(" — ")[1],
+                ar(STAGE_SHORT_FA[st]),
                 ha="center", va="center", fontsize=9.5,
                 color=STAGE_COLORS[st], style="italic")
 
@@ -130,16 +141,15 @@ def fig1_continuum(rows: list[dict]) -> None:
                     arrowprops=dict(arrowstyle="->", color="gray", lw=1.2,
                                     alpha=0.6), zorder=2)
 
-    # Axis label
+    # Axis label (Persian)
     ax.text(5.5, 0.55,
-            f"Intensity of Action  →  ({ar('شدت کنش')})",
-            ha="center", va="center", fontsize=11.5, fontweight="bold",
+            ar("شدت کنش  ←"),
+            ha="center", va="center", fontsize=12, fontweight="bold",
             color="black")
 
-    ax.set_title("The Quranic Spectrum of Negative Emotions — "
-                 "from Internal Distress to Behavioural Rebellion\n"
-                 "Node = Arabic root, size ∝ corpus frequency in the "
-                 "Quranic Arabic Corpus (Dukes 2011)",
+    ax.set_title(ar("پیوستار چهار-مرحله‌ای شدت هیجان در قرآن کریم — "
+                    "از آزردگی درونی تا عصیان رفتاری") + "\n"
+                 + ar("گره = ریشهٔ عربی؛ اندازه ∝ بسامد در پیکره (Dukes 2011)"),
                  fontsize=11, pad=12)
 
     out = FIG_DIR / "fig1_continuum.pdf"
@@ -166,8 +176,8 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                    edgecolor="black", linewidth=0.6)
     ax1.set_xticks(range(len(canonical)))
     ax1.set_xticklabels(labels, fontsize=12)
-    ax1.set_ylabel("Occurrences in the Qur'an")
-    ax1.set_title("Per-root frequency (linear scale)")
+    ax1.set_ylabel(ar("بسامد در قرآن"))
+    ax1.set_title(ar("بسامد به تفکیک ریشه"))
     for b, c in zip(bars, counts):
         ax1.text(b.get_x() + b.get_width() / 2, c + 1.5, str(c),
                  ha="center", va="bottom", fontsize=9)
@@ -181,17 +191,17 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                     color=[STAGE_COLORS[s] for s in stages],
                     edgecolor="black", linewidth=0.6)
     ax2.set_xticks(stages)
-    ax2.set_xticklabels([f"Stage {s}\n{STAGE_LABELS_EN[s].split(' — ')[1]}"
+    ax2.set_xticklabels([ar(f"مرحله {FA_NUM[s]}") + "\n" + ar(STAGE_SHORT_FA[s])
                          for s in stages], fontsize=9)
-    ax2.set_ylabel("Total occurrences")
-    ax2.set_title("Stage-level totals")
+    ax2.set_ylabel(ar("بسامد کل"))
+    ax2.set_title(ar("مجموع به تفکیک مرحله"))
     for b, s in zip(bars2, stages):
         ax2.text(b.get_x() + b.get_width() / 2,
                  stage_totals[s] + 2, str(stage_totals[s]),
                  ha="center", va="bottom", fontsize=10, fontweight="bold")
 
-    fig.suptitle("Lexical frequency of the spectrum across "
-                 "the Qur'anic corpus (n = 248 hits across 10 core roots)",
+    fig.suptitle(ar("بسامد واژگانی طیف در پیکرهٔ قرآن "
+                    "(۲۴۸ بسامد در ده ریشهٔ کانونی)"),
                  fontsize=11)
     fig.tight_layout()
 
@@ -216,15 +226,14 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
 
     x = range(len(canonical))
     ax.bar(x, meccan, color="#8C7853", edgecolor="black",
-           linewidth=0.5, label=f"Meccan ({ar('مکی')})")
+           linewidth=0.5, label=ar("مکی"))
     ax.bar(x, medinan, bottom=meccan, color="#2E86AB",
-           edgecolor="black", linewidth=0.5, label=f"Medinan ({ar('مدنی')})")
+           edgecolor="black", linewidth=0.5, label=ar("مدنی"))
 
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=12)
-    ax.set_ylabel("Occurrences")
-    ax.set_title("Distribution of spectrum vocabulary across "
-                 "the Meccan and Medinan corpus")
+    ax.set_ylabel(ar("بسامد"))
+    ax.set_title(ar("توزیع واژگان طیف میان پیکرهٔ مکی و مدنی"))
     ax.legend(loc="upper left")
 
     # Annotate proportions for the small-n suras
@@ -232,7 +241,6 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
         rec = by_bw[bw]
         total = rec["meccan_hits"] + rec["medinan_hits"]
         if total > 0:
-            mec_pct = 100 * rec["meccan_hits"] / total
             ax.text(xi, total + 1.5,
                     f"{rec['meccan_hits']}/{rec['medinan_hits']}",
                     ha="center", va="bottom", fontsize=8, color="gray")
@@ -307,17 +315,17 @@ def fig4_cooccurrence(window: int = 0) -> None:
         ax.text(x, y, ar(r.display()), ha="center", va="center",
                 fontsize=10, fontweight="bold", color="white", zorder=3)
 
-    # Legend
+    # Legend (Persian stage labels)
     for st in (1, 2, 3, 4):
         ax.scatter([], [], color=STAGE_COLORS[st], s=120, edgecolor="black",
-                   linewidth=0.5, label=STAGE_LABELS_EN[st])
+                   linewidth=0.5, label=ar(STAGE_LABELS[st]))
     ax.legend(loc="lower right", fontsize=8)
 
     ax.set_xlim(-3.5, 3.5)
     ax.set_ylim(-3, 3)
     ax.axis("off")
-    ax.set_title("Aya-level co-occurrence network of the spectrum.\n"
-                 "Edge weight = number of ayat in which both roots co-occur.",
+    ax.set_title(ar("شبکه هم‌رخدادگیری آیه‌ای ده ریشه کانونی") + "\n"
+                 + ar("وزن یال = تعداد آیات مشترک"),
                  fontsize=11)
 
     out = FIG_DIR / "fig4_cooccurrence.pdf"

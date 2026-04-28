@@ -39,6 +39,11 @@
 % Microtypography — improves justification quality
 \usepackage{microtype}
 
+% Section numbering — manuscripts use manual section numbers in the heading
+% text ("3. Methods", "4. Findings"), so suppress LaTeX auto-numbering to
+% avoid double prefixes like "0.4  3. Methods".
+\setcounter{secnumdepth}{-1}
+
 % Section formatting
 \usepackage[explicit]{titlesec}
 \titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}

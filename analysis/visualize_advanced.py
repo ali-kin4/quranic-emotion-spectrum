@@ -265,8 +265,9 @@ def fig7_centrality() -> None:
     for xi, v in enumerate(cls):
         axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
 
-    fig.suptitle("Network-centrality measures on the aya-level "
-                 "co-occurrence graph (14 core roots)", fontsize=11.5)
+    fig.suptitle(f"Network-centrality measures on the aya-level "
+                 f"co-occurrence graph ({len(SPECTRUM)} core roots)",
+                 fontsize=11.5)
     fig.tight_layout()
 
     out = FIG_DIR / "fig7_centrality.pdf"

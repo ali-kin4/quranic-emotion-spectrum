@@ -125,6 +125,30 @@ _CHI2_CRITICAL_005 = {
 }
 
 
+def _compute_meccan_baseline() -> float:
+    """Compute the Meccan / total fraction over the entire QAC corpus,
+    weighted by ayat per sura, from data/quran/quran_check.json. Falls
+    back to the conventional ~0.60 prior if the metadata file is missing."""
+    quran_json = ROOT_DIR / "data" / "quran" / "quran_check.json"
+    if not quran_json.exists():
+        return 0.60
+    try:
+        import json
+        data = json.loads(quran_json.read_text(encoding="utf-8"))
+    except Exception:
+        return 0.60
+    meccan_ayat = 0
+    total_ayat = 0
+    for sura in data:
+        ayat = sura.get("total_verses", 0)
+        total_ayat += ayat
+        if str(sura.get("type", "")).lower() == "meccan":
+            meccan_ayat += ayat
+    if total_ayat == 0:
+        return 0.60
+    return meccan_ayat / total_ayat
+
+
 def _chi2_critical_005(df: int) -> float:
     """Return the alpha=0.05 critical chi-squared value for df. Falls back
     to a Wilson–Hilferty approximation when df > 10."""
@@ -170,8 +194,12 @@ def statistical_tests() -> None:
     rejects_uniform = chi2_uniform > crit_uniform
 
     # ---- Test 2: Meccan/Medinan binomial tests, dynamically per root ----
-    # In the QAC the corpus baseline is ~60% Meccan, ~40% Medinan.
-    p_meccan = 0.60
+    # The corpus-baseline Meccan rate is computed from the actual sura
+    # metadata so the test prior stays accurate if the dataset or sura
+    # classifications change. We use the proportion of total ayat that
+    # belong to Meccan suras (NOT the proportion of Meccan suras), since
+    # that is what an attestation drawn at uniform random hits.
+    p_meccan = _compute_meccan_baseline()
 
     def _binom_test(bw: str) -> tuple[int, int, float]:
         """Return (meccan, total, two-sided p) computed from current counts."""

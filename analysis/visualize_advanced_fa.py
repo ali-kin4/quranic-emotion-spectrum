@@ -34,6 +34,13 @@ def ar(s: str) -> str:
     return get_display(arabic_reshaper.reshape(s)) if s else s
 
 
+_PERSIAN_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
+
+
+def _to_persian_digits(n: int) -> str:
+    return str(n).translate(_PERSIAN_DIGITS)
+
+
 plt.rcParams.update({
     "font.family": ["Tahoma", "DejaVu Sans"],
     "font.size": 10,
@@ -274,7 +281,7 @@ def fig7_centrality() -> None:
     for xi, v in enumerate(cls):
         axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
 
-    fig.suptitle(ar("سنجه‌های مرکزیت شبکه برای ۱۴ ریشه کانونی"),
+    fig.suptitle(ar(f"سنجه‌های مرکزیت شبکه برای {_to_persian_digits(len(SPECTRUM))} ریشه کانونی"),
                  fontsize=11.5)
     fig.tight_layout()
 

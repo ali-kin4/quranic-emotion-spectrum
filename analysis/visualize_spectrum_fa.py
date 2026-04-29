@@ -42,6 +42,13 @@ def ar(text: str) -> str:
     return get_display(arabic_reshaper.reshape(text))
 
 
+_PERSIAN_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
+
+
+def _to_persian_digits(n: int) -> str:
+    return str(n).translate(_PERSIAN_DIGITS)
+
+
 # Academic style. Tahoma supports Arabic/Persian shaping on Windows.
 plt.rcParams.update({
     "font.family": ["Tahoma", "DejaVu Sans"],
@@ -138,8 +145,8 @@ def fig1_continuum(rows: list[dict]) -> None:
                     arrowprops=dict(arrowstyle="->", color="gray", lw=1.0,
                                     alpha=0.55), zorder=2)
 
-    # Axis label (Persian)
-    ax.text(5.5, 0.55,
+    # Axis label (Persian) — center on the dynamic figure width
+    ax.text(width / 2, 0.55,
             ar("شدت کنش  ←"),
             ha="center", va="center", fontsize=12, fontweight="bold",
             color="black")
@@ -196,9 +203,12 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                  stage_totals[s] + 2, str(stage_totals[s]),
                  ha="center", va="bottom", fontsize=10, fontweight="bold")
 
-    fig.suptitle(ar("بسامد واژگانی طیف در پیکرهٔ قرآن "
-                    "(۳۱۲ بسامد در ۱۴ ریشهٔ کانونی)"),
-                 fontsize=11)
+    total_hits = sum(by_bw[bw]["occurrences"] for bw in canonical)
+    fig.suptitle(ar(
+        "بسامد واژگانی طیف در پیکرهٔ قرآن "
+        f"({_to_persian_digits(total_hits)} بسامد در "
+        f"{_to_persian_digits(len(SPECTRUM))} ریشهٔ کانونی)"),
+        fontsize=11)
     fig.tight_layout()
 
     out = FIG_DIR / "fig2_frequency_by_stage.pdf"
@@ -298,16 +308,17 @@ def fig4_cooccurrence(window: int = 0) -> None:
         ax.text(x, y, ar(r.display()), ha="center", va="center",
                 fontsize=10, fontweight="bold", color="white", zorder=3)
 
-    # Legend (Persian stage labels)
-    for st in (1, 2, 3, 4):
+    # Legend (Persian stage labels) — iterate over every stage actually
+    # present in SPECTRUM so the legend stays in sync if the spectrum is
+    # extended.
+    for st in sorted(set(r.stage for r in SPECTRUM)):
         ax.scatter([], [], color=STAGE_COLORS[st], s=120, edgecolor="black",
                    linewidth=0.5, label=ar(STAGE_LABELS[st]))
     ax.legend(loc="lower right", fontsize=8)
 
-    ax.set_xlim(-3.5, 3.5)
-    ax.set_ylim(-3, 3)
     ax.axis("off")
-    ax.set_title(ar("شبکه هم‌رخدادگیری آیه‌ای ۱۴ ریشه کانونی") + "\n"
+    ax.set_title(ar(
+        f"شبکه هم‌رخدادگیری آیه‌ای {_to_persian_digits(len(SPECTRUM))} ریشه کانونی") + "\n"
                  + ar("وزن یال = تعداد آیات مشترک"),
                  fontsize=11)
 

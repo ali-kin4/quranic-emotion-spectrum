@@ -56,21 +56,23 @@ plt.rcParams.update({
     "savefig.dpi": 300,
 })
 
-# Colour-blind-safe stage palette
+# Six-stage colour-blind-safe palette
 STAGE_COLORS = {
-    1: "#4C72B0",  # blue   — internal distress
-    2: "#DD8452",  # orange — explicit anger
-    3: "#C44E52",  # red    — explosive rage
-    4: "#55A868",  # green  — rebellion
+    1: "#7FB3D5", 2: "#4C72B0", 3: "#DD8452",
+    4: "#C44E52", 5: "#8E0E25", 6: "#55A868",
 }
 
-# Persian short-name (without "مرحله N — " prefix) for each stage
+# Persian short labels (no "مرحله N — " prefix) per stage
 STAGE_SHORT_FA = {
-    1: "آزردگی درونی",
-    2: "خشم آشکار",
-    3: "خشم انفجاری",
-    4: "عصیان رفتاری",
+    1: "تضجر و ناخشنودی",
+    2: "فشار درونی",
+    3: "انزجار ارزیابانه",
+    4: "خشم فعال",
+    5: "خشم متراکم",
+    6: "پیامد رفتاری",
 }
+
+CANONICAL_ORDER = [r.bw for r in SPECTRUM]
 
 # Persian numerals for figure titles
 FA_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶", 7: "۷"}
@@ -91,55 +93,50 @@ def load_summary() -> list[dict]:
 
 
 def fig1_continuum(rows: list[dict]) -> None:
-    """Horizontal four-stage continuum diagram with all 10 roots."""
-    fig, ax = plt.subplots(figsize=(14, 5.5))
-    ax.set_xlim(0, 11)
-    ax.set_ylim(0, 6.0)
+    """Six-stage continuum diagram with 14 core roots, Persian labels."""
+    n = len(SPECTRUM)
+    width = n + 1
+    fig, ax = plt.subplots(figsize=(16, 6.0))
+    ax.set_xlim(0, width)
+    ax.set_ylim(0, 6.4)
     ax.axis("off")
 
-    # Stage bands as background rectangles. Each stage gets its own header row.
-    bands = [(0.5, 3.5, 1), (3.5, 5.5, 2), (5.5, 7.5, 3), (7.5, 10.5, 4)]
-    for (x0, x1, st) in bands:
-        ax.axhspan(1.2, 4.4, xmin=(x0 / 11), xmax=(x1 / 11),
+    by_stage_xs: dict[int, list[int]] = {}
+    for i, r in enumerate(SPECTRUM):
+        by_stage_xs.setdefault(r.stage, []).append(i + 1)
+
+    for st, xs_in_stage in sorted(by_stage_xs.items()):
+        x0 = min(xs_in_stage) - 0.5
+        x1 = max(xs_in_stage) + 0.5
+        ax.axhspan(1.2, 4.4, xmin=(x0 / width), xmax=(x1 / width),
                    facecolor=STAGE_COLORS[st], alpha=0.08, zorder=0)
-        # Two-line stage label (number on top, name below)
-        ax.text((x0 + x1) / 2, 5.3, ar(f"مرحله {FA_NUM[st]}"),
-                ha="center", va="center", fontsize=11, fontweight="bold",
+        ax.text((x0 + x1) / 2, 5.4, ar(f"مرحله {FA_NUM[st]}"),
+                ha="center", va="center", fontsize=10, fontweight="bold",
                 color=STAGE_COLORS[st])
-        ax.text((x0 + x1) / 2, 4.85,
-                ar(STAGE_SHORT_FA[st]),
-                ha="center", va="center", fontsize=9.5,
+        ax.text((x0 + x1) / 2, 4.95, ar(STAGE_SHORT_FA[st]),
+                ha="center", va="center", fontsize=8.5,
                 color=STAGE_COLORS[st], style="italic")
 
-    canonical_order = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                       "bgy", "Tgy", "Etw"]
     by_bw = {r["root_bw"]: r for r in rows}
-    xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-    for x, bw in zip(xs, canonical_order):
-        rec = by_bw.get(bw)
-        if not rec:
+    for i, root in enumerate(SPECTRUM, start=1):
+        rec = by_bw.get(root.bw)
+        if rec is None:
             continue
-        st = rec["stage"]
-        size = 380 + 90 * (rec["occurrences"] ** 0.55)
-        ax.scatter(x, 2.8, s=size, color=STAGE_COLORS[st],
+        st = root.stage
+        size = 320 + 70 * (rec["occurrences"] ** 0.55)
+        ax.scatter(i, 2.8, s=size, color=STAGE_COLORS[st],
                    edgecolor="black", linewidth=0.8, zorder=3)
-        # Surface form (Arabic) inside node
-        surface = next((s.display() for s in SPECTRUM if s.bw == bw), rec["root_ar"])
-        ax.text(x, 2.8, ar(surface), ha="center", va="center",
-                fontsize=11.5, fontweight="bold", color="white", zorder=4)
-        # Frequency below
-        ax.text(x, 1.85, f"n = {rec['occurrences']}", ha="center", va="center",
-                fontsize=9, color="black", zorder=4)
-        # Buckwalter ID below
-        ax.text(x, 1.45, f"({bw})", ha="center", va="center",
-                fontsize=8, color="dimgray", zorder=4, style="italic")
+        ax.text(i, 2.8, ar(root.display()), ha="center", va="center",
+                fontsize=10.5, fontweight="bold", color="white", zorder=4)
+        ax.text(i, 1.85, f"n = {rec['occurrences']}", ha="center", va="center",
+                fontsize=8.5, color="black", zorder=4)
+        ax.text(i, 1.45, f"({root.bw})", ha="center", va="center",
+                fontsize=7.5, color="dimgray", zorder=4, style="italic")
 
-    # Arrow connecting all nodes (intensification axis)
-    for x0, x1 in zip(xs[:-1], xs[1:]):
-        ax.annotate("", xy=(x1 - 0.3, 2.8), xytext=(x0 + 0.3, 2.8),
-                    arrowprops=dict(arrowstyle="->", color="gray", lw=1.2,
-                                    alpha=0.6), zorder=2)
+    for i in range(1, n):
+        ax.annotate("", xy=(i + 1 - 0.3, 2.8), xytext=(i + 0.3, 2.8),
+                    arrowprops=dict(arrowstyle="->", color="gray", lw=1.0,
+                                    alpha=0.55), zorder=2)
 
     # Axis label (Persian)
     ax.text(5.5, 0.55,
@@ -163,8 +160,7 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
     """Bar chart of per-root frequencies grouped by stage."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
 
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
@@ -216,8 +212,7 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
     """Stacked bar: Meccan vs Medinan distribution per root."""
     fig, ax = plt.subplots(figsize=(11, 5))
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
@@ -278,20 +273,8 @@ def fig4_cooccurrence(window: int = 0) -> None:
     for (a, b), w in edges.items():
         G.add_edge(a, b, weight=w)
 
-    fig, ax = plt.subplots(figsize=(9, 8))
-    pos = {
-        # Hand-laid ring positions to keep stage clusters visually grouped
-        "Dyq": (-2, 1.5),
-        "Hzn": (-2.5, 0.5),
-        "Asf": (-2, -0.5),
-        "sxT": (-1, -1.7),
-        "gDb": (0, -2),
-        "gyZ": (1.5, -1),
-        "myz": (2, 0),
-        "bgy": (2.2, 1.2),
-        "Tgy": (1.2, 2),
-        "Etw": (-0.5, 2),
-    }
+    fig, ax = plt.subplots(figsize=(12, 9))
+    pos = nx.spring_layout(G, weight="weight", seed=42, k=1.5, iterations=300)
 
     # Draw edges with thickness ∝ weight
     if G.number_of_edges() > 0:

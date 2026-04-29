@@ -47,7 +47,11 @@ plt.rcParams.update({
     "savefig.dpi": 300,
 })
 
-STAGE_COLORS = {1: "#4C72B0", 2: "#DD8452", 3: "#C44E52", 4: "#55A868"}
+STAGE_COLORS = {
+    1: "#7FB3D5", 2: "#4C72B0", 3: "#DD8452",
+    4: "#C44E52", 5: "#8E0E25", 6: "#55A868",
+}
+CANONICAL_ORDER = [r.bw for r in SPECTRUM]
 
 
 # -------------------------------------------------------------------- #
@@ -67,8 +71,7 @@ def fig5_morphology() -> None:
     rows = [r for r in rows if r["root_bw"] in core_bw]
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
 
     fig, ax = plt.subplots(figsize=(12, 5.5))
@@ -232,8 +235,7 @@ def fig7_centrality() -> None:
             r["closeness"] = float(r["closeness"])
             rows.append(r)
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
     labels = [ar(surface_by_bw[bw]) for bw in canonical]

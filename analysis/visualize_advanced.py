@@ -47,7 +47,11 @@ plt.rcParams.update({
     "savefig.dpi": 300,
 })
 
-STAGE_COLORS = {1: "#4C72B0", 2: "#DD8452", 3: "#C44E52", 4: "#55A868"}
+STAGE_COLORS = {
+    1: "#7FB3D5", 2: "#4C72B0", 3: "#DD8452",
+    4: "#C44E52", 5: "#8E0E25", 6: "#55A868",
+}
+CANONICAL_ORDER = [r.bw for r in SPECTRUM]
 
 
 # -------------------------------------------------------------------- #
@@ -67,11 +71,10 @@ def fig5_morphology() -> None:
     rows = [r for r in rows if r["root_bw"] in core_bw]
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
 
-    fig, ax = plt.subplots(figsize=(12, 5.5))
+    fig, ax = plt.subplots(figsize=(15, 5.5))
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     x = list(range(len(canonical)))
     bottoms = [0] * len(canonical)
@@ -223,21 +226,20 @@ def fig7_centrality() -> None:
             r["closeness"] = float(r["closeness"])
             rows.append(r)
 
-    canonical = ["Dyq", "Hzn", "Asf", "sxT", "gDb", "gyZ", "myz",
-                 "bgy", "Tgy", "Etw"]
+    canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     x = list(range(len(canonical)))
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in canonical]
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+    fig, axes = plt.subplots(1, 3, figsize=(18, 4.5))
 
     # Panel 1: Weighted degree
     deg = [by_bw[bw]["degree_weighted"] for bw in canonical]
     axes[0].bar(x, deg, color=colors, edgecolor="black", linewidth=0.6)
     axes[0].set_xticks(x)
-    axes[0].set_xticklabels(labels, fontsize=11)
+    axes[0].set_xticklabels(labels, fontsize=9)
     axes[0].set_ylabel("Weighted degree")
     axes[0].set_title("(a) Weighted degree (sum of co-occurrence ties)")
     for xi, v in enumerate(deg):
@@ -247,7 +249,7 @@ def fig7_centrality() -> None:
     btw = [by_bw[bw]["betweenness"] for bw in canonical]
     axes[1].bar(x, btw, color=colors, edgecolor="black", linewidth=0.6)
     axes[1].set_xticks(x)
-    axes[1].set_xticklabels(labels, fontsize=11)
+    axes[1].set_xticklabels(labels, fontsize=9)
     axes[1].set_ylabel("Betweenness centrality")
     axes[1].set_title("(b) Betweenness centrality (bridge-node strength)")
     for xi, v in enumerate(btw):
@@ -257,14 +259,14 @@ def fig7_centrality() -> None:
     cls = [by_bw[bw]["closeness"] for bw in canonical]
     axes[2].bar(x, cls, color=colors, edgecolor="black", linewidth=0.6)
     axes[2].set_xticks(x)
-    axes[2].set_xticklabels(labels, fontsize=11)
+    axes[2].set_xticklabels(labels, fontsize=9)
     axes[2].set_ylabel("Closeness centrality")
     axes[2].set_title("(c) Closeness centrality (proximity to all roots)")
     for xi, v in enumerate(cls):
         axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
 
     fig.suptitle("Network-centrality measures on the aya-level "
-                 "co-occurrence graph (10 core roots)", fontsize=11.5)
+                 "co-occurrence graph (14 core roots)", fontsize=11.5)
     fig.tight_layout()
 
     out = FIG_DIR / "fig7_centrality.pdf"

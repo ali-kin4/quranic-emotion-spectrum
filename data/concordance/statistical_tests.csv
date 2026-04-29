@@ -1,6 +1,6 @@
 test,statistic,value,interpretation
-Stage uniform-distribution chi-squared,chi2 (df=3),165.45,"Observed: [60, 28, 15, 145]; expected uniform: ~62.0 each. chi2=165.5 >> critical value 7.81 (alpha=0.05) — REJECT null."
-Stage 1+2+3 vs Stage 4 split,chi2 (df=1),7.11,Lower three stages: 103; Stage 4: 145. chi2=7.1 >> critical value 3.84 — REJECT null.
+Stage uniform-distribution chi-squared,chi2 (df=5),227.15,"Observed: [44, 60, 27, 25, 11, 145]; expected uniform: ~52.0 each. chi2=227.2 >> 11.07 critical (alpha=0.05) — REJECT null. Six stages are unequally populated; Stage 6 (behavioural outcomes) and Stage 2 (inner pressure) dominate."
+Phenomenology (Stages 1-5) vs Behavioural outcomes (Stage 6),chi2 (df=1),1.55,"Phenomenology stages 1-5: 167; Stage 6 outcomes: 145. chi2=1.55; critical=3.84. FAIL TO REJECT null — the corpus distributes mass roughly equally between anger phenomenology and behavioural outcomes, consistent with the reviewer's caveat that baghy/ṭughyān/ʿutuww are not exclusively anger-derived."
 sakhat (sxT) Meccan exclusivity (0/4),binomial 2-sided p-value,0.0256,"Under H0 of 0.60 Meccan rate, observing 0 Meccan in 4 trials is extremely improbable; supports specialized Medinan use."
 asaf (Asf) Meccan exclusivity (5/0),binomial 2-sided p-value,0.1648,"Under H0 of 0.60 Meccan rate, observing 5/5 Meccan is small but consistent (n is tiny); the pattern is suggestive rather than decisive on its own."
 utuww (Etw) Meccan dominance (9/10),binomial 2-sided p-value,0.0587,Strong Meccan preference; consistent with the early-revelation rebellion-against-revelation pattern.

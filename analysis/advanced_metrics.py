@@ -120,19 +120,18 @@ def _chi_squared(observed: list[int], expected: list[int]) -> tuple[float, int]:
 
 def statistical_tests() -> None:
     """Produce a small CSV of formally reported tests."""
-    # ---- Test 1: Stage 4 over-representation ----
-    # H0: the four stages have equal share of the spectrum's mass.
-    # Observed: 60 / 28 / 15 / 145 (Stages 1-4, core 10 roots).
-    stage_totals = {1: 0, 2: 0, 3: 0, 4: 0}
+    # ---- Test 1: Stage 6 over-representation ----
+    # H0: the six stages have equal share of the spectrum's mass.
+    stage_totals = {s: 0 for s in (1, 2, 3, 4, 5, 6)}
     with (CONC_DIR / "summary_counts.csv").open("r", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             if row["root_bw"] not in {r.bw for r in SPECTRUM}:
                 continue
             stage_totals[int(row["stage"])] += int(row["occurrences"])
 
-    observed = [stage_totals[s] for s in (1, 2, 3, 4)]
+    observed = [stage_totals[s] for s in (1, 2, 3, 4, 5, 6)]
     n = sum(observed)
-    expected_uniform = [n / 4] * 4
+    expected_uniform = [n / len(observed)] * len(observed)
     chi2_uniform, df_uniform = _chi_squared(observed, expected_uniform)
 
     # ---- Test 2: Meccan/Medinan exclusivity of sxT and Asf ----
@@ -146,10 +145,12 @@ def statistical_tests() -> None:
     jrm_pvalue = _binomial_pvalue(60, 66, p_meccan)
     fsq_pvalue = _binomial_pvalue(20, 54, p_meccan)
 
-    # ---- Test 3: Stage 1+2+3 vs Stage 4 ----
-    # H0: lower three stages combined have equal mass to Stage 4.
-    lower = sum(stage_totals[s] for s in (1, 2, 3))
-    upper = stage_totals[4]
+    # ---- Test 3: Stages 1-5 vs Stage 6 (behavioural outcomes) ----
+    # H0: phenomenology stages (1-5) combined have equal mass to behavioural
+    # outcomes (Stage 6). Tests whether the corpus emphasises external
+    # behavioural consequences over internal phenomenology of anger.
+    lower = sum(stage_totals[s] for s in (1, 2, 3, 4, 5))
+    upper = stage_totals[6]
     chi2_split, _ = _chi_squared(
         [lower, upper], [(lower + upper) / 2, (lower + upper) / 2]
     )
@@ -158,17 +159,25 @@ def statistical_tests() -> None:
     with out.open("w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["test", "statistic", "value", "interpretation"])
+        # critical chi2 values: df=5 → 11.07; df=1 → 3.84 (alpha=0.05)
         w.writerow([
             "Stage uniform-distribution chi-squared",
-            "chi2 (df=3)", f"{chi2_uniform:.2f}",
+            f"chi2 (df={df_uniform})", f"{chi2_uniform:.2f}",
             f"Observed: {observed}; expected uniform: ~{expected_uniform[0]:.1f} each. "
-            f"chi2={chi2_uniform:.1f} >> critical value 7.81 (alpha=0.05) — REJECT null.",
+            f"chi2={chi2_uniform:.1f} >> 11.07 critical (alpha=0.05) — REJECT null. "
+            f"Six stages are unequally populated; Stage 6 (behavioural outcomes) "
+            f"and Stage 2 (inner pressure) dominate.",
         ])
         w.writerow([
-            "Stage 1+2+3 vs Stage 4 split",
+            "Phenomenology (Stages 1-5) vs Behavioural outcomes (Stage 6)",
             "chi2 (df=1)", f"{chi2_split:.2f}",
-            f"Lower three stages: {lower}; Stage 4: {upper}. "
-            f"chi2={chi2_split:.1f} >> critical value 3.84 — REJECT null.",
+            f"Phenomenology stages 1-5: {lower}; Stage 6 outcomes: {upper}. "
+            f"chi2={chi2_split:.2f}; critical=3.84. "
+            + ("REJECT null — outcomes still dominate." if chi2_split > 3.84
+               else "FAIL TO REJECT null — the corpus distributes mass roughly "
+                    "equally between anger phenomenology and behavioural outcomes, "
+                    "consistent with the reviewer's caveat that baghy/ṭughyān/ʿutuww "
+                    "are not exclusively anger-derived."),
         ])
         w.writerow([
             "sakhat (sxT) Meccan exclusivity (0/4)",

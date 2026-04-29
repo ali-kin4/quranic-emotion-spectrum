@@ -1,4 +1,28 @@
 root_bw,root_ar,sura,sura_name,sura_type,count
+Aff,أ-ف-ف,17,الإسراء,meccan,1
+Aff,أ-ف-ف,21,الأنبياء,meccan,1
+Aff,أ-ف-ف,46,الأحقاف,meccan,1
+krh,ك-ر-ه,2,البقرة,medinan,3
+krh,ك-ر-ه,3,آل عمران,medinan,1
+krh,ك-ر-ه,4,النساء,medinan,3
+krh,ك-ر-ه,7,الأعراف,meccan,1
+krh,ك-ر-ه,8,الأنفال,medinan,2
+krh,ك-ر-ه,9,التوبة,medinan,7
+krh,ك-ر-ه,10,يونس,meccan,2
+krh,ك-ر-ه,11,هود,meccan,1
+krh,ك-ر-ه,13,الرعد,medinan,1
+krh,ك-ر-ه,16,النحل,meccan,2
+krh,ك-ر-ه,17,الإسراء,meccan,1
+krh,ك-ر-ه,20,طه,meccan,1
+krh,ك-ر-ه,23,المؤمنون,meccan,1
+krh,ك-ر-ه,24,النور,medinan,3
+krh,ك-ر-ه,40,غافر,meccan,1
+krh,ك-ر-ه,41,فصلت,meccan,1
+krh,ك-ر-ه,43,الزخرف,meccan,1
+krh,ك-ر-ه,46,الأحقاف,meccan,2
+krh,ك-ر-ه,47,محمد,medinan,3
+krh,ك-ر-ه,49,الحجرات,medinan,2
+krh,ك-ر-ه,61,الصف,medinan,2
 Dyq,ض-ي-ق,6,الأنعام,meccan,1
 Dyq,ض-ي-ق,9,التوبة,medinan,3
 Dyq,ض-ي-ق,11,هود,meccan,2
@@ -39,10 +63,26 @@ Asf,أ-س-ف,12,يوسف,meccan,1
 Asf,أ-س-ف,18,الكهف,meccan,1
 Asf,أ-س-ف,20,طه,meccan,1
 Asf,أ-س-ف,43,الزخرف,meccan,1
+nqm,ن-ق-م,3,آل عمران,medinan,1
+nqm,ن-ق-م,5,المائدة,medinan,3
+nqm,ن-ق-م,7,الأعراف,meccan,2
+nqm,ن-ق-م,9,التوبة,medinan,1
+nqm,ن-ق-م,14,ابراهيم,meccan,1
+nqm,ن-ق-م,15,الحجر,meccan,1
+nqm,ن-ق-م,30,الروم,meccan,1
+nqm,ن-ق-م,32,السجدة,meccan,1
+nqm,ن-ق-م,39,الزمر,meccan,1
+nqm,ن-ق-م,43,الزخرف,meccan,3
+nqm,ن-ق-م,44,الدخان,meccan,1
+nqm,ن-ق-م,85,البروج,meccan,1
 sxT,س-خ-ط,3,آل عمران,medinan,1
 sxT,س-خ-ط,5,المائدة,medinan,1
 sxT,س-خ-ط,9,التوبة,medinan,1
 sxT,س-خ-ط,47,محمد,medinan,1
+mqt,م-ق-ت,4,النساء,medinan,1
+mqt,م-ق-ت,35,فاطر,meccan,1
+mqt,م-ق-ت,40,غافر,meccan,3
+mqt,م-ق-ت,61,الصف,medinan,1
 gDb,غ-ض-ب,1,الفاتحة,meccan,1
 gDb,غ-ض-ب,2,البقرة,medinan,3
 gDb,غ-ض-ب,3,آل عمران,medinan,1
@@ -58,6 +98,7 @@ gDb,غ-ض-ب,42,الشورى,meccan,2
 gDb,غ-ض-ب,48,الفتح,medinan,1
 gDb,غ-ض-ب,58,المجادلة,medinan,1
 gDb,غ-ض-ب,60,الممتحنة,medinan,1
+Hrd,ح-ر-د,68,القلم,meccan,1
 gyZ,غ-ي-ظ,3,آل عمران,medinan,3
 gyZ,غ-ي-ظ,9,التوبة,medinan,2
 gyZ,غ-ي-ظ,22,الحج,medinan,1
@@ -66,10 +107,6 @@ gyZ,غ-ي-ظ,26,الشعراء,meccan,1
 gyZ,غ-ي-ظ,33,الأحزاب,medinan,1
 gyZ,غ-ي-ظ,48,الفتح,medinan,1
 gyZ,غ-ي-ظ,67,الملك,meccan,1
-myz,م-ي-ز,3,آل عمران,medinan,1
-myz,م-ي-ز,8,الأنفال,medinan,1
-myz,م-ي-ز,36,يس,meccan,1
-myz,م-ي-ز,67,الملك,meccan,1
 bgy,ب-غ-ي,2,البقرة,medinan,8
 bgy,ب-غ-ي,3,آل عمران,medinan,6
 bgy,ب-غ-ي,4,النساء,medinan,6
@@ -145,27 +182,6 @@ Etw,ع-ت-و,51,الذاريات,meccan,1
 Etw,ع-ت-و,65,الطلاق,medinan,1
 Etw,ع-ت-و,67,الملك,meccan,1
 Etw,ع-ت-و,69,الحاقة,meccan,1
-krh,ك-ر-ه,2,البقرة,medinan,3
-krh,ك-ر-ه,3,آل عمران,medinan,1
-krh,ك-ر-ه,4,النساء,medinan,3
-krh,ك-ر-ه,7,الأعراف,meccan,1
-krh,ك-ر-ه,8,الأنفال,medinan,2
-krh,ك-ر-ه,9,التوبة,medinan,7
-krh,ك-ر-ه,10,يونس,meccan,2
-krh,ك-ر-ه,11,هود,meccan,1
-krh,ك-ر-ه,13,الرعد,medinan,1
-krh,ك-ر-ه,16,النحل,meccan,2
-krh,ك-ر-ه,17,الإسراء,meccan,1
-krh,ك-ر-ه,20,طه,meccan,1
-krh,ك-ر-ه,23,المؤمنون,meccan,1
-krh,ك-ر-ه,24,النور,medinan,3
-krh,ك-ر-ه,40,غافر,meccan,1
-krh,ك-ر-ه,41,فصلت,meccan,1
-krh,ك-ر-ه,43,الزخرف,meccan,1
-krh,ك-ر-ه,46,الأحقاف,meccan,2
-krh,ك-ر-ه,47,محمد,medinan,3
-krh,ك-ر-ه,49,الحجرات,medinan,2
-krh,ك-ر-ه,61,الصف,medinan,2
 $nA,ش-ن-أ,5,المائدة,medinan,2
 $nA,ش-ن-أ,108,الكوثر,meccan,1
 jrm,ج-ر-م,5,المائدة,medinan,2

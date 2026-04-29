@@ -42,14 +42,16 @@ than describing inner phenomenology for its own sake.
 ```
 quranic-emotion-spectrum/
 ├── paper/
-│   ├── persian/manuscript.md      Persian primary draft (~7,300 words)
-│   └── english/manuscript.md      English condensed version (~3,800 words)
+│   ├── persian/manuscript.md      Persian primary draft (~11,600 words)
+│   └── english/manuscript.md      English journal version (~9,400 words)
 ├── analysis/
 │   ├── buckwalter.py              Arabic ↔ Buckwalter transliteration
 │   ├── qac_parser.py              Parses Quranic Arabic Corpus v0.4
 │   ├── spectrum_roots.py          Defines the 10 core + 6 expansion roots
 │   ├── extract_concordance.py     Extraction pipeline → CSV concordances
-│   └── visualize_spectrum.py      Generates the four publication figures
+│   ├── advanced_metrics.py        Morphology, χ²-tests, network centrality
+│   ├── visualize_spectrum.py      Generates figures 1–4
+│   └── visualize_advanced.py      Generates figures 5–7
 ├── data/
 │   ├── quran/
 │   │   ├── qac_morphology.txt     Quranic Arabic Corpus (Dukes 2011, GPL)
@@ -58,12 +60,19 @@ quranic-emotion-spectrum/
 │       ├── master_concordance.csv     833 attestations across 16 roots
 │       ├── summary_counts.csv         Per-root frequency table
 │       ├── sura_distribution.csv      Per-sura per-root counts
-│       └── by_root/*.csv              Individual-root concordances
+│       ├── morphology_by_root.csv     POS / form breakdown per root
+│       ├── statistical_tests.csv      χ² and binomial test results
+│       ├── network_centrality.csv     Degree/betweenness/closeness measures
+│       ├── umbrella_cooccurrence.csv  Cross-field co-occurrence with ẓlm/jrm/fsq
+│       └── by_root/*.csv              Per-root concordances
 ├── figures/
-│   ├── fig1_continuum.{pdf,png}        4-stage spectrum diagram
-│   ├── fig2_frequency_by_stage.{pdf,png}
-│   ├── fig3_meccan_medinan.{pdf,png}
-│   └── fig4_cooccurrence.{pdf,png}
+│   ├── fig1_continuum.{pdf,png}              4-stage spectrum diagram
+│   ├── fig2_frequency_by_stage.{pdf,png}     Frequency bars
+│   ├── fig3_meccan_medinan.{pdf,png}         Revelation-context distribution
+│   ├── fig4_cooccurrence.{pdf,png}           Aya-level co-occurrence network
+│   ├── fig5_morphology_stack.{pdf,png}       POS breakdown per root
+│   ├── fig6_metaphor_diagram.{pdf,png}       ANGER IS PRESSURIZED CONTAINER
+│   └── fig7_centrality.{pdf,png}             Network centrality metrics
 ├── references/
 │   ├── english.bib                BibTeX bibliography for the English version
 │   ├── persian.bib                BibTeX bibliography for the Persian version
@@ -90,12 +99,30 @@ pip install -r analysis/requirements.txt
 # 3. Run the extraction pipeline (writes to data/concordance/)
 python analysis/extract_concordance.py
 
-# 4. Generate the publication figures (writes to figures/)
+# 4. Run the advanced metrics (morphology, statistical tests, network centrality)
+python analysis/advanced_metrics.py
+
+# 5. Generate figures 1–4 (writes to figures/)
 python analysis/visualize_spectrum.py
+
+# 6. Generate figures 5–7 (writes to figures/)
+python analysis/visualize_advanced.py
 ```
 
 The pipeline is deterministic; identical inputs produce byte-identical CSVs
 and figure pixels.
+
+### Headline empirical results
+
+- χ²(3) = **165.45**, *p* < 0.001 against uniform stage distribution
+- χ²(1) = **7.11**, *p* = 0.008 against equal Stage 1+2+3 vs Stage 4 split
+- *sakhaṭ* exclusively Medinan: binomial *p* = **0.026** under H₀ = 0.60
+- *jrm* (umbrella) Meccan dominance: binomial *p* < 0.0001
+- *baghy* highest betweenness centrality (**0.39**) — bridge node between the
+  emotional and the moral-evaluation field
+- Q. 67:8 (*takādu tamayyazu min al-ġayẓ*) instantiates Lakoff–Kövecses
+  "container collapse" with greater clarity than any English exemplar in the
+  CMT literature
 
 ---
 
@@ -121,13 +148,15 @@ and figure pixels.
 If you use this work, please cite the manuscript:
 
 ```bibtex
-@article{quranic_emotion_spectrum_2026,
-  author  = {[Corresponding author]},
+@article{jabbary2026spectrum,
+  author  = {Jabbary, Karim and Jabbary, Ali},
   title   = {The Phenomenology of Negative Emotions in the {Qur'\={a}n}:
              A Semantic-Network Analysis of Distress, Aggression, and
              Rebellion Along an Action-Intensity Continuum},
   year    = {2026},
-  note    = {Manuscript draft; repository at quranic-emotion-spectrum}
+  affiliation = {Urmia University, Iran},
+  note    = {Manuscript draft; repository at
+             github.com/ali-kin4/quranic-emotion-spectrum}
 }
 ```
 

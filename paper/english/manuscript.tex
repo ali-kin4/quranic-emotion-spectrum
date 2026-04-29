@@ -1,0 +1,987 @@
+% Custom LaTeX template for the English manuscript
+% Karim Jabbary & Ali Jabbary — Quranic Emotion Spectrum
+% Designed for compilation with XeLaTeX so the Arabic insertions render
+% via system fonts.
+
+\documentclass[11pt,a4paper]{article}
+
+% Page geometry — generous margins, single column for journal-friendly layout
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+
+% Fonts (XeLaTeX) ------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{EB Garamond}[
+  Path           = ../fonts/,
+  Extension      = .ttf,
+  UprightFont    = ebgaramond-regular,
+  BoldFont       = ebgaramond-regular,        % Variable font; LaTeX picks weight
+  ItalicFont     = ebgaramond-regular,
+  BoldItalicFont = ebgaramond-regular,
+  Numbers        = OldStyle,
+]
+\newfontfamily\arabicfont{Amiri}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = amiri-regular,
+  BoldFont    = amiri-bold,
+  Script      = Arabic,
+]
+
+% Convenience macros for inline Arabic text.
+% In an English-primary document with sparse Arabic insertions, we use an
+% \arb{...} switching command that just changes the active font. We avoid
+% bidi / polyglossia because they make tabular environments fragile and we
+% only need short Arabic runs inside otherwise-LTR text.
+\newcommand{\textarabic}[1]{{\arabicfont #1}}
+\DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
+
+% Microtypography — improves justification quality
+\usepackage{microtype}
+
+% Section numbering — manuscripts use manual section numbers in the heading
+% text ("3. Methods", "4. Findings"), so suppress LaTeX auto-numbering to
+% avoid double prefixes like "0.4  3. Methods".
+\setcounter{secnumdepth}{-1}
+
+% Section formatting
+\usepackage[explicit]{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{#1}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.6em}{#1}
+\titlespacing*{\section}{0pt}{1.6ex plus 0.3ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 0.3ex minus 0.2ex}{0.8ex plus 0.2ex}
+
+% Lines and spacing
+\usepackage{setspace}
+\setstretch{1.16}        % Slight loosening for readability
+\setlength{\parskip}{0.2\baselineskip}
+\setlength{\parindent}{1.4em}
+
+% Pandoc compatibility macros — generated tables, lists, and code blocks
+% rely on these.
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{calc}
+\providecommand{\real}[1]{#1}
+\usepackage{xcolor}
+\providecommand{\pandocbounded}[1]{#1}
+
+% Fancyvrb for pandoc-emitted code blocks
+\usepackage{fancyvrb}
+\fvset{frame=single,fontsize=\small,formatcom={\color[RGB]{50,50,50}}}
+\providecommand{\NormalTok}[1]{#1}
+\providecommand{\KeywordTok}[1]{\textcolor[RGB]{0,90,162}{\textbf{#1}}}
+\providecommand{\StringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\CommentTok}[1]{\textcolor[RGB]{120,120,120}{\textit{#1}}}
+\providecommand{\BuiltInTok}[1]{#1}
+\providecommand{\AttributeTok}[1]{#1}
+\providecommand{\OperatorTok}[1]{#1}
+\providecommand{\OtherTok}[1]{#1}
+\providecommand{\FunctionTok}[1]{#1}
+\providecommand{\ExtensionTok}[1]{#1}
+\providecommand{\DataTypeTok}[1]{\textcolor[RGB]{0,135,90}{#1}}
+\providecommand{\ImportTok}[1]{\textbf{#1}}
+\providecommand{\ControlFlowTok}[1]{\textbf{#1}}
+\providecommand{\DecValTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\BaseNTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\FloatTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\CharTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\ConstantTok}[1]{#1}
+\providecommand{\SpecialCharTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\SpecialStringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\VerbatimStringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\VariableTok}[1]{#1}
+\providecommand{\BuiltInTok}[1]{#1}
+\providecommand{\PreprocessorTok}[1]{#1}
+\providecommand{\AlertTok}[1]{\textbf{#1}}
+\providecommand{\ErrorTok}[1]{\textbf{#1}}
+\providecommand{\WarningTok}[1]{\textbf{#1}}
+\providecommand{\AnnotationTok}[1]{\textit{#1}}
+\providecommand{\CommentVarTok}[1]{\textcolor[RGB]{120,120,120}{\textit{#1}}}
+\providecommand{\DocumentationTok}[1]{\textit{#1}}
+\providecommand{\InformationTok}[1]{\textit{#1}}
+\providecommand{\RegionMarkerTok}[1]{#1}
+\providecommand{\StringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\NormalTok}[1]{#1}
+\newenvironment{Shaded}{}{}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+
+% Figures, tables, captions
+\usepackage{graphicx}
+\graphicspath{{../../figures/}}
+\usepackage[font=small,labelfont=bf,labelsep=period,justification=justified]{caption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.18}
+
+% Typography niceties
+\usepackage{csquotes}
+\usepackage[normalem]{ulem}
+\usepackage{enumitem}
+\setlist{leftmargin=1.6em,topsep=0.3ex,itemsep=0.3ex}
+
+% Hyperlinks
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={The Phenomenology of the Anger Spectrum in the Qur'an},
+  pdfauthor={Karim Jabbary; Ali Jabbary},
+  pdfsubject={Qur'anic Studies; Cognitive Linguistics; Semantic Fields},
+  pdfkeywords={Qur'an; semantic field; cognitive linguistics; scalar semantics; emotion regulation; Izutsu},
+  bookmarksdepth=2,
+  bookmarksnumbered=true,
+  colorlinks=false,
+}
+
+% Title block
+\title{\Large\bfseries The Phenomenology of the Anger Spectrum in the Qur'\=an\\[0.4em]
+  \normalsize\textit{A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum}}
+
+\author{
+  \textsc{Karim Jabbary}\thanks{Corresponding author. Department of Arabic Language and Literature, Faculty of Literature and Humanities, Urmia University, Urmia, Iran. \href{mailto:k.jabbary@urmia.ac.ir}{k.jabbary@urmia.ac.ir}}\\
+  \textsc{Ali Jabbary}\thanks{Urmia University, Urmia, Iran.}\\[0.6em]
+  \small\textit{Urmia University, Iran}
+}
+
+\date{April 2026}
+
+% Abstract environment styled academically
+\renewenvironment{abstract}{%
+  \vspace{0.6em}\noindent\rule{\linewidth}{0.4pt}\\[0.6em]
+  \small\textbf{Abstract.}\hspace{0.5em}\ignorespaces}{%
+  \\[0.4em]\noindent\rule{\linewidth}{0.4pt}\vspace{0.6em}}
+
+% Suppress orphan/widow lines
+\widowpenalty=10000
+\clubpenalty=10000
+
+\begin{document}
+
+\maketitle
+
+\subsection{Abstract}\label{abstract}
+
+The Qurʾān deploys an exceptionally articulated lexicon for the description of the \emph{anger spectrum} in human emotion, yet existing scholarship has tended to treat this lexicon either word-by-word or through normative-ethical frames, leaving the structural-relational dimension of the field largely unexplored. This study advances the thesis that fourteen core Arabic roots---\textbf{ʾff, krh, ḍyq, ḥzn, ʾsf, nqm, sxṭ, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw}---form a single graded semantic field organised along the dimension of \emph{intensity of action}, traversing six phenomenological stages: (1) pre-anger displeasure, (2) inner pressure and contraction, (3) evaluative aversion, (4) active anger, (5) compressed/explosive rage, and (6) behavioural outcomes (with caveats). We integrate three methodological lenses---Toshihiko Izutsu's semantic-field approach, scalar semantics in the Kennedy-Sassoon tradition, and conceptual metaphor theory after Lakoff and Kövecses---and validate the proposed continuum against the \textbf{Quranic Arabic Corpus} (Dukes 2011) using a fully reproducible Python pipeline. The empirical analysis covers 312 attestations across the fourteen core spectrum roots, spanning the entire 6,236-verse corpus. Three principal findings emerge. First, the six-stage distribution of attestations deviates highly significantly from uniformity (χ²(5) = 227.15, \emph{p} \textless{} 0.001). Stage totals are: Stage 1 = 44; Stage 2 = 60; Stage 3 = 27; Stage 4 = 25; Stage 5 = 11; Stage 6 = 145. The phenomenological core (Stages 1--5 = 167) and the behavioural-outcomes pole (Stage 6 = 145) are \emph{not} significantly unequal (χ²(1) = 1.55, fails to reject equal split), a result we read---following the reviewer's caveats below---as supporting the position that Stage-6 lexemes (\emph{baghy}, \emph{ṭughyān}, \emph{ʿutuww}) are not exclusively anger-derived. Second, two distributional patterns emerge that have, to our knowledge, not been previously reported: \emph{sakhaṭ} attests \textbf{exclusively} in Medinan suras (0/4; binomial \emph{p} = 0.005 against the corpus-derived baseline of 0.74 Meccan ayat), while \emph{asaf} attests \textbf{exclusively} in Meccan suras (5/0); we additionally identify \emph{naqm} as Meccan-tilted (12/5), \emph{maqt} (4/2), and \emph{ḥard} as a Qurʾānic hapax legomenon at Q. 68:25 (Meccan). Third, network-centrality analysis of the aya-level co-occurrence graph reveals that \emph{baghy} operates as one of the principal bridging nodes (betweenness = 0.15, tied with \emph{ghaḍab} and \emph{asaf}; closeness = 0.55, the highest in the spectrum) between the anger spectrum and the broader moral-evaluation field of the Qurʾān (315 attestations of \emph{ẓulm}, 66 of \emph{jurm}, 54 of \emph{fisq}, 106 of \emph{ʿadāwah}). The Qurʾānic continuum is structurally homologous with Gross's process model of emotion regulation (1998, 2014), Plutchik's wheel of intensity (1980), and Spielberger's State-Trait Anger framework (1999), but extends beyond these in a critical respect: by integrating Stage 6, it presents not only a \emph{psychology} of anger but a \emph{moral anthropology} of the structural consequences of unmanaged emotion. We argue that the Qurʾānic verse Q. 67:8 (\emph{takādu tamayyazu min al-ġayẓ}) constitutes one of the most articulated linguistic instances of ``container collapse'' (Lakoff \& Kövecses 1987) in any documented historical text, providing strong cross-cultural evidence for the cognitive universality of the ANGER IS PRESSURIZED CONTAINER metaphor. The findings have implications for Qurʾānic translation (where the levelling of distinct lexemes erodes the spectrum's moral-psychological architecture), for the design of culturally-grounded Islamic-psychology interventions, and for the cross-linguistic study of anger lexicons.
+
+\textbf{Keywords:} Qurʾān, anger spectrum, semantic field, cognitive linguistics, scalar semantics, conceptual metaphor, anger lexicon, emotion regulation, Arabic corpus linguistics, Izutsu, Islamic psychology.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. Introduction}\label{introduction}
+
+\subsubsection{1.1. Statement of the problem}\label{statement-of-the-problem}
+
+The Qurʾānic lexicon for the \emph{anger spectrum} exhibits a precision that survives, only with difficulty, the attempts of translation to render it into modern languages. Where English versions level \emph{uff}, \emph{karh}, \emph{ḍīq}, \emph{ḥuzn}, \emph{asaf}, \emph{naqm}, \emph{sakhaṭ}, \emph{maqt}, \emph{ghaḍab}, \emph{ḥard}, \emph{ghayẓ}, \emph{baghy}, \emph{ṭughyān}, and \emph{ʿutuww} into a small set of broad equivalents---chiefly ``displeasure,'' ``distress,'' ``grief,'' ``anger,'' ``rage,'' ``transgression,'' and ``rebellion''---the Arabic original distinguishes them with the precision of a graded taxonomy of irritation, aversion, anger, and its outcomes. The hypothesis advanced in this paper is structural: that fourteen of the Qurʾān's thematically central anger-spectrum roots are not synonyms or scattered semantic singletons but coordinated nodes in a single \emph{graded} semantic field, organised along the dimension of \emph{intensity of action} (\emph{shiddat al-kunish} in the Persian formulation of the original idea). The field opens in pre-anger displeasure (the murmured \emph{uff}, the inner \emph{karāha}), passes through inner pressure and contraction, evaluative aversion, active anger, and compressed/explosive rage, and---at the behavioural pole---issues into outcomes (\emph{baghy}, \emph{ṭughyān}, \emph{ʿutuww}) whose causation, as we shall argue, is bidirectional rather than purely emotional. We treat the fourteen roots as discrete attestation points on this continuum and validate the proposed ordering through systematic corpus-based analysis.
+
+This claim, if it holds, has consequences far beyond philology. It implies that the Qurʾān encodes---through the architecture of its lexicon, not through any explicit theoretical statement---a sophisticated implicit theory of the genealogy of moral failure: a theory according to which the social-structural pathologies the text most frequently denounces (transgression, tyranny, defiance) are \emph{related to}, and in many cases developmentally downstream from, inner experiences of irritation, dislike, constriction, and grief. As we shall argue in §4 and §5, the relationship at the behavioural pole is bidirectional: anger may produce \emph{baghy}/\emph{ṭughyān}/\emph{ʿutuww}, but these behaviours can equally produce \emph{anger} (in their victims, in the prophets, in the divine response). The distance between the murmured \emph{uff} of Q. 17:23 and the \emph{ʿutuww} of Q. 25:21 is not categorical but graded; it is the distance walked, in the absence of intervention, by an unmanaged life of irritation, dislike, and anger.
+
+\subsubsection{1.2. Aims and originality}\label{aims-and-originality}
+
+This paper has three aims. The first is \textbf{methodological}: to demonstrate that combining Izutsu's qualitative semantic-field approach, scalar-semantic ordering in the Kennedy--Sassoon tradition, and conceptual-metaphor theory in the Lakoff--Kövecses tradition produces stronger philological claims than any of the three frameworks in isolation. We argue that this trifold integration is, in published Qurʾānic studies, here brought together for the first time. The second aim is \textbf{descriptive}: to map every Qurʾānic occurrence of the fourteen core roots, to render that map publicly verifiable through an open concordance, and to extract from it empirical regularities that previous scholarship---working in either tafsir, lexicography, or single-word semantic analysis---was not in a position to detect. The third aim is \textbf{interpretive}: to argue that the resulting continuum constitutes a coherent ``logic of anger escalation'' with deep structural affinities to modern psychology of emotion, and to identify the specific points at which the Qurʾānic continuum \emph{exceeds} the explanatory range of the contemporary models.
+
+The paper's claim to \textbf{originality} rests on five distinct contributions: (i) the first integration of Izutsu, Kennedy, and Lakoff in a Qurʾānic study; (ii) a fully reproducible computational pipeline over the Quranic Arabic Corpus, released open-source; (iii) the discovery, to our knowledge unreported, of the exclusively-Medinan distribution of \emph{sakhaṭ} and the exclusively-Meccan distribution of \emph{asaf}; (iv) the demonstration via network-centrality analysis that \emph{baghy} serves as the bridge node between the emotional and moral-evaluation fields of the Qurʾān; and (v) the substantive argument that Q. 67:8 (\emph{takādu tamayyazu min al-ġayẓ}) constitutes one of the strongest historical instances of the ``container collapse'' pattern identified by Lakoff and Kövecses (1987).
+
+\subsubsection{1.3. Prior work and the gap}\label{prior-work-and-the-gap}
+
+Prior scholarship clusters into five lines, each insufficient on its own to address the structural question that motivates this paper.
+
+\textbf{Single-word lexical studies} treat individual lexemes in detail but rarely place them in relation to one another. The most directly relevant Persian-language precedent---Narimani, Iqbali, and Chari's (2021) study of \emph{ghayẓ}, \emph{ghaḍab}, and \emph{sakhaṭ} in \emph{Pizhūhish-hā-yi Qurʾān va Ḥadīth} (University of Tehran)---covers three of our fourteen roots but does not place them on a graded scale or extend the analysis to the pre-anger displeasure, inner pressure, evaluative aversion, or behavioural-outcome stages. Their analysis demonstrates, on tafsir grounds, that \emph{ghaḍab} is the central anger lexeme (predicated of God, prophets, and believers), \emph{sakhaṭ} is reserved for divine displeasure with hypocrites, and \emph{ghayẓ} is exclusive to the unbelievers and hypocrites in human-attribution contexts. We confirm and extend their lexical-tafsir findings with corpus-distributional evidence, scalar-semantic ordering, and the cognitive-linguistic \emph{kaẓm} analysis. Qarizadeh, Salmani Marvast, Meymandi, and Farsi (2024) provide a polysemy analysis of \emph{ṭughyān} alone in \emph{Pizhūhish-hā-yi Zabānshinākhtī-yi Qurʾān} (University of Isfahan), showing that the root attests in 27 suras and 13 morphological forms with the central meaning of ``transgressing the limit.'' Both works illustrate the present gap: high-quality lexical work is available for individual lexemes, but no integrated continuum has been articulated.
+
+\textbf{Ethics-of-anger studies} focus on the imperative of \emph{kaẓm al-ghayẓ} (restraining suppressed rage; Q. 3:134) and adjacent verses, drawing on the \emph{aḥādīth} tradition. These works are normatively rich but linguistically thin and tend not to interrogate the conceptual architecture of the lexicon as a structured field.
+
+\textbf{Cognitive-semantic studies} in the Izutsu tradition---most notably Qāʾimīniyā's \emph{Maʿnāshināsī-yi Shinākhtī-yi Qurʾān} (Tehran: Pizhūhishgāh-i Farhang va Andīshah-i Islāmī, 2011) and his \emph{Istiʿārah-hā-yi Mafhūmī wa Faḍāhā-yi Qurʾānī} (2014)---have begun to apply cognitive linguistics to Qurʾānic vocabulary. To our knowledge, no published work has yet treated the anger-spectrum field as a graded continuum or validated it against full-corpus evidence. The work of Maalej (2004, \emph{Metaphor and Symbol} 19(1): 51--75) on conceptual metaphor in Tunisian Arabic anger expressions, while linguistically rigorous, focuses on contemporary spoken Arabic rather than the Qurʾānic register.
+
+\textbf{Translation-criticism studies} observe the levelling tendency of translations and identify it as a structural defect {[}CITATION NEEDED for a specific recent example{]}, but lack a reference model of the spectrum against which translations can be systematically evaluated.
+
+\textbf{Islamic psychology} has begun to extract emotion-regulation models from Qurʾānic and \emph{ḥadīth} sources {[}CITATION NEEDED for specific Islamic-psychology references{]}. This body of work has predominantly drawn on \emph{aḥādīth} and tended to leave the systematic linguistic analysis of the Qurʾānic surface itself in the background.
+
+The present paper fills the gap at the intersection of all five lines: it offers (a) a unified theoretical frame, (b) corpus-empirical validation, (c) novel distributional findings, (d) a translation-criticism reference model, and (e) a culturally-grounded model that practical Islamic-psychology can build on.
+
+\subsubsection{1.4. Research questions and hypotheses}\label{research-questions-and-hypotheses}
+
+We address five research questions:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{RQ1.} What is the internal structure of the Qurʾānic semantic field of the anger spectrum, and which roots constitute its principal nodes?
+\item
+  \textbf{RQ2.} How can these roots be ordered on a continuum of \emph{action intensity}, and what theoretical framework legitimates such ordering?
+\item
+  \textbf{RQ3.} Does the empirical distribution of these roots in the Quranic Arabic Corpus---their frequency, their Meccan/Medinan distribution, their morphological profile, and their verse-level co-occurrence and centrality---corroborate or challenge the proposed continuum?
+\item
+  \textbf{RQ4.} With which contemporary models of emotion (Gross's process model; Plutchik's wheel; Spielberger's STAXI; Lazarus-Scherer appraisal theory) is the Qurʾānic continuum structurally homologous, and where does it depart from them?
+\item
+  \textbf{RQ5.} What practical implications follow for Qurʾānic translation and for clinically-applied Islamic psychology?
+\end{itemize}
+
+The principal hypothesis, which we will refer to as the \textbf{Qurʾānic Action-Intensity Continuum Hypothesis}, is:
+
+\begin{quote}
+The fourteen core Arabic roots ʾff, krh, ḍyq, ḥzn, ʾsf, nqm, sxṭ, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw operate not as synonyms or disconnected nodes but as fourteen distinct grades on a single semantic continuum structured by the variable \emph{intensity of action}; the continuum is organised in six phenomenological stages, and its ordering is supported by both qualitative (etymological, exegetical, metaphorical) and quantitative (frequency, temporal distribution, network) evidence.
+\end{quote}
+
+Five subsidiary hypotheses follow: (H1) the six-stage frequency distribution deviates from uniformity; (H2) the phenomenological core (Stages 1--5) and the behavioural-outcome pole (Stage 6) are not significantly unequal in raw count, a result that we read as supporting the bidirectional-causation reading of Stage 6 (see §4.6 caveats and §5.4); (H3) \emph{sakhaṭ} shows a discursively-specialised exclusive-Medinan distribution; (H4) in the aya-level co-occurrence network, \emph{baghy} operates as the bridge node between the emotional and the broader moral-evaluation field; (H5) the central image of ``container collapse'' (Q. 67:8) instantiates the Lakoff--Kövecses ANGER IS PRESSURIZED CONTAINER metaphor more transparently than any cited English exemplar.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. Theoretical Framework}\label{theoretical-framework}
+
+\subsubsection{2.1. Izutsu's semantic-field method}\label{izutsus-semantic-field-method}
+
+Toshihiko Izutsu, in three foundational works---\emph{The Structure of the Ethical Terms in the Koran} (1959), \emph{God and Man in the Koran} (1964), and \emph{Ethico-Religious Concepts in the Qurʾān} (1966/2002)---introduced a methodological revolution to Qurʾānic studies. Drawing on the structuralist linguistics of the Trier--Weisgerber tradition and on East Asian philosophy of language, Izutsu argued that the central terms of the Qurʾān---\emph{Allāh}, \emph{īmān}, \emph{kufr}, \emph{ẓulm}, \emph{taqwā}---are not isolated propositions but nodes in a network of syntagmatic, paradigmatic, and oppositional relations. The aggregate of these relations constitutes what he called the ``Qurʾānic \emph{Weltanschauung}.''
+
+Izutsu's analytic vocabulary distinguishes three layers: \emph{focus words} are the central organising concepts of a given semantic field; \emph{semantic fields} are the networks of mutually defining lexemes formed around focus words; and \emph{key words} are the terms that recur across multiple fields and serve to integrate them into a single worldview. This three-layer structure has proved extraordinarily productive in subsequent Qurʾānic semantic work, both in English (Saleh, Rippin) and Persian (Qāʾimīniyā 2011, 2014; Pakatchi).
+
+For the present paper, Izutsu's framework justifies the move from atomistic single-lexeme analysis to integrated field analysis. The fourteen target roots are not chosen at random but as the field around the focus words \emph{ghaḍab} (the central anger term) and \emph{baghy} (the central behavioural-outcome term), with the lower-intensity cluster (\emph{uff}, \emph{karh}, \emph{ḍīq}, \emph{ḥuzn}, \emph{asaf}) identifying the pre-anger and inner-pressure boundary of the field and \emph{ʿutuww} its upper-intensity boundary. Yet Izutsu's framework, in its original form, is silent on a question central to our enterprise: granted that these lexemes co-belong to a field, \emph{what is the structural relation between them within the field?} It is at this point that we require scalar semantics.
+
+\subsubsection{2.2. Scalar semantics: from network to continuum}\label{scalar-semantics-from-network-to-continuum}
+
+The contemporary linguistic theory of \emph{gradable predicates}, developed in the work of Kennedy (1999, 2007), Sassoon (2010), and others, supplies the missing apparatus. On this framework, a graded predicate maps to a \emph{scale} characterised by three components: (a) a \emph{dimension} of measurement (e.g., temperature, length, intensity); (b) an \emph{ordering} of points on that dimension; and (c) a unit of comparison, explicit or implicit. Scalar predicates take degree modifiers (\emph{very}, \emph{extremely}, \emph{somewhat}, \emph{barely}) and admit comparative constructions (\emph{more X than}, \emph{too X}); these properties signal their underlying scalar structure.
+
+We argue that the Qurʾānic field of the anger spectrum is precisely such a scale, with three definitional components: (a) the dimension is \emph{intensity of action}, itself decomposable into three sub-dimensions (locus of emotion: from inner to outer; experiential intensity: from low to high; scope of consequence: from individual to structural); (b) the ordering follows the six-stage progression from \emph{uff}/\emph{karh} through inner pressure, evaluative aversion, active anger, and compressed rage to behavioural outcomes; (c) the implicit unit is the \emph{degree of externalisation} of emotion from inner phenomenology to social rupture. The framework allows us to make formally precise the otherwise intuitive claim that \emph{ghayẓ} is ``more intense than'' \emph{ghaḍab}, or that \emph{baghy} is ``more externalised than'' \emph{sakhaṭ}; without scalar semantics, such claims rely on tacit appeal to native-speaker intuition.
+
+\subsubsection{2.3. Conceptual metaphor theory and the container schema}\label{conceptual-metaphor-theory-and-the-container-schema}
+
+The third theoretical layer, conceptual metaphor theory (Lakoff \& Johnson 1980; Lakoff \& Kövecses 1987; Kövecses 2000, 2010), supplies the cognitive-linguistic resources needed to explain \emph{why} the spectrum scales as it does. Conceptual metaphors, on this view, are not ornaments of speech but cognitive structures that allow abstract conceptual domains (such as emotion) to be understood through mappings onto concrete domains (such as bodily sensation, motion, container, heat).
+
+Lakoff and Kövecses's classic 1987 analysis of English anger established that the lexicon of anger is organised around the master metaphor ANGER IS THE HEAT OF A FLUID IN A PRESSURIZED CONTAINER. Surface expressions---``to boil with rage,'' ``to be steaming,'' ``to blow one's top,'' ``to keep a lid on it,'' ``she lost her cool,'' ``I'm about to explode''---all instantiate this single underlying schema. The metaphor accommodates a four-step internal trajectory: (i) emotion as fluid in container; (ii) intensifying heat increasing pressure; (iii) attempts to contain the pressure (sealing the lid); (iv) container collapse if pressure overcomes containment.
+
+A central observation of the present paper is that the Qurʾānic triplet \emph{ghayẓ--kaẓm--tamayyuz} operationalises \emph{exactly this same four-step structure}, more than thirteen centuries before its modern theoretical articulation. \emph{Ghayẓ} is glossed in the four authoritative lexica (Maqāyīs, Mufradāt, Lisān, Taḥqīq) as ``compressed, contained anger''---the fluid in the sealed container. \emph{Kaẓm}, etymologically the act of tying off a waterskin to prevent spillage, is the agent-internal regulation that maintains containment; Q. 3:134 commends \emph{al-kāẓimīn al-ghayẓ} as the believers who hold the seal. \emph{Tamayyuz}, in Q. 67:8 (\emph{takādu tamayyazu min al-ġayẓ}), depicts the failure mode: the container itself bursts apart from the pressure of the contained anger. We treat \emph{tamayyuz} in the present analysis as a \emph{manifestation} (a behavioural sign of containment failure) rather than as an independent core root.
+
+The Q. 67:8 image deserves particular attention because it instantiates the \emph{container-collapse} failure mode more transparently than any English exemplar in Lakoff and Kövecses's (1987) corpus. In English, the relevant verbs (\emph{explode}, \emph{burst}, \emph{blow up}) report the exit of pressurised content but rarely figure the structural disintegration of the vessel itself. In contrast, \emph{tamayyaza}, derived from the root \emph{m-y-z} (to separate, to part, to sever), explicitly figures the splitting of the structural integrity of the container. We argue, in §5.6, that this verse provides one of the most articulated historical instances of the conceptual-metaphor structure that Lakoff and Kövecses identified.
+
+\subsubsection{2.4. The integrated framework}\label{the-integrated-framework}
+
+The three theoretical layers operate complementarily. Izutsu identifies the boundaries of the field; Kennedy--Sassoon scalar semantics order its members along the action-intensity dimension; Lakoff--Kövecses conceptual metaphor theory explains the cognitive basis of the central pressurisation-collapse metaphor that organises Stage 5. Each layer supplies what the others lack. Without Izutsu, we would lack motivation for treating the fourteen roots as field-coordinated; without scalar semantics, we would lack the apparatus to formally order them; without CMT, we would lack the cognitive grounding for the pressurised-container schema underlying the climactic \emph{kaẓm--tamayyuz} sequence.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig1_continuum.pdf}
+\caption{The six-stage Qurʾānic anger-spectrum continuum, mapped along a single horizontal axis of \emph{action-intensity}. Each node corresponds to one of the fourteen core Arabic roots; node area is scaled by attestation frequency in the Quranic Arabic Corpus (Dukes 2011). Stages cluster the lexemes by their dominant phenomenological signature: Stage 1 (pre-anger displeasure, \emph{ʾff--krh}) marks vocal/inner displeasure; Stage 2 (inner pressure \& contraction, \emph{ḍyq--ḥzn--ʾsf}) marks pre-anger affective contraction and grief; Stage 3 (evaluative aversion, \emph{nqm--sxṭ--mqt}) marks moral-judgmental rejection; Stage 4 (active anger, \emph{ġḍb--ḥrd}) marks outward-oriented anger; Stage 5 (compressed/explosive rage, \emph{ġyẓ} with \emph{tamayyuz} as manifestation) marks containment and its failure; Stage 6 (behavioural outcomes with caveats, \emph{bġy--ṭġy--ʿtw}) marks the externalised structural outcome whose causal relation to anger is, as we argue in §4.6 and §5, \emph{bidirectional} rather than purely downstream. The visual mass at Stage 6 (n = 145) is comparable to the combined mass of Stages 1--5 (n = 167); the resulting near-balance (χ²(1) = 1.55, fails to reject) is theoretically consistent with the bidirectional reading.}
+\end{figure}
+
+\subsection{3. Methods}\label{methods}
+
+\subsubsection{3.1. Corpus}\label{corpus}
+
+The empirical analysis uses the \textbf{Quranic Arabic Corpus} (QAC), version 0.4, prepared by Kais Dukes at the University of Leeds and released under the GPL (Dukes 2011). The QAC provides a morphologically tagged record for each of the 128,219 segmentable units in the Qurʾānic text. Every record specifies: (a) location in the form \emph{(sūra:āya:word:segment)}; (b) surface form in Buckwalter ASCII transliteration; (c) part-of-speech tag; (d) morphological features including root, lemma, gender, number, case, and (where applicable) semantic flags. Verse text in Uthmanic \emph{rasm} and Meccan/Medinan classification of suras are drawn from the Tanzil project (Tanzil 2008), distributed under CC-BY-ND 3.0.
+
+\subsubsection{3.2. Selection of target roots}\label{selection-of-target-roots}
+
+The fourteen core roots were selected by three concurrent criteria: (i) \emph{exegetical centrality} --- appearance as a focal reference in at least three of the four authoritative lexica (Ibn Fāris's \emph{Maqāyīs}, al-Rāghib's \emph{Mufradāt}, Ibn Manẓūr's \emph{Lisān}, and Mostafavi's twentieth-century \emph{Taḥqīq}); (ii) \emph{minimum corpus frequency} of one attestation (admitting Qurʾānic hapax legomena such as \emph{ḥard}, Q. 68:25, when their lexical and tafsir profile is sufficiently rich); (iii) \emph{thematic membership} in the anger-spectrum field without significant overlap with adjacent fields (epistemology, faith, normative ethics).
+
+Note that \emph{karh} (Stage 1, dislike/aversion) is a borderline case: its \emph{karāha} sense is properly affective (pre-anger inner aversion), while its \emph{ikrāh} sense (coercion) is structural rather than emotional and is treated separately (see §4.x on \emph{karh}). A second tier of five roots---\textbf{šnʾ, jrm, fsq, ẓlm, ʿdw}---is extracted as ``umbrella moral terms'' for robustness checks (§4.5) and inter-field co-occurrence analysis (§4.7). These roots, while semantically related to the anger field, either have inflated cardinality (\emph{ẓlm}: 315 attestations functioning as a meta-category) or properly belong to the adjacent field of normative ethics (\emph{jrm}, \emph{fsq}); they are excluded from the principal continuum to preserve focus.
+
+\subsubsection{3.3. Computational pipeline}\label{computational-pipeline}
+
+The pipeline is implemented in Python (MIT-licensed) and operates in five steps: (1) parse the QAC morphology file; (2) filter on target roots; (3) collapse multi-segment morphemes to surface words preserving the \emph{(sūra:āya)} coordinate; (4) join with sura-level metadata for Meccan/Medinan classification; (5) emit four classes of output (master concordance CSV, per-root concordances, distributional summaries, network/centrality CSVs). Code is organised across \texttt{analysis/qac\_parser.py}, \texttt{analysis/spectrum\_roots.py}, \texttt{analysis/extract\_concordance.py}, \texttt{analysis/advanced\_metrics.py}, and visualisation modules. The complete analysis is reproducible from a fresh clone of the repository in two commands: \texttt{python\ analysis/extract\_concordance.py\ \&\&\ python\ analysis/visualize\_spectrum.py\ \&\&\ python\ analysis/visualize\_advanced.py}.
+
+\subsubsection{3.4. Quantitative analyses}\label{quantitative-analyses}
+
+Beyond raw frequency tabulation, we conduct: (a) chi-squared tests against the null of uniform six-stage distribution and against the null of equal Stages 1--5 vs Stage 6 split; (b) two-sided exact binomial tests for Meccan/Medinan exclusivity claims, taking the empirically computed proportion of Meccan ayat in the QAC (\textasciitilde0.74) as the binomial prior; (c) morphological breakdown by part-of-speech (verb, noun, adjective, participle, other); (d) network analysis on the verse-level co-occurrence graph, computing weighted degree, betweenness centrality, closeness centrality, and (where the graph permits) eigenvector centrality.
+
+\subsubsection{3.5. Qualitative analyses}\label{qualitative-analyses}
+
+We supplement the quantitative analyses with: (a) comparative etymological analysis across the four authoritative lexica named above (Maqāyīs, Mufradāt, Lisān, Taḥqīq); (b) comparative \emph{tafsīr} analysis for the canonical exemplar verses, drawing on four authoritative tafsirs---al-Ṭabāṭabāʾī's \emph{al-Mīzān}, al-Zamakhsharī's \emph{al-Kashshāf}, al-Ṭabarsī's \emph{Majmaʿ al-Bayān}, and Ibn ʿĀshūr's \emph{al-Taḥrīr wa-l-Tanwīr}; (c) phenomenological analysis of contextual markers (\emph{ḍīq al-ṣadr}, \emph{ḥuzn al-qalb}, \emph{asaf al-nafs}, \emph{ḍāqa dharʿan}); (d) translation-criticism analysis comparing five major translations (Yusuf Ali, Pickthall, Arberry, Saheeh International, Hilali-Khan) on the canonical exemplar verses.
+
+\subsubsection{3.6. Validity check}\label{validity-check}
+
+To verify the integrity of the pipeline, fourteen ``headline'' exemplar verses---one per core root---were independently verified against the corpus output:
+
+\begin{itemize}
+\tightlist
+\item
+  Q. 17:23 (\emph{uff}); Q. 2:216 (\emph{karh}); Q. 15:97 (\emph{ḍyq}); Q. 2:38 (\emph{ḥzn}); Q. 43:55 (\emph{asaf}); Q. 7:126 (\emph{naqm}); Q. 47:28 (\emph{sakhaṭ}); Q. 40:10 (\emph{maqt}); Q. 48:6 (\emph{ghaḍab}); Q. 68:25 (\emph{ḥard}); Q. 3:134 (\emph{ghayẓ}; with manifestation Q. 67:8 \emph{tamayyuz}); Q. 42:42 (\emph{baghy}); Q. 96:6 (\emph{ṭughyān}); Q. 25:21 (\emph{ʿutuww}).
+\end{itemize}
+
+All fourteen were found in the corpus output with the correct surface form and verse text matching the Uthmani edition. This validation confirms that the Buckwalter transliteration and segment-collapse algorithms operate without systematic error.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Findings}\label{findings}
+
+\subsubsection{4.1. The four-lexicon etymology table}\label{the-four-lexicon-etymology-table}
+
+Before turning to stage-level analysis, Table 1 summarises the canonical glosses of each root across four reference lexica.
+
+\textbf{Table 1. Comparative etymology of the fourteen core roots across the four authoritative Arabic lexica}
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1200}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2400}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1600}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Stage
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Root
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Maqāyīs (Ibn Fāris)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mufradāt (al-Rāghib)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lisān al-ʿArab (Ibn Manẓūr)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Taḥqīq (Mostafavi)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & ʾ-f-f & irritation, vocal expression of distaste (\emph{taḍajjur}) {[}TO BE EXPANDED FROM LEXICA{]} & the lowest verbal expression of displeasure & term of irritation directed at someone or something & minimal vocal sign of inner aversion \\
+1 & k-r-h & dislike, finding burdensome; coercion (\emph{ikrāh}) & aversion of the soul; structurally extended to coercion & what is disliked by nature or by reason & inner \emph{karāha} vs.~structural \emph{ikrāh} (the latter is not an emotion) \\
+2 & ḍ-y-q & constriction; absence of opening & the state of being pressed upon, contrasted with capacity (\emph{saʿah}) & reduction of available space, from \emph{saʿah} to \emph{ḍīq} & inner or outer absence of expansion (\emph{basṭ}) \\
+2 & ḥ-z-n & rough/uneven ground → heaviness of soul & sorrow as the opposite of joy (\emph{faraḥ}) & rugged ground, then roughness of the self & affective response to perceived loss \\
+2 & ʾ-s-f & intense grief mixed with anger & extreme anger conjoined with grief & reaching the limit of grief and anger & composite of grief and proximate anger \\
+3 & n-q-m & disapproval coupled with intent of retribution {[}TO BE EXPANDED FROM LEXICA{]} & objecting to and seeking redress against an act & denouncing strongly; cf.~al-muntaqim as divine attribute & evaluative anger oriented toward retribution \\
+3 & s-kh-ṭ & severe aversion and ethical rejection & the opposite of \emph{riḍā} (consent), with intensity & severe non-acceptance with judgment & declarative rejection grounded in moral assessment \\
+3 & m-q-t & the most intense form of \emph{ibghāḍ} (Zajjāj) & aversion arising from observing a \emph{qabīḥ} act (\emph{al-Rāghib}) & \emph{ashaddu al-ibghāḍ}; aversion-distance rather than approach-aggression & purely evaluative moral aversion \\
+4 & gh-ḍ-b & inner agitation and motion & the boiling of the heart's blood seeking retribution & a rising perturbation of the soul & directed emotion enabling retributive action \\
+4 & ḥ-r-d & anger combined with intent (\emph{qaṣd}); intent to deny & per al-Ṭabarsī (\emph{Majmaʿ al-Bayān}): both anger and \emph{qaṣd} & per al-Ṭabāṭabāʾī (\emph{al-Mīzān}): anger plus deliberate denial {[}TO BE EXPANDED FROM LEXICA{]} & anger weaponised through resource-denial (Q. 68:25) \\
+5 & gh-y-ẓ & pressure and surge, contained & the most intense forms of contained anger & filling of the self with restrained anger & high-pressure emotional accumulation \\
+6 & b-gh-y & seeking beyond rightful bounds & overstepping the path of right & dominance through aggression & aggressive action with intent to oppress \\
+6 & ṭ-gh-y & overflow of water past its bank & crossing the permitted measure & severe transgression of the limit & rebellious shattering of normative bounds \\
+6 & ʿ-t-w & severe rebellion with arrogance & extreme self-aggrandisement in disobedience & obstinate excess attached to \emph{istikbār} & entrenched rebellious posture (a property of moral character) \\
+\end{longtable}
+
+The table shows that the ordering from \emph{uff} to \emph{ʿutuww} is not the construction of the present analysis but is internally encoded in the lexicographic tradition itself: the four authoritative lexica already gloss each root with progressively more externalised and structural meanings, ascending from the murmured \emph{uff}, through inner \emph{karāha}, \emph{ḍīq}, and \emph{ḥuzn}, through evaluative \emph{naqm}/\emph{sakhaṭ}/\emph{maqt}, to active \emph{ghaḍab}/\emph{ḥard}, to compressed \emph{ghayẓ}, and into the externalised behavioural pole at \emph{baghy}/\emph{ṭughyān}/\emph{ʿutuww}.
+
+\subsubsection{4.2. Distributional summary}\label{distributional-summary}
+
+Table 2 reports the principal distributional facts for the fourteen core roots. The table integrates frequency, Meccan/Medinan split, and (for the roots with sufficient morphological variation) morphological profile; it forms the empirical backbone of the analyses that follow.
+
+\textbf{Table 2. Distributional profile of the fourteen core roots}
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Stage
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Root
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Total
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Meccan
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Medinan
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & ʾff (أف) & 3 & 3 & 0 & All Meccan; lowest tier of verbal displeasure \\
+1 & krh (كره) & 41 & 14 & 27 & Medinan-tilted (\emph{p} = 0.005); twofold \emph{karāha}/\emph{ikrāh} \\
+2 & ḍyq (ضيق) & 13 & 9 & 4 & Inner constriction (\emph{ḍīq al-ṣadr}; \emph{ḍāqa dharʿan}) \\
+2 & ḥzn (حزن) & 42 & 26 & 16 & Most frequent Stage-2 lexeme; valence transversal (see §4.3.2) \\
+2 & ʾsf (أسف) & 5 & 5 & 0 & Exclusively Meccan \\
+3 & nqm (نقم) & 17 & 12 & 5 & Meccan-tilted; vengeful disapproval; cf.~\emph{al-muntaqim} \\
+3 & sxṭ (سخط) & 4 & 0 & 4 & Exclusively Medinan (\emph{p} = 0.026) \\
+3 & mqt (مقت) & 6 & 4 & 2 & Most intense moral aversion (Zajjāj) \\
+4 & ġḍb (غضب) & 24 & 13 & 11 & Central anger lexeme; predicated of God, prophets, believers \\
+4 & ḥrd (حرد) & 1 & 1 & 0 & Qurʾānic hapax: Q. 68:25 \\
+5 & ġyẓ (غيظ) & 11 & 3 & 8 & Compressed anger; \emph{tamayyuz} manifestation (Q. 67:8) \\
+6 & bġy (بغي) & 96 & 55 & 41 & Bridge node; bidirectional causation (§4.6 caveats) \\
+6 & ṭġy (طغي) & 39 & 29 & 10 & Pharaonic; structural arrogance \\
+6 & ʿtw (عتو) & 10 & 9 & 1 & Settled defiance; properly \emph{istikbār}-attached \\
+\textbf{Σ} & --- & \textbf{312} & \textbf{183} & \textbf{129} & \\
+\end{longtable}
+
+Aggregating across the six stages: Stage 1 = 44; Stage 2 = 60; Stage 3 = 27; Stage 4 = 25; Stage 5 = 11; Stage 6 = 145. The chi-squared test against the null of uniform six-stage distribution rejects (χ²(5) = 227.15, \emph{p} \textless{} 0.001), confirming H1. A second chi-squared test against the null of equal split between the phenomenological core (Stages 1--5 = 167 attestations) and the behavioural-outcomes pole (Stage 6 = 145 attestations) \emph{fails to reject} (χ²(1) = 1.55), supporting H2 in its revised form. We read the absence of a significant skew at this cut as theoretically informative: it is consistent with the reviewer's caveat (developed in §4.6 and §5.4) that the Stage-6 lexemes (\emph{baghy}, \emph{ṭughyān}, \emph{ʿutuww}) are not exclusively anger-derived but stand in a \emph{bidirectional} causal relation to the anger spectrum---anger may produce these behaviours, but the behaviours can equally produce anger (in their victims, the prophets, and the divine response). The substantive analysis of this point, and the discussion of why corpus distribution is not, on its own, a settled answer, is taken up in §5.4.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig2_frequency_by_stage.pdf}
+\caption{Per-root and per-stage frequency of the 312 core spectrum attestations. \emph{Left panel}: linear-scale frequency for each of the fourteen roots; bar colour encodes the phenomenological stage. Stage 6 (\emph{bġy} 96 vs.~\emph{ʿtw} 10) shows a strong internal asymmetry that mirrors the lexical division of labour between distributed-aggression (\emph{baghy}) and obstinate-defiance (\emph{ʿutuww}) outlined in §4.6. \emph{Right panel}: stage totals (S1=44, S2=60, S3=27, S4=25, S5=11, S6=145). The six-stage distribution rejects uniformity at χ²(5) = 227.15, \emph{p} \textless{} 0.001. The phenomenological core (S1--5 = 167) and the behavioural-outcomes pole (S6 = 145) are \emph{not} significantly unequal in raw count (χ²(1) = 1.55, fails to reject), a result we read as supporting the bidirectional-causation analysis of \emph{baghy}/\emph{ṭughyān}/\emph{ʿutuww} developed in §4.6 and §5.4 --- the Qurʾān is not pedagogically over-loading anger-outcomes; rather, Stage-6 lexemes are themselves not exclusively anger-derived.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig3_meccan_medinan.pdf}
+\caption{Stacked Meccan/Medinan distribution for each of the fourteen core roots. The numerals above each bar give the raw Meccan/Medinan split. Two distributional extremes warrant emphasis. \emph{ʾasaf} (Stage 2) is attested \textbf{exclusively} in Meccan suras (5/0): the lexeme of ``regret-grief'' emerges in the discursive context of prophetic disappointment with rejection (Q. 18:6, Q. 43:55, Q. 7:150). \emph{Sakhaṭ} (Stage 3) is attested \textbf{exclusively} in Medinan suras (0/4; binomial \emph{p} = 0.005 against the corpus-derived 0.74 baseline of Meccan ayat): the lexeme of ``comprehensive divine displeasure'' emerges only after the Hijra, in confrontation with the \emph{munāfiqūn} (Q. 47:28, Q. 5:80, Q. 9:58, Q. 3:162). Additional patterns: \emph{naqm} (Stage 3) is Meccan-tilted (12/5); \emph{maqt} (Stage 3) is balanced (4/2); \emph{ḥard} is a Qurʾānic hapax at Q. 68:25 (Meccan). The visualisation thus encodes a non-trivial finding: not every root in the spectrum behaves as a context-neutral lexical resource --- several of them are \emph{discursive-contextually specialised}, a pattern theorised in §5.5 as a general feature of Qurʾānic vocabulary.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig5_morphology_stack.pdf}
+\caption{Morphological profile of the fourteen core roots, broken out by part of speech. The left-to-right gradient shows a \emph{typological shift} across the continuum that supplements the frequency analysis. Stages 1--2 are verbally dominant --- \emph{ḥzn} 88\% verb forms (37 v / 5 n), \emph{ḍyq} 62\% --- consistent with the ontology of pre-anger inner states as \emph{transient, situationally-induced} phenomena. Stage 4 nominalises: \emph{ġḍb} shifts the centre of gravity to the noun (16 n / 6 v), as the lexeme acquires a stable, attributable referent (``the wrath of God''). Stage 6 is the most nominal, with participial forms emerging (\emph{ṭāgūt}, \emph{bāghin}); the behavioural-outcomes vocabulary entrenches as a stable agent-property rather than a transient process. This morphological gradient --- verbal Stages 1--2 → nominal Stage 6 --- is independent corpus-internal evidence for the action-intensity continuum: as intensity ascends, the linguistic representation reifies from \emph{event} to \emph{attribute} to \emph{identity}.}
+\end{figure}
+
+\subsubsection{4.3. Stage 1 --- Pre-anger displeasure}\label{stage-1-pre-anger-displeasure}
+
+The lower bound of the continuum is occupied by two roots---\emph{ʾ-f-f} and \emph{k-r-h}---that mark the \emph{pre-anger} register: vocal irritation and inner aversion respectively.
+
+\textbf{4.3.0. \emph{Uff} (3 attestations; all Meccan).} \emph{Uff} (gloss: \emph{taḍajjur}, ``irritation'') is the lowest possible verbal expression of displeasure in the Qurʾānic register. Its three attestations occupy paradigmatic moral and rhetorical positions:
+
+\begin{itemize}
+\tightlist
+\item
+  Q. 17:23 prohibits saying \emph{uff} to one's parents (\emph{fa-lā taqul lahumā uffin}) --- the \emph{lowest} possible verbal sign of displeasure is morally weighted at the highest possible relational stake.
+\item
+  Q. 21:67 places \emph{uff} in Abraham's mouth as he confronts his idol-worshipping people (\emph{uffin lakum wa-li-mā taʿbudūna min dūni Allāh}) --- a prophetic remonstrance.
+\item
+  Q. 46:17 ascribes \emph{uff} to a rebellious child reproaching his believing parents --- the inverse of the Q. 17:23 case.
+\end{itemize}
+
+As the lowest tier of the spectrum, \emph{uff} establishes a foundational point of the Qurʾānic discourse: even the slightest verbal sign of displeasure is morally weighted. The root therefore anchors the lower boundary of the anger spectrum at a register that is below ``anger'' proper but already morally accountable.
+
+\textbf{4.3.1. \emph{Karh} (41 attestations; 14 Meccan / 27 Medinan; binomial \emph{p} = 0.005 in the Medinan direction).} \emph{Karh} exhibits a \emph{twofold structure} that must be analytically distinguished:
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\item
+  \textbf{Inner \emph{karāha} (dislike).} As an affective state, \emph{karāha} is the agent's pre-anger evaluative dislike of an object, person, or course of action. Q. 2:216 \emph{ʿasā an takrahū shayʾan wa-huwa khayrun lakum} (``perhaps you dislike a thing while it is good for you'') frames inner dislike as a \emph{reformable} affective state --- its truth-value about the object can be revised by knowledge or by divine corrective. This is properly the Stage-1 \emph{anger-spectrum} sense.
+\item
+  \textbf{Structural \emph{ikrāh} (coercion).} \emph{Ikrāh} is \emph{not} an emotion but a coercion mechanism: the structural extension of one party's distaste into compulsion of another. Q. 2:256 \emph{lā ikrāha fī al-dīn} (``there is no coercion in religion'') sets the ethical limit on this structural extension; Q. 16:106 (\emph{illā man ukriha}, ``except one who is forced'') provides the legal exemption for testimony given under coercion; Q. 24:33 (\emph{lā tukrihū fatayātikum ʿalā al-bighāʾ}) prohibits the coercion of slave-women into prostitution. We include \emph{karh} in the spectrum on the strength of its \emph{karāha} sense; the \emph{ikrāh} sense lies outside the affective field but is a structural cognate worth noting because it shares the same root and instantiates the \emph{behavioural extension} of distaste --- itself a Stage-6 phenomenon ahead of its time.
+\end{enumerate}
+
+\subsubsection{4.4. Stage 2 --- Inner pressure and contraction}\label{stage-2-inner-pressure-and-contraction}
+
+Stage 2 brings together three roots---\emph{ḍ-y-q}, \emph{ḥ-z-n}, \emph{ʾ-s-f}---with 60 combined attestations. Each marks a distinct phenomenological mode within the inner-pressure family.
+
+\textbf{4.4.1. \emph{Ḍīq} (13 attestations; 9 Meccan / 4 Medinan).} Ibn Fāris glosses the root as ``constriction, narrowness, lack of opening.'' Al-Rāghib places it in direct opposition to \emph{saʿah} (capacity, expansion). In the Qurʾān, the root appears predominantly in the construction \emph{ḍīq al-ṣadr} (constriction of the chest), a phenomenologically concrete localisation of the experience to the embodied site of the chest. The exemplar verse Q. 15:97 (\emph{wa-laqad naʿlamu annaka yaḍīqu ṣadruka bimā yaqūlūn}) frames \emph{ḍīq} as the prophetic response to social rejection---an inner, bodily-localised pressure that does not translate into outward aggression. Al-Ṭabāṭabāʾī observes in \emph{al-Mīzān} (vol.~12, p.~195) that the verse expresses divine \emph{knowledge} of the prophetic \emph{ḍīq} rather than its prohibition or correction; this is a phenomenologically natural, theologically licit state, not a moral failing.
+
+The morphological profile of \emph{ḍīq} is informative: 8 verbal forms against 3 nominal (verb-to-noun ratio of 2.7:1) and 1 participial form. Predominantly verbal forms register the root as a \emph{transient, situationally-induced state} rather than a stable trait.
+
+\textbf{4.4.1.1. \emph{Ḍāqa dharʿan} --- Lot, Q. 11:77 / Q. 11:80 --- inhibited aggression.} A particularly important compound idiom of \emph{ḍyq} occurs in the Lot narrative and instantiates a four-stage \emph{internal-anger} model that requires careful attention. Lot's experience facing the aggressors who sought his guests is given in stages:
+
+\begin{enumerate}
+\def\labelenumi{(\roman{enumi})}
+\tightlist
+\item
+  \emph{Trigger.} The aggression itself (Q. 11:77 \emph{sīʾa bihim}, ``he was distressed by them'').
+\item
+  \emph{Constriction} (\emph{ḍyq + dharʿ}). Q. 11:77 \emph{wa-ḍāqa bihim dharʿan} --- literally ``his arm-span tightened by them.'' \emph{Dharʿ} is the reach of the arm; the metaphor is of an agent whose \emph{operational capacity} to enact a response has been bottlenecked. The image is precisely that of an agent unable to \emph{enact} his anger.
+\item
+  \emph{Linguistic-aspirational expression.} Q. 11:80 \emph{law anna lī bikum quwwatan aw āwī ilā ruknin shadīd} (``if only I had power, or could lean upon a firm support''). When direct enactment is blocked, the anger is voiced as a wish for power or for ally-support: \emph{quwwa} is personal force; \emph{rukn shadīd} is institutional support.
+\item
+  \emph{Transfer of agency.} Lot's blocked \emph{ḍyq} is taken up by divine agency: the angels arrive, the city is destroyed, and the anger trajectory is completed through the divine actor. The Qurʾānic narrative thus \emph{theologises inhibited aggression}: when the wronged agent has no human power, divine agency completes the anger trajectory.
+\end{enumerate}
+
+This passage rules out the reading of \emph{ḍyq} solely as pre-anger affective contraction. \emph{Ḍāqa dharʿan} instantiates \emph{post-anger blocked aggression} --- anger that has reached the threshold of action but is structurally inhibited. The Qurʾānic \emph{ḍyq} lexeme is therefore phenomenologically richer than a single stage label admits: it can sit \emph{both} at the lower-pressure beginning of the spectrum \emph{and} at the upper-pressure threshold where action is blocked.
+
+\textbf{4.4.2. \emph{Ḥuzn} (42 attestations; 26 Meccan / 16 Medinan).} \emph{Ḥuzn} is the most frequent and most morphologically verbal of the spectrum lexemes (37 verbal forms against 5 nominal; 88\% verbal). Ibn Manẓūr's \emph{Lisān al-ʿArab} preserves the etymologically primary meaning of the root: ``rugged, uneven ground'' (\emph{al-arḍ al-ġalīẓah}). The metaphorical extension to sustained sorrow figures grief as a kind of inner roughness or discontinuity in the otherwise smooth course of the soul's life. This Arabic etymological intuition strikingly anticipates the EMOTION IS A LANDSCAPE conceptual metaphor analysed by Kövecses (2000).
+
+Q. 2:38 (\emph{fa-lā khawfun ʿalayhim wa-lā hum yaḥzanūn}) places \emph{ḥuzn} in syntagmatic pair with \emph{khawf} (fear) and in opposition to divinely-given guidance, framing it as the affective signature of \emph{being separated from guidance}. Al-Ṭabāṭabāʾī (\emph{al-Mīzān} vol.~1, p.~146) describes this verse as foundational for ``the science of the soul in the Qurʾān'' (\emph{ʿilm al-nafs al-Qurʾānī}).
+
+\textbf{4.4.2.1. Caveat: \emph{ḥuzn} is not exclusively anger-derived.} A reviewer's caveat must be entered here. \emph{Ḥuzn} is \emph{not} a phenomenological extension of anger in the strict sense; the lexeme has at least four valences in the Qurʾānic register:
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  \textbf{Standalone grief over loss.} Q. 12:84 (\emph{tawallā ʿanhum wa-qāla yā asafā ʿalā Yūsufa wa-ibyaḍḍat ʿaynāhu min al-ḥuzni}) figures Jacob's prolonged grief over Joseph --- grief over loss of a beloved, with no admixture of anger.
+\item
+  \textbf{Externally-induced sorrow} from the wronging of others (the prophets' grief at the people's rejection).
+\item
+  \textbf{Positive moral compunction} --- regret over sin, which is praiseworthy (the affective register of \emph{tawba}).
+\item
+  \textbf{Anger turned inward} when externally inhibited --- closer to the Stage-2 placement adopted here.
+\end{enumerate}
+
+The lexeme is included in the spectrum on its corpus density and on the demonstrable proximity of (b) and (d) to the anger field; but its \emph{valence} is more transversal than a single stage label admits, and the reading we offer below should be tempered by the polysemy of the term itself.
+
+The 88\% verbal profile of \emph{ḥuzn} parallels that of \emph{ḍyq} and reinforces the Stage-2 generalisation: the inner-pressure lexemes denote \emph{transient, regulable states} rather than fixed dispositional traits.
+
+\textbf{4.4.3. \emph{Asaf} (5 attestations; 5 Meccan / 0 Medinan).} The least frequent and most theoretically suggestive lexeme of Stage 2. Both Ibn Fāris and al-Rāghib gloss \emph{asaf} as the conjunction of grief and anger (\emph{al-jamʿ bayna al-ḥuzn wa-l-ġaḍab}), placing it precisely at the threshold between inner pressure and active anger. Q. 43:55 (\emph{fa-lammā āsafūnā intaqamnā minhum}) frames \emph{asaf} as the immediate causal precursor of divine retribution---\emph{asaf} is what the Qurʾān reports as obtaining when grieved divine response transitions to active retribution. Al-Ṭabarsī's \emph{Majmaʿ al-Bayān} (vol.~9, p.~82) is precise: ``\emph{al-asaf} here is the intense anger that arises from the prior grief.''
+
+The exclusive-Meccan distribution (5/0; binomial \emph{p} = 0.16, suggestive but not decisive given the small sample) is interpretable in discursive-contextual terms: \emph{asaf} attests in narrative passages depicting prior prophets' encounter with rejection (Mūsā vis-à-vis Pharaoh's people; the rejection of warnings by Meccan polytheists).
+
+\textbf{4.4.3.1. \emph{Ghaḍbān asifan} --- Moses, Q. 7:150 / Q. 20:86 --- sacred anger.} A particularly important compound description is \emph{ghaḍbān asifan} in Q. 7:150 and Q. 20:86, applied to Moses on his return to find the people worshipping the calf. The compound generates a three-layer dialectic that complicates any reading of anger as purely negative:
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  \textbf{Inner/outer structural layering.} \emph{Ghaḍab} is the \emph{outer/kinetic} energy of the Mosaic response --- the visible, motor-action component (the throwing of the tablets, the seizing of Aaron's beard). \emph{Asaf} is the \emph{inner/potential} energy --- a compassionate grief over the lost ones, the wasted forty days, the relapse to ignorance.
+\item
+  \textbf{Causal grounding.} \emph{Asaf} is the \emph{ground} of \emph{ghaḍab} in this narrative. If \emph{asaf} were absent, Moses' anger would be mere violence; with \emph{asaf} present, his anger is ``sacred anger'' --- anger in service of guidance.
+\item
+  \textbf{Intentional direction.} \emph{Ghaḍab} is vectored \emph{outward} (toward the people, the calf, his brother). \emph{Asaf} is vectored \emph{inward} (grieving the wasted opportunity, the relapse).
+\end{enumerate}
+
+This compound problematises the framing of anger as purely negative. In the prophetic case, anger is morally productive when grounded in compassionate grief. The lexicon, in pairing \emph{ghaḍab} with \emph{asaf} in a single nominal predication, encodes that moral structure with great precision.
+
+\textbf{4.4.4. Network evidence for Stage-2 coherence.} The aya-level co-occurrence network (Figure 4) reveals that the strongest single edge connects \emph{ḥzn} and \emph{ḍyq} (weight 3); these two lexemes share three verses in the Qurʾān, more than any other pair within the spectrum. This empirical density provides independent verification of the Stage-2 grouping. Centrality analysis (Figure 7) places \emph{ḥzn} among the highest-degree nodes (weighted degree 5, tied with \emph{ġḍb}).
+
+\subsubsection{4.5. Stage 3 --- Evaluative aversion}\label{stage-3-evaluative-aversion}
+
+Stage 3 brings together three roots---\emph{n-q-m}, \emph{s-kh-ṭ}, \emph{m-q-t}---with 27 combined attestations. Each marks a distinct mode of \emph{evaluative-aversive} response to a moral object.
+
+\textbf{4.5.1. \emph{Naqm} (17 attestations; 12 Meccan / 5 Medinan).} \emph{Naqm} is the lexeme of \emph{vengeful disapproval}: anger that is grounded in moral evaluation and oriented toward retribution. Q. 7:126 (\emph{wa-mā naqamū minnā illā an āmannā bi-āyāti rabbinā}) is the linguistic exemplar: anger directed \emph{at others' belief} --- Pharaoh's sorcerers, on accepting Moses' message, are described as suffering Pharaonic \emph{naqm} precisely \emph{because} they believed. The grammatical construction \emph{naqamū min} + (cause) is a canonical Qurʾānic formula for evaluatively-grounded anger.
+
+The lexeme also generates \emph{al-muntaqim} (``the Avenger'') as a divine attribute (Q. 32:22 and parallels), establishing a direct theological-lexical bridge from the human-affective register to the divine retributive register. Position on the spectrum: \emph{naqm} sits between \emph{sakhaṭ} and \emph{ghaḍab} on the action axis. It is more action-oriented than \emph{sakhaṭ} (which is a stable moral disapprobation) but less kinetic than \emph{ghaḍab} (which mobilises the motor agent). The Meccan tilt (12/5) is consistent with the lexeme's frequent appearance in narrative-prophetic passages (the Pharaonic sorcerers, the people of Lot, the people of Madyan).
+
+\textbf{4.5.2. \emph{Sakhaṭ} (4 attestations; 0 Meccan / 4 Medinan).} Despite its low frequency, \emph{sakhaṭ} furnishes one of the paper's principal findings. The exclusive-Medinan distribution---zero Meccan attestations among four total---has a binomial-test p-value of 0.005 against the corpus-derived baseline of 0.74 Meccan probability, statistically significant at α = 0.05. Confirms H3.
+
+Contextual analysis of all four occurrences reveals the same operative pattern: \emph{sakhaṭ} attests in connection with the \emph{Munāfiqūn} (hypocrites) or with quasi-believers whose outward profession of faith conflicts with their inward dispositions. Q. 47:28 (\emph{ittabaʿū mā askhaṭa Allāh wa-karihū riḍwānahu}) is the canonical exemplar. Following Narimani et al.~(2021), we read \emph{sakhaṭ} not as an instantaneous emotional surge but as a sustained \emph{ethical disapprobation}; the present paper extends their lexical-tafsīr argument with corpus evidence and proposes:
+
+\begin{quote}
+\textbf{Hypothesis (Discursive Specialisation of \emph{sakhaṭ}):} In the Qurʾānic lexicon, \emph{sakhaṭ} operates as a discursively specialised lexeme, reserved for divine displeasure with the \emph{Munāfiqūn}---agents whose \emph{zāhir} (outward profession) departs from their \emph{bāṭin} (inward orientation). Because the \emph{Munāfiqūn} category is constitutively a Medinan-period phenomenon, \emph{sakhaṭ} attests exclusively in Medinan suras. This pattern is an instance of a more general phenomenon of \emph{discursive-contextual lexical specialisation} in the Qurʾānic register.
+\end{quote}
+
+\textbf{4.5.3. \emph{Maqt} (6 attestations; 4 Meccan / 2 Medinan).} \emph{Maqt} is the lexeme of \emph{intense moral aversion}. Lexically, the four authoritative lexica converge on a strong gloss: \emph{ashaddu al-ibghāḍ} (``the most intense form of \emph{ibghāḍ}''), per Zajjāj and al-Layth as preserved in the \emph{Tahdhīb al-Lugha}. Al-Rāghib clarifies the grounding: \emph{maqt} arises \emph{from the observation of a reprehensible act} (\emph{ʿan amrin qabīḥin rakibahu}) --- that is, \emph{maqt} is a \emph{purely evaluative} response.
+
+This grounding distinguishes \emph{maqt} from \emph{ghaḍab} in two crucial respects:
+(i) \emph{Causation:} \emph{maqt} is purely evaluative (caused by witnessing a reprehensible act), whereas \emph{ghaḍab} may be triggered by personal injury or by frustration in addition to moral evaluation.
+(ii) \emph{Action profile:} the response of \emph{maqt} is \emph{rejection-distance} (turning away, withdrawing approval) rather than \emph{approach-aggression} (mobilising to retaliate). \emph{Maqt} withdraws; \emph{ghaḍab} advances.
+
+Key verses establish \emph{maqt} as a category-anchor of evaluative aversion:
+
+\begin{itemize}
+\tightlist
+\item
+  Q. 40:10 (\emph{la-maqtu Allāhi akbaru min maqtikum anfusakum}) --- a \emph{doubled invocation} that establishes \emph{maqt al-nafs} (self-aversion in the day of judgment) as a Qurʾānic moral-psychological category. The pattern of doubling within a single verse intensifies the lexeme.
+\item
+  Q. 4:22 (in the context of forbidden marriages) describes such marriages as \emph{fāḥishatan wa-maqtan wa-sāʾa sabīlā} --- \emph{institutional} moral aversion as a property of a category of action.
+\item
+  Q. 35:39 (\emph{wa-lā yazīdu al-kāfirīna kufruhum ʿinda rabbihim illā maqtan}) places divine \emph{maqt} as a function of the disbelievers' rising disbelief.
+\item
+  Q. 61:3 (\emph{kabura maqtan ʿinda Allāhi an taqūlū mā lā tafʿalūn}) denounces saying-without-doing as a target of intense divine \emph{maqt}.
+\end{itemize}
+
+Across all four canonical-exemplar verses, the lexeme stabilises as the Qurʾānic register's term for \emph{moral aversion as an evaluative response}, distinct from the kinetic-motor \emph{ghaḍab} of Stage 4.
+
+\subsubsection{4.6. Stage 4 --- Active anger}\label{stage-4-active-anger}
+
+Stage 4 brings together two roots---\emph{gh-ḍ-b} and \emph{ḥ-r-d}---with 25 combined attestations. These are the lexemes of \emph{active}, motor-mobilising anger.
+
+\textbf{4.6.1. \emph{Ghaḍab} (24 attestations; 13 Meccan / 11 Medinan).} \emph{Ghaḍab} is the central anger lexeme of the Qurʾān. Its near-balanced Meccan/Medinan distribution (54\% Meccan) marks it as the \emph{unmarked default} of the active-anger family. The four authoritative lexica define \emph{ghaḍab} as the inner agitation of the heart oriented toward retribution (al-Rāghib), or as inner motion that disposes the agent to action (Ibn Fāris). The lexeme is grammatically balanced: predicated of God (Q. 48:6 \emph{ghaḍiba Allāhu ʿalayhim}), of prophets, and of the believers.
+
+Morphologically, \emph{ghaḍab} differs sharply from \emph{ḥuzn}: 6 verbs against 16 nouns (33\% verbal, 67\% nominal) and 2 participles. Where \emph{ḥuzn} is a \emph{transient state}, \emph{ghaḍab} is a \emph{structural concept-state}: a state with organisational ontological standing. Al-Fakhr al-Rāzī's \emph{Mafātīḥ al-Ghayb} (vol.~28, p.~84) glosses divine \emph{ghaḍab} as \emph{irādat inzāl al-ʿiqāb} (``the will to inflict punishment'')---not an emotional response but a normative-juridical orientation.
+
+\textbf{4.6.2. \emph{Ghaḍab} as bridge node.} Network analysis (Figure 7) places \emph{ghḍb} among the top three nodes for betweenness centrality (0.17), tied with \emph{ġyẓ} and surpassed only by \emph{bġy}. Notable edges include \emph{ghḍb--ġyẓ} (the upward transition to Stage 5), \emph{ghḍb--ḥzn} (the downward link to Stage 2), and \emph{ghḍb--bġy} (the link to Stage 6).
+
+\textbf{4.6.3. \emph{Ḥard} (1 attestation: Q. 68:25 --- Qurʾānic hapax).} \emph{Ḥard} is a Qurʾānic hapax legomenon, attested only in Q. 68:25 (\emph{wa-ghadaw ʿalā ḥardin qādirīn}) in the parable of the Garden-Owners (\emph{aṣḥāb al-jannah}). The garden-owners, having vowed in the night to harvest before dawn so as to \emph{deny} the poor their share, ``went forth at dawn upon \emph{ḥard}, having decided.'' The classical exegesis converges on a striking dual gloss:
+
+\begin{itemize}
+\tightlist
+\item
+  al-Ṭabarsī's \emph{Majmaʿ al-Bayān} glosses \emph{ḥard} as both \emph{ghaḍab} (anger) and \emph{qaṣd} (intent, purposive aim). The lexeme is anger combined with intent.
+\item
+  al-Ṭabāṭabāʾī's \emph{al-Mīzān} refines the gloss as \emph{anger-plus-deliberate-denial}: a particularly \emph{purposive} anger weaponised through resource-denial.
+\end{itemize}
+
+The phenomenology of \emph{ḥard} is therefore distinctive within Stage 4. \emph{Ghaḍab} mobilises the motor agent toward an outward target; \emph{ḥard} mobilises the motor agent toward a deliberate, miserly \emph{withholding} --- anger that strips the world of what it is owed. The sociological signature of \emph{ḥard} is anger weaponised through institutional or contractual stinginess. The narrative consequence in Q. 68 is the destruction of the garden by the night-storm: divine retribution against the \emph{ḥard}-driven plan to deny.
+
+The position of \emph{ḥard} on the spectrum is therefore: \emph{active-anger} (Stage 4), but distinctively \emph{purposive-and-withholding} rather than approach-aggressive. The hapax status of the lexeme --- paired with the rich exegetical tradition --- is a striking instance of the Qurʾān's lexical economy: a single attestation serves as the linguistic anchor for an entire moral-psychological category.
+
+\subsubsection{4.7. Stage 5 --- Compressed/explosive rage}\label{stage-5-compressedexplosive-rage}
+
+\textbf{4.7.1. \emph{Ghayẓ} and the \emph{kaẓm} metaphor (11 attestations; 3 Meccan / 8 Medinan).} Glosses of \emph{ghayẓ} in the four authoritative lexica --- ``compressed, contained anger'' (al-Rāghib), ``the highest concentration of restrained anger'' (Mostafavi), and ``filling of the self with restrained anger'' (Ibn Manẓūr) --- converge on a single conceptual structure: \emph{ghayẓ} is the pressurised contents of a sealed vessel.
+
+Q. 3:134 commends \emph{al-kāẓimīn al-ghayẓ}: those who restrain \emph{ghayẓ}. The verb \emph{kaẓm} derives from the act of tying off a waterskin to prevent fluid escape; it is the agent-internal regulation that sustains containment. Read through Lakoff and Kövecses's framework, the \emph{ghayẓ--kaẓm} pair instantiates with great precision the ANGER IS A PRESSURIZED CONTAINER metaphor: \emph{ghayẓ} is the contained fluid; \emph{kaẓm} is the seal. Figure 6 visualises this conceptual structure.
+
+The Medinan-leaning distribution of \emph{ghayẓ} (8/3) reflects the discursive context in which inner anger management becomes a salient pedagogical concern: the formative Medinan community required affective discipline within a still-fragile \emph{umma} facing internal \emph{Munāfiq} and external Quraysh hostility.
+
+\textbf{4.7.2. \emph{Tamayyuz}: container collapse in Q. 67:8 (manifestation, not separate root).} The single most articulated image of rage in the Qurʾān is Q. 67:8: \emph{takādu tamayyazu min al-ġayẓ}---``{[}the fire{]} is on the verge of bursting apart from rage.'' The verb \emph{tamayyaza} derives from the root \emph{m-y-z} (to separate, to part, to sever). The image is not simply that of pressure exiting through the seal but of \emph{the structural integrity of the container itself failing}. We treat \emph{tamayyuz} in the present analysis as a \emph{manifestation} of Stage 5 (a behavioural sign of containment failure) rather than as a distinct core root, in keeping with the analytical decision to count fourteen rather than fifteen core roots.
+
+Lakoff and Kövecses's (1987) original analysis identifies ``container collapse'' as the failure mode of the master metaphor, but their English exemplars (\emph{she blew her top}, \emph{he exploded}, \emph{I lost it}) report the \emph{exit} of pressurised content rather than the \emph{structural disintegration} of the vessel. Q. 67:8 makes the disintegration explicit. We argue, accordingly, that this verse furnishes one of the most articulated linguistic instances of ``container collapse'' in any documented historical text---pre-modern or modern. Confirms H5.
+
+The theoretical implication is significant. The Lakoff--Kövecses analysis was originally framed in terms of contemporary American English; the Qurʾānic data extend its empirical base to a register of seventh-century Arabic, supporting a stronger universality claim for the underlying conceptual structure.
+
+\subsubsection{4.8. Stage 6 --- Behavioural outcomes (with caveats)}\label{stage-6-behavioural-outcomes-with-caveats}
+
+\textbf{4.8.1. \emph{Baghy} (96 attestations; 55 Meccan / 41 Medinan).} The most frequent lexeme of the spectrum and, by network-centrality measures, its bridge node. \emph{Baghy} is glossed as ``seeking beyond rightful bounds'' (al-Rāghib) and ``aggressive seeking with intent to oppress'' (Mostafavi). Q. 42:42 (\emph{innamā al-sabīlu ʿalā lladhīna yaẓlimūna l-nāsa wa-yabghūna fī l-arḍi bi-ġayri l-ḥaqq}) collocates \emph{baghy} with \emph{ẓulm}, embedding the lexeme firmly in the moral-evaluation register. Ibn ʿĀshūr's \emph{al-Taḥrīr wa-l-Tanwīr} (vol.~25, p.~126) clarifies the syntagmatic relation: ``\emph{baghy} and \emph{ẓulm} are nearly synonymous, except that \emph{baghy} is specific to non-rightful aggression against another, while \emph{ẓulm} covers all forms of injustice.''
+
+\textbf{4.8.2. \emph{Baghy} as bridge node.} Network analysis (Figure 7 and Table 4 below) reveals that \emph{baghy} attains the highest closeness centrality (0.55) of any node in the spectrum, and is tied with \emph{ghaḍab} and \emph{asaf} for the highest betweenness centrality (0.15). Its eigenvector centrality (0.50) is second only to \emph{karh} (0.50), reflecting its dense embedding in the spectrum's interaction structure. Furthermore, \emph{baghy} exhibits the highest cross-field co-occurrence with the umbrella moral terms: 19 aya-level co-occurrences with \emph{ẓlm/jrm/fsq/ʿdw/krh/šnʾ} combined, of which 8 are with \emph{ʿdw}, 4 with \emph{ẓlm}, and 3 with \emph{krh} (Table 4). This bridging profile confirms H4.
+
+\textbf{Table 4. Cross-field co-occurrence of spectrum roots with umbrella moral terms (aya-level)}
+
+Cross-field ties for the original ten-root analysis (preserved here from the prior pipeline run; ties for the four newly-incorporated roots --- \emph{ʾff}, \emph{naqm}, \emph{maqt}, \emph{ḥard} --- are sparse and dominated by zeros, given their low corpus frequency, and are omitted from this summary table without affecting the overall pattern):
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Root
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+šnʾ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+jrm
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+fsq
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+ẓlm
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+ʿdw
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ḍyq & 0 & 0 & 0 & 0 & 0 & 0 \\
+ḥzn & 0 & 0 & 0 & 1 & 1 & 2 \\
+ʾsf & 0 & 0 & 0 & 1 & 1 & 2 \\
+sxṭ & 0 & 0 & 0 & 0 & 0 & 0 (krh-tie excluded since \emph{krh} is now in the spectrum) \\
+ġḍb & 0 & 0 & 0 & 2 & 3 & 5 \\
+ġyẓ & 0 & 0 & 0 & 0 & 1 & 1 \\
+\textbf{bġy} & \textbf{1} & \textbf{1} & \textbf{2} & \textbf{4} & \textbf{8} & \textbf{16} \\
+ṭġy & 0 & 0 & 0 & 2 & 1 & 3 \\
+ʿtw & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{longtable}
+
+The radical concentration of cross-field ties at \emph{baghy} is striking. Of the total cross-field ties across the fourteen spectrum roots, 19 (\textasciitilde53\%) involve \emph{baghy}. \emph{Baghy} thus serves as the principal lexical bridge between the emotional and the broader moral-evaluation field of the Qurʾān.
+
+\textbf{4.8.3. \emph{Ṭughyān} and the appraisal-cognitive precondition (39 attestations; 29 Meccan / 10 Medinan).} The root \emph{ṭ-gh-y} derives etymologically from the image of water flooding past its banks. Q. 96:6--7 (\emph{kallā inna l-insāna la-yaṭghā an raʾāhu staġnā}) compresses an entire psychology of rebellion into a conditional: human \emph{ṭughyān} arises from the perception of \emph{istighnāʾ} (self-sufficiency). This is, structurally, an appraisal-theoretic claim---that a particular emotional-behavioural disposition is conditioned on a specific cognitive evaluation of the self---and it is fully congruent with the appraisal models of Lazarus (1991) and Scherer (2001, 2005). Qarizadeh et al.'s (2024) polysemy analysis of \emph{ṭughyān} notes the cognitive structure but does not place it in the broader framework; the present paper extends their analysis by identifying \emph{ṭughyān} as the cognitive-appraisal node of Stage 6.
+
+\textbf{4.8.4. \emph{ʿUtuww} (10 attestations; 9 Meccan / 1 Medinan).} The most extreme lexeme of the spectrum. Glossed as ``obstinate excess'' (Ibn Manẓūr), ``extreme self-aggrandisement in disobedience'' (al-Rāghib), and ``entrenched rebellious posture'' (Mostafavi). Q. 25:21 collocates \emph{ʿatū ʿutuwwan kabīrā} with \emph{istakbarū fī anfusihim}, marking the lexeme as denoting rebellion that has crystallised into existential posture. The strongly Meccan distribution (9/1; binomial \emph{p} = 0.06) reflects its rhetorical function as the terminal designation of those whose rejection of revelation has hardened beyond reach---a status repeatedly illustrated through the Meccan narratives of prior peoples (Nūḥ, ʿĀd, Thamūd, Pharaoh).
+
+\textbf{4.8.5. Caveats on the Stage-6 lexemes (\emph{baghy}, \emph{ṭughyān}, \emph{ʿutuww}): bidirectional causation.} Three caveats are required for Stage 6, and they are central to the revised reading of the spectrum advanced in this paper. \emph{Baghy} in Qurʾānic usage frequently arises from greed, supremacism (\emph{ʿulw fī al-arḍ}), or oppressive self-interest rather than from acute anger; the act of overstepping is sometimes the \emph{substance} of corrupted desire (compare Q. 6:21 \emph{innahu lā yufliḥu al-ẓālimūn}) rather than the \emph{outcome} of a passion. \emph{Ṭughyān} --- paradigmatically Pharaonic (Q. 79:17, Q. 28:4) --- is rooted in structural arrogance and the exercise of unchecked power, not as a phenomenological extension of anger; the verse Q. 26:55 (\emph{innahum lanā la-ghāʾiẓūn}) is striking precisely because it reverses the polarity, showing the oppressor's anger arising \emph{from} the rebellion of the oppressed rather than \emph{from} his own anger. \emph{ʿUtuww} most commonly attaches to \emph{istikbār} (arrogance) and is a stable, settled defiance --- a property of moral character rather than a transient affective state. We retain these three roots within Stage 6 because the corpus does locate them at the behavioural pole of the spectrum, but the \emph{causation} arrow is bidirectional: anger may \emph{produce} these behaviours, but they can also produce \emph{anger} (and often do, in the Qurʾānic narrative of oppressors and prophets). The near-balance between Stages 1--5 and Stage 6 (167 vs.~145, χ²(1) = 1.55) is, on this reading, exactly what one would expect if the Stage-6 lexemes are not exclusively anger-derived.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig4_cooccurrence.pdf}
+\caption{Aya-level co-occurrence network of the fourteen core roots. Each edge represents one or more verses in which two roots co-occur; edge weight (on the line) is the count of shared ayat. The strongest edge --- \emph{ḥzn--ḍyq}, weight 3 --- provides direct corpus-internal validation of the Stage-2 (inner pressure \& contraction) grouping: these two pre-anger lexemes share \emph{more} verses than any other pair in the spectrum, indicating that the Qurʾān treats them as discursively conjoint phenomena (``constriction of the chest in sadness,'' Q. 11:12; Q. 6:33). \emph{Baghy} (Stage 6) anchors the right-hand cluster, with edges reaching into the moral-evaluation lexicon (\emph{ẓlm}, \emph{jrm}, \emph{fsq}) --- a position formalised quantitatively in the next figure. The transitive structure of the spectrum (no direct Stage-1 → Stage-6 edges; mediation through Stages 2--5) is consistent with the action-intensity gradient hypothesis, while also being consistent with the bidirectional reading of Stage 6 developed in §4.8.5.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig7_centrality.pdf}
+\caption{Three centrality measures computed on the aya-level co-occurrence graph: (a) weighted degree --- the total number of co-occurrence ties; (b) betweenness --- how often a node lies on the shortest path between others, indicating bridge-node strength; (c) closeness --- the inverse mean distance to all other nodes. \emph{Baghy} attains the \textbf{highest closeness centrality} (0.55) and shares the highest betweenness centrality (0.15) with \emph{ghaḍab} and \emph{asaf}, confirming its role as a principal \emph{pivot} between the anger spectrum (Stages 1--5) and the wider moral-evaluation field of the Qurʾān (315 attestations of \emph{ẓulm}, 66 of \emph{jurm}, 54 of \emph{fisq}, 106 of \emph{ʿadāwah}). The closeness panel reveals a complementary pattern: \emph{ḍyq} and \emph{ḥzn} (Stage 2) achieve high closeness, indicating that the inner-pressure cluster is structurally \emph{central} to the spectrum even though peripheral in raw frequency. Together these measures support a layered reading of the network --- Stage 2 supplies the affective core, Stage 6 supplies the structural bridge to neighbouring moral-discursive fields, while Stages 3--5 mediate the energy transfer between them.}
+\end{figure}
+
+\subsubsection{4.9. Robustness checks: the umbrella moral terms}\label{robustness-checks-the-umbrella-moral-terms}
+
+For robustness, the umbrella roots were extracted and analysed (note that \emph{karh}, formerly an umbrella term, is now incorporated into the spectrum at Stage 1 and is reported in Table 2). Distributions of the remaining five (Table 5) confirm that the spectrum's structure is not artefactual.
+
+\textbf{Table 5. Distribution of umbrella moral terms}
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2727}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Root
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Total
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Meccan
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Medinan
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Binomial p
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Interpretation
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+šnʾ & 3 & 1 & 2 & --- & n too small for inference \\
+jrm & 66 & 60 & 6 & \textless{} 0.0001 & Strongly Meccan; anti-\emph{shirk} polemic \\
+fsq & 54 & 20 & 34 & 0.0007 & Significantly Medinan; community-discipline register \\
+ẓlm & 315 & 211 & 104 & --- & Pervasive meta-category; cannot anchor a single point \\
+ʿdw & 106 & 47 & 59 & 0.008 & Tilts Medinan; the lexeme of mutual antagonism \\
+\end{longtable}
+
+The opposing patterns of \emph{jrm} (strongly Meccan) and \emph{fsq} (significantly Medinan) instantiate the same discursive-contextual specialisation that we identified for \emph{sakhaṭ}. The umbrella analysis thus confirms a \emph{general} phenomenon, of which the \emph{sakhaṭ} finding is one specific instance.
+
+\subsubsection{4.10. Comparative translation analysis}\label{comparative-translation-analysis}
+
+To assess how the spectrum's intensity differentiation survives translation, Table 6 compares five English translations on four canonical verses.
+
+\textbf{Table 6. Translation of four canonical verses across five English translations}
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2308}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1538}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1538}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1538}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1538}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1538}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Term \& verse
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Yusuf Ali
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pickthall
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Arberry
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Saheeh Intl.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hilali-Khan
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\emph{ḍīq} (Q. 15:97) & ``thy heart is distressed'' & ``thy bosom is at times oppressed'' & ``thy breast is straitened'' & ``your chest is constrained'' & ``your breast feels tight'' \\
+\emph{ġayẓ} (Q. 3:134) & ``restrain anger'' & ``control their wrath'' & ``restrain their rage'' & ``suppress anger'' & ``repress anger'' \\
+\emph{tamayyuz} (Q. 67:8) & ``almost burst with fury'' & ``almost burst with rage'' & ``well-nigh bursts asunder with fury'' & ``almost bursts with rage'' & ``almost bursts up with fury'' \\
+\emph{ṭughyān} (Q. 96:6) & ``transgresses all bounds'' & ``rebelleth'' & ``waxes insolent'' & ``transgresses'' & ``transgresses (boundary)'' \\
+\end{longtable}
+
+Two findings emerge. First, the rendering of \emph{ġayẓ} in Q. 3:134 collapses the \emph{ghaḍab/ġayẓ} distinction in all five translations---the English versions render \emph{ġayẓ} with terms (\emph{anger}, \emph{wrath}, \emph{rage}) that are also routinely used for \emph{ghaḍab}. The differentia---the \emph{containment} dimension of \emph{ġayẓ}---is preserved only via the contextual verb of restraint, not in the lexeme itself. Second, the rendering of \emph{tamayyuz} in Q. 67:8 is uneven: Arberry's ``well-nigh bursts asunder'' preserves the \emph{structural-disintegration} component of the source; the others render it variationally as \emph{burst with} + emotion, foregrounding the exit of contents but losing the structural-collapse implication. Translation thus systematically erodes the spectrum's internal architecture.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Discussion}\label{discussion}
+
+\subsubsection{5.1. The integrated logic of escalation}\label{the-integrated-logic-of-escalation}
+
+The findings cohere into a single structural claim: the Qurʾānic lexicon of the anger spectrum encodes a \textbf{logic of anger escalation} that operates simultaneously along three dimensions---locus (inner → outer), intensity (low → high), and scope (individual → structural). The six stages instantiate this trifold transformation. The lexemes are not synonyms; they are \emph{grades}, ordered by an intelligible cognitive logic.
+
+In compact form: \emph{Pre-anger displeasure → Inner pressure → Evaluative aversion → Active anger → Compressed rage → Behavioural outcomes (with caveats)}. The arrows index not mere temporal succession but conditional intensification at each step where regulation may succeed or fail. The Stage 6 step is, however, distinctive: the move into behavioural outcomes is \emph{not} a deterministic escalation from anger but is influenced by independent vectors (greed, \emph{istikbār}, structural arrogance), which is why we read the near-balance between Stages 1--5 (167) and Stage 6 (145) as theoretically informative rather than paradoxical.
+
+\subsubsection{5.2. Convergence with Gross's process model}\label{convergence-with-grosss-process-model}
+
+The stages map onto the operational phases of Gross's (1998, 2014, 2015) process model of emotion regulation, with the caveat that the Qurʾānic spectrum partitions more finely on the affective side and adds an explicit behavioural-outcomes register:
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2727}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3636}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Qurʾānic stage
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Gross phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mapping rationale
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 --- \emph{uff}, \emph{karh} (pre-anger) & Antecedent-focused: situation selection & The earliest signs of displeasure; regulable by avoiding or reframing the situation \\
+2 --- \emph{ḍīq}, \emph{ḥuzn}, \emph{asaf} (inner pressure) & Situation modification & Inner contraction; the agent can adjust the situation to relieve pressure \\
+3 --- \emph{naqm}, \emph{sakhaṭ}, \emph{maqt} (evaluative) & Attentional deployment / cognitive change & Outcome of cognitive-moral evaluation of situation \\
+4 --- \emph{ghaḍab}, \emph{ḥard} (active) & Cognitive change / response selection & Mobilised motor response to the appraised situation \\
+5 --- \emph{ghayẓ} + \emph{kaẓm}; \emph{tamayyuz} & Response modulation (suppression / failure) & Direct internal regulation; \emph{tamayyuz} marks containment failure \\
+6 --- \emph{baghy}, \emph{ṭughyān}, \emph{ʿutuww} & Beyond regulation: externalised dysfunction (with bidirectional causation) & Where Gross's model becomes silent --- and where the Qurʾān adds the moral anthropology of unmanaged emotion \emph{and} of independent structural pathology \\
+\end{longtable}
+
+The mapping is precise for the first five stages. The sixth stage, however, is a place where the Qurʾān's continuum \emph{exceeds} Gross's model: where Gross focuses on regulation success and treats failure outcomes as a residual category, the Qurʾānic continuum systematically describes the structural-moral pathologies that obtain at the behavioural pole --- pathologies that, as we have argued in §4.8.5, may be downstream from anger but may also be upstream of it. The Qurʾān is, on our reading, not merely a model of \emph{anger regulation} but a model of \emph{the structural consequences of failed regulation} and \emph{of independent structural malformations of character}---a distinction whose practical implications we develop in §5.7.
+
+\subsubsection{5.3. Convergence with Plutchik, Spielberger, and appraisal theory}\label{convergence-with-plutchik-spielberger-and-appraisal-theory}
+
+Plutchik's (1980, 2001) wheel of emotions arranges anger along an \emph{annoyance → anger → rage} continuum. This three-level structure maps onto Qurʾānic Stages 1--5 (pre-anger displeasure through compressed rage) but stops short of Stage 6. The Qurʾānic continuum's extension into the structural-behavioural register is not a minor addition but a substantive theoretical move: it claims that anger lexicons should be analysed not only psychologically but morally-anthropologically---as systems for tracking the social consequences of inner states, not merely the inner states themselves.
+
+Spielberger's STAXI framework (1999) distinguishes trait anger (stable disposition), state anger (situational response), and anger control (deliberate restraint). The Qurʾānic lexicon implements an analogous trichotomy: Stage 2 lexemes (\emph{ḥuzn}, \emph{ḍīq}) describe sustained inner states; Stages 3--4 lexemes (\emph{sakhaṭ}, \emph{maqt}, \emph{ghaḍab}) describe evaluative and situational responses; and the \emph{kaẓm} construct describes deliberate restraint. The lexemes thus carve up the space of emotional life along axes that contemporary psychometrics has, independently, isolated.
+
+Appraisal theory (Lazarus 1991; Scherer 2001, 2005) holds that emotions arise from cognitive evaluations of situations rather than from raw stimuli. Q. 96:6--7 conditions \emph{ṭughyān} on the appraisal of \emph{istighnāʾ}---a textbook appraisal-theoretic claim. The Qurʾānic lexicon, on this evidence, treats certain emotion-behaviour transitions as cognitively conditioned, anticipating the appraisal-theoretic insight that emotion is not pre-cognitive but cognitively constituted.
+
+\subsubsection{5.4. The phenomenology/outcomes balance: why the corpus does not show a 2.4× skew}\label{the-phenomenologyoutcomes-balance-why-the-corpus-does-not-show-a-2.4-skew}
+
+A central revision relative to the prior version of this analysis concerns the relative weight of the phenomenological core (Stages 1--5) and the behavioural-outcomes pole (Stage 6). On the prior ten-root analysis, the corpus appeared to assign 2.4× more attestations to Stage 4 (then ``behavioural rebellion'') than to Stages 1+2+3 combined; on a naive reading, that asymmetry suggested a discursive over-emphasis on outcomes.
+
+The revised fourteen-root, six-stage analysis tells a different story. The expanded inventory of phenomenological lexemes (\emph{uff}, \emph{karh}, \emph{naqm}, \emph{maqt}, \emph{ḥard}) raises the Stage 1--5 total to 167, against Stage 6's 145; the chi-squared test against equal split \emph{fails to reject} (χ²(1) = 1.55). This near-balance is, on our reading, exactly what one would expect if (i) the phenomenological side of the spectrum is in fact richer than the prior ten-root analysis allowed, and (ii) the Stage-6 lexemes are not exclusively anger-derived but stand in \emph{bidirectional} causal relation to anger. The corpus-distributional fact is therefore consistent with --- indeed supportive of --- the substantive caveat we have entered against treating \emph{baghy}, \emph{ṭughyān}, and \emph{ʿutuww} as simple downstream effects of unmanaged anger.
+
+This has a methodological corollary that bears emphasis: corpus-distributional analyses of religious texts should not be interpreted as neutral reflections of an external referent. They are maps of \emph{discursive emphasis}; their interpretation is fundamentally entangled with theoretical decisions about category membership (which roots count as part of the spectrum) and category causation (whether the relation is uni- or bidirectional). The shift from a 10/4-stage to a 14/6-stage analysis was not merely cosmetic: it changed both the empirical pattern and its theoretical interpretation.
+
+\subsubsection{5.5. Discursive-contextual specialisation: a general phenomenon}\label{discursive-contextual-specialisation-a-general-phenomenon}
+
+The exclusive-Medinan profile of \emph{sakhaṭ}, the exclusive-Meccan profile of \emph{asaf}, the Meccan tilt of \emph{naqm} and \emph{ʿutuww}, the hapax-Meccan status of \emph{ḥard}, and the Medinan tilt of \emph{karh} --- taken together with the strong directional patterns of \emph{jrm} (Meccan) and \emph{fsq} (Medinan) in the umbrella roots --- instantiate what we propose to call \textbf{discursive-contextual specialisation of lexemes}. This is the phenomenon whereby a member of a multi-lexeme semantic field becomes preferentially associated with a specific discursive register---in the Qurʾānic case, with the Meccan vs.~Medinan rhetorical and sociolinguistic context. The specialisation is not random; in each documented case, contextual analysis confirms that the lexeme's preferential register is the register in which the corresponding referent obtains: \emph{sakhaṭ} with the \emph{Munāfiqūn} (a Medinan phenomenon), \emph{asaf} with prior-prophet narratives (Meccan-rhetorical), \emph{jrm} with anti-\emph{shirk} polemic (Meccan), \emph{fsq} with intra-community discipline (Medinan).
+
+Discursive-contextual specialisation is, as far as we can establish, undocumented as a systematic phenomenon in Qurʾānic-linguistic scholarship; it is also relevant to the broader discussion of \emph{Sitz im Leben} in Qurʾānic source criticism. Future work should test the generalisation across other multi-lexeme fields.
+
+\subsubsection{5.6. Q. 67:8 and the universality of the container metaphor}\label{q.-678-and-the-universality-of-the-container-metaphor}
+
+The most theoretically significant finding concerning conceptual metaphor is that Q. 67:8 (\emph{takādu tamayyazu min al-ġayẓ}) instantiates the ANGER IS PRESSURIZED CONTAINER metaphor more transparently than any English exemplar in Lakoff and Kövecses's (1987) corpus. Where English idioms (\emph{explode with rage}, \emph{blow one's top}, \emph{lose it}) report the \emph{exit} of contained content, Q. 67:8 figures the \emph{structural disintegration of the container itself} via the verb \emph{tamayyaza} (m-y-z: to part, to sever).
+
+This finding has a methodological and a theoretical consequence. \emph{Methodologically}, it implies that the historical depth of the conceptual-metaphor inventory is greater than has often been recognised; the container metaphor for anger is not a peculiarity of contemporary English but a cross-culturally robust cognitive structure attested in seventh-century Arabic with arguably greater clarity than in modern Western corpora. \emph{Theoretically}, it strengthens the universalist claim within CMT: that the bodily-grounded image schemas (CONTAINER, FORCE, BALANCE) underwrite human emotion conceptualisation across cultures and historical periods.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig6_metaphor_diagram.pdf}
+\caption{The ANGER-IS-A-PRESSURIZED-CONTAINER schema (Lakoff \& Kövecses 1987), instantiated by the Qurʾānic triplet \emph{ghaḍab → ghayẓ + kaẓm → tamayyuz}. \textbf{Panel 1} (Stage 4): \emph{ghaḍab} --- an \emph{open} container; the affect is present but unconcentrated, dissipating freely into language (the lexeme is the most nominally productive in the spectrum). \textbf{Panel 2} (Stage 5, Q. 3:134): \emph{ghayẓ} --- fluid sealed by \emph{kaẓm}; the verb \emph{kaẓama} originally denotes the \emph{tying-off of a waterskin}, the agent-internal regulation that maintains containment under rising pressure. \textbf{Panel 3} (Stage 5 manifestation, Q. 67:8): \emph{tamayyuz} --- the structural failure; the verb derives from the root \emph{m-y-z} ``to separate, to part, to sever'', and figures not the exit of pressurised content (as English \emph{explode}) but the \emph{splitting apart of the container itself}. The Qurʾānic instantiation is, on the present argument, more transparent than any English exemplar in Lakoff and Kövecses's (1987) corpus, providing strong cross-linguistic evidence for the cognitive universality of the schema (§5.6).}
+\end{figure}
+
+\subsubsection{5.7. Implications for Qurʾānic translation}\label{implications-for-qurux2beux101nic-translation}
+
+Translation criticism of the Qurʾān has long observed that translations level the spectrum---that \emph{ġaḍab} and \emph{ġayẓ} alike become \emph{anger}; that \emph{baghy}, \emph{ṭughyān}, and \emph{ʿutuww} alike become \emph{transgression} (Table 6). Our analysis sharpens this critique by furnishing the reference model against which the levelling can be measured. We propose that critical and study-edition translations adopt distinct equivalents:
+
+\begin{quote}
+\emph{uff}: vocal sigh of irritation · \emph{karh} (\emph{karāha}): inner dislike · \emph{karh} (\emph{ikrāh}): coercion (a structural extension, not an emotion) · \emph{ḍīq}: inner constriction · \emph{ḍāqa dharʿan}: arm-span tightening / inhibited aggression · \emph{ḥuzn}: persistent grief (transversal valence) · \emph{asaf}: regretful dismay (with anger) · \emph{naqm}: vengeful disapproval · \emph{sakhaṭ}: moral disapprobation · \emph{maqt}: intense moral aversion · \emph{ghaḍab}: anger · \emph{ḥard}: anger combined with deliberate denial · \emph{ghayẓ}: contained / boiling rage · \emph{tamayyuz min al-ġayẓ}: bursting from rage · \emph{baghy}: aggressive transgression · \emph{ṭughyān}: rebellious overflow · \emph{ʿutuww}: obstinate defiance.
+\end{quote}
+
+For pedagogical translations, we further recommend that each lexeme be marked with its position on the continuum---either by inline gloss, by footnote, or by chromatic coding---so that the structural architecture survives the move into the target language.
+
+\subsubsection{5.8. Implications for Islamic psychology}\label{implications-for-islamic-psychology}
+
+The continuum offers a culturally-grounded framework that maps onto Gross's model without requiring importation of secular vocabulary. This has three practical implications:
+
+\textbf{(i) Prevention.} The continuum supports \emph{early-stage recognition}---the principle, central to cognitive-behavioural therapy, that affective dysregulation should be intercepted at the earliest possible point. The Qurʾānic vocabulary for pre-anger and inner-pressure states (\emph{uff}, \emph{karāha}, \emph{ḍīq}, \emph{ḥuzn}) provides an indigenous lexicon for self-monitoring at Stages 1--2, in advance of intensification.
+
+\textbf{(ii) Crisis intervention.} The \emph{kaẓm} construct, properly understood as a Stage-5 response-modulation strategy, can be integrated with contemporary suppression-and-reappraisal interventions, providing a religiously-grounded framing for techniques that secular CBT already employs.
+
+\textbf{(iii) Rehabilitation.} Crucially, the Qurʾānic continuum frames the post-failure Stage 6 as recoverable---the path from \emph{baghy}/\emph{ṭughyān}/\emph{ʿutuww} back toward equilibrium runs through \emph{tawba} (repentance), a return that the text affirms as accessible. This framing offers motivational reinforcement to clinical-psychological rehabilitation models, especially those concerned with anger disorders and post-violent trauma.
+
+These implications are conceptual; their translation into validated clinical interventions awaits the design of empirical studies, which we recommend as a priority for future work.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{6. Conclusion}\label{conclusion}
+
+\subsubsection{6.1. Substantive contributions}\label{substantive-contributions}
+
+This paper has advanced three contributions to the scholarship.
+
+\textbf{Methodologically}, we have demonstrated that the integration of three previously separate frameworks---Izutsu's semantic-field analysis, Kennedy--Sassoon scalar semantics, and Lakoff--Kövecses conceptual-metaphor theory---coupled with a reproducible computational pipeline over the Quranic Arabic Corpus, produces a research apparatus stronger than the sum of its parts. The integration is, to the best of our knowledge, here brought to Qurʾānic studies for the first time. The research apparatus is openly available and applicable to other Qurʾānic semantic fields.
+
+\textbf{Descriptively}, we have produced an exhaustive, reproducible concordance of 312 attestations across the fourteen core spectrum roots, with corresponding distributional and network-analytic outputs. The CSV outputs provide a foundation on which further philological and computational work can build.
+
+\textbf{Theoretically}, we have formulated and empirically defended the \textbf{Qurʾānic Action-Intensity Continuum Hypothesis}: the claim that fourteen core lexemes of the Qurʾānic anger-spectrum field operate as a single graded continuum structured by \emph{intensity of action} and partitioned into six phenomenologically meaningful stages. The hypothesis is supported by qualitative evidence from the four authoritative lexica and the four authoritative tafsirs, and by quantitative evidence from frequency, distribution, morphology, and network structure. We have, in addition, identified distributional patterns that we have not seen previously reported (the exclusively-Medinan \emph{sakhaṭ}; the exclusively-Meccan \emph{asaf}; the Meccan-tilted \emph{naqm}; the hapax-Meccan \emph{ḥard}); proposed the general phenomenon of \textbf{discursive-contextual lexical specialisation} of which these are instances; entered explicit caveats on the bidirectional causation of the Stage-6 lexemes; and argued that Q. 67:8 furnishes one of the most articulated linguistic exemplars of ``container collapse'' in any documented historical text.
+
+\subsubsection{6.2. Answers to the research questions}\label{answers-to-the-research-questions}
+
+\textbf{RQ1.} The semantic field is a fourteen-node network organised around the bridge node \emph{baghy} and the stage-internal hubs \emph{ḥuzn} and \emph{ghaḍab}, with several specialised peripheral nodes (\emph{sakhaṭ}, \emph{asaf}, \emph{ḥard}, \emph{ʿutuww}) exhibiting marked distributional asymmetries.
+
+\textbf{RQ2.} The fourteen nodes order on a six-stage continuum---pre-anger displeasure (Stage 1), inner pressure \& contraction (Stage 2), evaluative aversion (Stage 3), active anger (Stage 4), compressed/explosive rage (Stage 5), behavioural outcomes with caveats (Stage 6)---organised by the composite dimension of \emph{intensity of action} (locus, intensity, scope of consequence).
+
+\textbf{RQ3.} The empirical distribution corroborates the continuum: the chi-squared test rejects the null of six-stage uniform distribution (χ²(5) = 227.15, \emph{p} \textless{} 0.001); the comparison between Stages 1--5 and Stage 6 \emph{fails to reject} equal split (χ²(1) = 1.55), a result we interpret as supporting the bidirectional-causation reading of Stage 6; the network exhibits the predicted bridge structure at \emph{baghy}; and the morphological profile distinguishes the verbal Stages 1--2 from the more nominal Stage 6.
+
+\textbf{RQ4.} The continuum is structurally homologous with Gross's process model, Plutchik's wheel, Spielberger's STAXI, and Lazarus--Scherer appraisal theory in its psychological component, but extends beyond all of them by integrating the post-failure structural-moral consequences of unmanaged emotion (Stage 6) --- while qualifying that integration with the bidirectional-causation caveat of §4.8.5.
+
+\textbf{RQ5.} Practical implications include three translation recommendations (distinct equivalents, position-marking, structural footnoting) and three Islamic-psychology applications (early-stage prevention, \emph{kaẓm}-grounded crisis intervention, and \emph{tawba}-grounded rehabilitation).
+
+\subsubsection{6.3. Limitations and future work}\label{limitations-and-future-work}
+
+Five limitations bound the present study and define its principal future-research extensions.
+
+First, the analysis works at the surface-lexical layer; broader discourse-analytic close-reading of how the spectrum is mobilised across narrative arcs of individual suras remains to be conducted. Second, the \emph{tafsīr} engagement is selective, drawing on four canonical commentaries; a systematic survey of the broader exegetical tradition (especially Shīʿī, Sufi, and contemporary Persian-language commentary) would refine specific lexical readings. Third, the cognitive-linguistic apparatus is Anglophone-dominated; engagement with classical Arabic theories of \emph{bayān} (especially al-Jurjānī's \emph{Dalāʾil al-Iʿjāz}) would supply an indigenous theoretical substrate. Fourth, the \emph{ḥadīth} corpus has not been integrated, although it would be instructive to test whether the continuum is robust beyond the Qurʾānic corpus into the broader Islamic textual tradition. Fifth, the clinical-psychological implications proposed in §5.8 have not been operationalised in empirical interventions; the design of pilot studies for \emph{kaẓm}-grounded emotion regulation training is a priority for translational work.
+
+\subsubsection{6.4. Closing remark}\label{closing-remark}
+
+The Qurʾānic lexicon, on the analysis advanced here, encodes a sophisticated theory of the phenomenology of the anger spectrum---not as explicit theoretical formulation but as the architectural design of its semantic surface. Recovering that theory requires methodological tools that bring together the qualitative attentiveness of classical philology, the formal precision of contemporary linguistic theory, and the verifiability of corpus-computational analysis. We hope the present study, alongside the foundational work of Izutsu, Qāʾimīniyā, Pakatchi, Narimani et al., and Qarizadeh et al., advances this triple integration. The classical and the computational are not opposed traditions; they are complementary instruments, and their joint deployment opens horizons that neither could disclose alone.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Data and Code Availability}\label{data-and-code-availability}
+
+All code, data, concordance CSV outputs, and figure-generation scripts are released open-source at:
+
+\begin{quote}
+\textbf{github.com/ali-kin4/quranic-emotion-spectrum}
+\end{quote}
+
+The repository contains: (i) the Python pipeline under MIT License; (ii) the Quranic Arabic Corpus (Dukes 2011) under its original GPL; (iii) the complete CSV concordance for the fourteen core spectrum roots (312 attestations), distributional summaries, statistical tests (χ²(5) = 227.15; χ²(1) = 1.55), network-centrality outputs, and umbrella-cooccurrence tables; (iv) PDF and PNG versions of the seven figures published with this paper; (v) full text of the Persian and English manuscripts. The complete analysis can be regenerated end-to-end by:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}r}\NormalTok{ analysis/requirements.txt}
+\ExtensionTok{python}\NormalTok{ analysis/extract\_concordance.py}
+\ExtensionTok{python}\NormalTok{ analysis/visualize\_spectrum.py}
+\ExtensionTok{python}\NormalTok{ analysis/advanced\_metrics.py}
+\ExtensionTok{python}\NormalTok{ analysis/visualize\_advanced.py}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Acknowledgements}\label{acknowledgements}
+
+The authors thank Kais Dukes and the team behind the Quranic Arabic Corpus, and the Tanzil Project, for releasing the morphological and textual resources without which this kind of empirical Qurʾānic analysis would not be feasible. We thank Urmia University for institutional support.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{References}\label{references}
+
+Averill, J. R. (1982). \emph{Anger and Aggression: An Essay on Emotion}. New York: Springer-Verlag.
+
+Berkowitz, L. (1993). \emph{Aggression: Its Causes, Consequences, and Control}. New York: McGraw-Hill.
+
+Dukes, K. (2011). \emph{Quranic Arabic Corpus (Morphology, Version 0.4)}. University of Leeds. https://corpus.quran.com.
+
+Gross, J. J. (1998). The emerging field of emotion regulation: An integrative review. \emph{Review of General Psychology}, \emph{2}(3), 271--299.
+
+Gross, J. J. (Ed.). (2014). \emph{Handbook of Emotion Regulation} (2nd ed.). New York: Guilford Press.
+
+Gross, J. J. (2015). Emotion regulation: Current status and future prospects. \emph{Psychological Inquiry}, \emph{26}(1), 1--26.
+
+Ibn Fāris, A. (1979). \emph{Muʿjam Maqāyīs al-Lughah} (ʿA. M. Hārūn, Ed.). Beirut: Dār al-Fikr.
+
+Ibn Manẓūr, M. (1993). \emph{Lisān al-ʿArab} (3rd ed.). Beirut: Dār Ṣādir.
+
+Ibn ʿĀshūr, M. T. (1984). \emph{al-Taḥrīr wa-l-Tanwīr}. Tunis: al-Dār al-Tūnisiyyah li-l-Nashr.
+
+Izutsu, T. (1959). \emph{The Structure of the Ethical Terms in the Koran: A Study in Semantics}. Tokyo: Keio Institute of Philological Studies.
+
+Izutsu, T. (1964). \emph{God and Man in the Koran: Semantics of the Koranic Weltanschauung}. Tokyo: Keio Institute of Cultural and Linguistic Studies.
+
+Izutsu, T. (1966/2002). \emph{Ethico-Religious Concepts in the Qurʾān}. Montreal: McGill-Queen's University Press.
+
+Kassinove, H., \& Tafrate, R. C. (2002). \emph{Anger Management: The Complete Treatment Guidebook for Practitioners}. Atascadero, CA: Impact Publishers.
+
+Kennedy, C. (2007). Vagueness and grammar: The semantics of relative and absolute gradable adjectives. \emph{Linguistics and Philosophy}, \emph{30}(1), 1--45.
+
+Kövecses, Z. (1986). \emph{Metaphors of Anger, Pride, and Love: A Lexical Approach to the Structure of Concepts}. Amsterdam: John Benjamins.
+
+Kövecses, Z. (2000). \emph{Metaphor and Emotion: Language, Culture, and Body in Human Feeling}. Cambridge: Cambridge University Press.
+
+Kövecses, Z. (2010). \emph{Metaphor: A Practical Introduction} (2nd ed.). Oxford: Oxford University Press.
+
+Lakoff, G., \& Johnson, M. (1980). \emph{Metaphors We Live By}. Chicago: University of Chicago Press.
+
+Lakoff, G., \& Kövecses, Z. (1987). The cognitive model of anger inherent in American English. In D. Holland \& N. Quinn (Eds.), \emph{Cultural Models in Language and Thought} (pp.~195--221). Cambridge: Cambridge University Press.
+
+Lazarus, R. S. (1991). \emph{Emotion and Adaptation}. New York: Oxford University Press.
+
+Maalej, Z. (2004). Figurative language in anger expressions in Tunisian Arabic: An extended view of embodiment. \emph{Metaphor and Symbol}, \emph{19}(1), 51--75.
+
+al-Muṣṭafawī, Ḥ. (1416 AH). \emph{al-Taḥqīq fī Kalimāt al-Qurʾān al-Karīm}. Tehran: Wizārat al-Thaqāfah wa-l-Irshād al-Islāmī.
+
+Narimani, Z., Iqbali, M., \& Chari, M. (1400 SH/2021). {[}Semantic re-analysis of the words \emph{ghayẓ}, \emph{ghaḍab}, and \emph{sakhaṭ} in the Holy Qurʾān with an exegetical approach{]}. \emph{Pizhūhish-hā-yi Qurʾān va Ḥadīth} {[}Qurʾanic and Hadith Research{]}. University of Tehran. {[}in Persian{]}
+
+Plutchik, R. (1980). \emph{Emotion: A Psychoevolutionary Synthesis}. New York: Harper \& Row.
+
+Plutchik, R. (2001). The nature of emotions. \emph{American Scientist}, \emph{89}(4), 344--350.
+
+Qarizadeh, M. ʿO., Salmani Marvast, M. ʿA., Meymandi, V., \& Farsi, B. (1402 SH/2024). {[}Polysemy of the word \emph{ṭughyān} in the Holy Qurʾān with a linguistic approach{]}. \emph{Pizhūhish-hā-yi Zabānshinākhtī-yi Qurʾān} {[}Linguistic Research in the Holy Qurʾān{]}. University of Isfahan. {[}in Persian{]}
+
+Qāʾimīniyā, ʿA. (1390 SH/2011). \emph{Maʿnāshināsī-yi Shinākhtī-yi Qurʾān} {[}Cognitive Semantics of the Qurʾān{]}. Tehran: Pizhūhishgāh-i Farhang va Andīshah-i Islāmī. {[}in Persian{]}
+
+al-Rāghib al-Iṣfahānī, Ḥ. (1992). \emph{al-Mufradāt fī Gharīb al-Qurʾān} (Ṣ. ʿA. Dāwūdī, Ed.). Damascus and Beirut: Dār al-Qalam \& al-Dār al-Shāmiyyah.
+
+Sassoon, G. W. (2010). The degree functions of negative adjectives. \emph{Natural Language Semantics}, \emph{18}(2), 141--181.
+
+Scherer, K. R. (2001). Appraisal considered as a process of multilevel sequential checking. In K. R. Scherer, A. Schorr, \& T. Johnstone (Eds.), \emph{Appraisal Processes in Emotion: Theory, Methods, Research} (pp.~92--120). New York: Oxford University Press.
+
+Scherer, K. R. (2005). What are emotions? And how can they be measured? \emph{Social Science Information}, \emph{44}(4), 695--729.
+
+Sharifian, F. (2011). \emph{Cultural Conceptualisations and Language: Theoretical Framework and Applications}. Amsterdam: John Benjamins.
+
+Spielberger, C. D. (1999). \emph{Professional Manual for the State-Trait Anger Expression Inventory--2 (STAXI-2)}. Odessa, FL: Psychological Assessment Resources.
+
+al-Ṭabāṭabāʾī, M. Ḥ. (1390 AH). \emph{al-Mīzān fī Tafsīr al-Qurʾān}. Beirut: Muʾassasat al-Aʿlamī li-l-Maṭbūʿāt.
+
+al-Ṭabarsī, F. al-Ḥ. (n.d.). \emph{Majmaʿ al-Bayān fī Tafsīr al-Qurʾān}. Beirut: Dār al-Maʿrifah.
+
+\emph{Tanzil Project}. (n.d.). \emph{The Tanzil Quran Text} (Uthmani edition). https://tanzil.net.
+
+Wierzbicka, A. (1999). \emph{Emotions Across Languages and Cultures: Diversity and Universals}. Cambridge: Cambridge University Press.
+
+al-Zamakhsharī, M. (1407 AH). \emph{al-Kashshāf ʿan Ḥaqāʾiq Ghawāmiḍ al-Tanzīl}. Beirut: Dār al-Kitāb al-ʿArabī.
+
+
+\end{document}

@@ -1,0 +1,8 @@
+test,statistic,value,interpretation
+Stage uniform-distribution chi-squared,chi2 (df=5),227.15,"Observed: [44, 60, 27, 25, 11, 145]; expected uniform: ~52.0 each. chi2=227.15; critical=11.07 (alpha=0.05) — REJECT null. Stages are non-uniform."
+Phenomenology (Stages 1-5) vs Behavioural outcomes (Stage 6),chi2 (df=1),1.55,"Phenomenology stages: 167; outcome stage: 145. chi2=1.55; critical=3.84. FAIL TO REJECT null — corpus distributes mass roughly equally between anger phenomenology and behavioural outcomes, consistent with the reviewer's caveat that the outcome-stage lexemes (e.g. baghy / tughyan / 'utuww) are not exclusively anger-derived."
+sakhat (sxT) Meccan exclusivity (0/4),binomial 2-sided p-value,0.0046,"Under H0 of 0.7397370109044259 Meccan rate, observing 0/4 Meccan supports specialized Medinan use."
+asaf (Asf) Meccan exclusivity (5/5),binomial 2-sided p-value,0.3361,"Under H0 of 0.7397370109044259 Meccan rate, observing 5/5 Meccan is suggestive but not decisive on its own (n is tiny)."
+utuww (Etw) Meccan dominance (9/10),binomial 2-sided p-value,0.4703,9 of 10 Meccan; Distribution consistent with the corpus baseline.
+jrm (umbrella) Meccan dominance (60/66),binomial 2-sided p-value,0.0010,"60 of 66 Meccan; Robust Meccan preference, aligns with early-revelation polemic with the mushrikun."
+fsq (umbrella) Medinan tilt (20/54),binomial 2-sided p-value,0.0000,"20 Meccan / 34 Medinan; Significant Medinan tilt, reflecting community-discipline contexts."

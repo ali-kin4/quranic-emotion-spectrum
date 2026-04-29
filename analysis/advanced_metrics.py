@@ -236,16 +236,25 @@ def network_centrality() -> None:
     for r in SPECTRUM:
         G.add_node(r.bw)
     for (a, b), w in edges.items():
-        G.add_edge(a, b, weight=w)
+        # `weight` = co-occurrence count (proximity / similarity)
+        # `distance` = inverse of weight, used by NetworkX shortest-path
+        # routines that expect edge cost. Using the raw weight as distance
+        # would invert the meaning (frequent neighbours treated as far apart).
+        G.add_edge(a, b, weight=w, distance=1.0 / w)
 
-    # Compute centrality measures
+    # Degree centrality: sum of co-occurrence weights — proximity-based
     degree = dict(G.degree(weight="weight"))
-    betweenness = nx.betweenness_centrality(G, weight="weight", normalized=True)
+    # Betweenness / closeness: shortest-path-based, want DISTANCE as cost
+    betweenness = nx.betweenness_centrality(G, weight="distance",
+                                            normalized=True)
+    closeness = nx.closeness_centrality(G, distance="distance")
+    # Eigenvector: power iteration (no scipy dependency, per project policy)
     try:
-        eigenvector = nx.eigenvector_centrality_numpy(G, weight="weight")
-    except Exception:
+        eigenvector = nx.eigenvector_centrality(
+            G, weight="weight", max_iter=1000, tol=1e-7,
+        )
+    except (nx.PowerIterationFailedConvergence, Exception):
         eigenvector = {n: float("nan") for n in G.nodes()}
-    closeness = nx.closeness_centrality(G, distance="weight")
 
     out = CONC_DIR / "network_centrality.csv"
     with out.open("w", encoding="utf-8", newline="") as fh:

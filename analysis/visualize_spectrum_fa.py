@@ -144,7 +144,7 @@ def fig1_continuum(rows: list[dict]) -> None:
             ha="center", va="center", fontsize=12, fontweight="bold",
             color="black")
 
-    ax.set_title(ar("پیوستار چهار-مرحله‌ای شدت هیجان در قرآن کریم — "
+    ax.set_title(ar("پیوستار شش-مرحله‌ای شدت خشم در قرآن کریم — "
                     "از آزردگی درونی تا عصیان رفتاری") + "\n"
                  + ar("گره = ریشهٔ عربی؛ اندازه ∝ بسامد در پیکره (Dukes 2011)"),
                  fontsize=11, pad=12)
@@ -197,7 +197,7 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                  ha="center", va="bottom", fontsize=10, fontweight="bold")
 
     fig.suptitle(ar("بسامد واژگانی طیف در پیکرهٔ قرآن "
-                    "(۲۴۸ بسامد در ده ریشهٔ کانونی)"),
+                    "(۳۱۲ بسامد در ۱۴ ریشهٔ کانونی)"),
                  fontsize=11)
     fig.tight_layout()
 
@@ -307,7 +307,7 @@ def fig4_cooccurrence(window: int = 0) -> None:
     ax.set_xlim(-3.5, 3.5)
     ax.set_ylim(-3, 3)
     ax.axis("off")
-    ax.set_title(ar("شبکه هم‌رخدادگیری آیه‌ای ده ریشه کانونی") + "\n"
+    ax.set_title(ar("شبکه هم‌رخدادگیری آیه‌ای ۱۴ ریشه کانونی") + "\n"
                  + ar("وزن یال = تعداد آیات مشترک"),
                  fontsize=11)
 

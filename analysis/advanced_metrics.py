@@ -118,96 +118,155 @@ def _chi_squared(observed: list[int], expected: list[int]) -> tuple[float, int]:
     return chi2, df
 
 
+# Critical chi-squared values at alpha=0.05, df 1..10 (scipy-free lookup)
+_CHI2_CRITICAL_005 = {
+    1: 3.841, 2: 5.991, 3: 7.815, 4: 9.488, 5: 11.070,
+    6: 12.592, 7: 14.067, 8: 15.507, 9: 16.919, 10: 18.307,
+}
+
+
+def _chi2_critical_005(df: int) -> float:
+    """Return the alpha=0.05 critical chi-squared value for df. Falls back
+    to a Wilson–Hilferty approximation when df > 10."""
+    if df in _CHI2_CRITICAL_005:
+        return _CHI2_CRITICAL_005[df]
+    # Wilson–Hilferty approximation; z_{0.95}=1.6449
+    z = 1.6449
+    return df * (1 - 2 / (9 * df) + z * (2 / (9 * df)) ** 0.5) ** 3
+
+
 def statistical_tests() -> None:
-    """Produce a small CSV of formally reported tests."""
-    # ---- Test 1: Stage 6 over-representation ----
-    # H0: the six stages have equal share of the spectrum's mass.
-    stage_totals = {s: 0 for s in (1, 2, 3, 4, 5, 6)}
+    """Produce a CSV of formally reported tests.
+
+    All test inputs and interpretations are derived dynamically from
+    summary_counts.csv so that a re-run on a different corpus or root
+    list produces consistent results without code changes.
+    """
+    # Read counts dynamically so changes to SPECTRUM / corpus reflow
+    counts: dict[str, dict] = {}
     with (CONC_DIR / "summary_counts.csv").open("r", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
-            if row["root_bw"] not in {r.bw for r in SPECTRUM}:
-                continue
-            stage_totals[int(row["stage"])] += int(row["occurrences"])
+            counts[row["root_bw"]] = {
+                "occurrences": int(row["occurrences"]),
+                "meccan": int(row["meccan_hits"]),
+                "medinan": int(row["medinan_hits"]),
+                "stage": int(row["stage"]),
+            }
 
-    observed = [stage_totals[s] for s in (1, 2, 3, 4, 5, 6)]
+    # ---- Test 1: stage uniform-distribution chi-squared ----
+    spectrum_bw = {r.bw for r in SPECTRUM}
+    stages_present = sorted({r.stage for r in SPECTRUM})
+    stage_totals = {s: 0 for s in stages_present}
+    for bw in spectrum_bw:
+        if bw in counts:
+            stage_totals[counts[bw]["stage"]] += counts[bw]["occurrences"]
+
+    observed = [stage_totals[s] for s in stages_present]
     n = sum(observed)
     expected_uniform = [n / len(observed)] * len(observed)
     chi2_uniform, df_uniform = _chi_squared(observed, expected_uniform)
+    # Critical chi2 (alpha=0.05) for selected df values
+    crit_uniform = _chi2_critical_005(df_uniform)
+    rejects_uniform = chi2_uniform > crit_uniform
 
-    # ---- Test 2: Meccan/Medinan exclusivity of sxT and Asf ----
-    # In QAC, the relative split among ALL Quranic words is roughly
-    # 60% Meccan, 40% Medinan (by aya count).  We use 0.60 / 0.40 as priors.
-    # H0: a root drawn at random has prob 0.60 Meccan, 0.40 Medinan.
+    # ---- Test 2: Meccan/Medinan binomial tests, dynamically per root ----
+    # In the QAC the corpus baseline is ~60% Meccan, ~40% Medinan.
     p_meccan = 0.60
-    sxt_pvalue = _binomial_pvalue(0, 4, p_meccan)
-    asf_pvalue = _binomial_pvalue(5, 5, p_meccan)
-    etw_pvalue = _binomial_pvalue(9, 10, p_meccan)
-    jrm_pvalue = _binomial_pvalue(60, 66, p_meccan)
-    fsq_pvalue = _binomial_pvalue(20, 54, p_meccan)
 
-    # ---- Test 3: Stages 1-5 vs Stage 6 (behavioural outcomes) ----
-    # H0: phenomenology stages (1-5) combined have equal mass to behavioural
-    # outcomes (Stage 6). Tests whether the corpus emphasises external
-    # behavioural consequences over internal phenomenology of anger.
-    lower = sum(stage_totals[s] for s in (1, 2, 3, 4, 5))
-    upper = stage_totals[6]
-    chi2_split, _ = _chi_squared(
+    def _binom_test(bw: str) -> tuple[int, int, float]:
+        """Return (meccan, total, two-sided p) computed from current counts."""
+        rec = counts.get(bw, {"meccan": 0, "medinan": 0})
+        m, d = rec["meccan"], rec["medinan"]
+        total = m + d
+        if total == 0:
+            return 0, 0, 1.0
+        return m, total, _binomial_pvalue(m, total, p_meccan)
+
+    sxt_m, sxt_n, sxt_p = _binom_test("sxT")
+    asf_m, asf_n, asf_p = _binom_test("Asf")
+    etw_m, etw_n, etw_p = _binom_test("Etw")
+    jrm_m, jrm_n, jrm_p = _binom_test("jrm")
+    fsq_m, fsq_n, fsq_p = _binom_test("fsq")
+
+    # ---- Test 3: phenomenology (S1..N-1) vs outcomes (last stage) ----
+    last_stage = stages_present[-1]
+    lower_stages = stages_present[:-1]
+    lower = sum(stage_totals[s] for s in lower_stages)
+    upper = stage_totals[last_stage]
+    chi2_split, df_split = _chi_squared(
         [lower, upper], [(lower + upper) / 2, (lower + upper) / 2]
     )
+    crit_split = _chi2_critical_005(df_split)
+    rejects_split = chi2_split > crit_split
 
     out = CONC_DIR / "statistical_tests.csv"
     with out.open("w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["test", "statistic", "value", "interpretation"])
-        # critical chi2 values: df=5 → 11.07; df=1 → 3.84 (alpha=0.05)
         w.writerow([
             "Stage uniform-distribution chi-squared",
             f"chi2 (df={df_uniform})", f"{chi2_uniform:.2f}",
             f"Observed: {observed}; expected uniform: ~{expected_uniform[0]:.1f} each. "
-            f"chi2={chi2_uniform:.1f} >> 11.07 critical (alpha=0.05) — REJECT null. "
-            f"Six stages are unequally populated; Stage 6 (behavioural outcomes) "
-            f"and Stage 2 (inner pressure) dominate.",
+            f"chi2={chi2_uniform:.2f}; critical={crit_uniform:.2f} (alpha=0.05) — "
+            + ("REJECT null. Stages are non-uniform."
+               if rejects_uniform
+               else "FAIL TO REJECT null. Stage frequencies are consistent with uniformity."),
         ])
         w.writerow([
-            "Phenomenology (Stages 1-5) vs Behavioural outcomes (Stage 6)",
-            "chi2 (df=1)", f"{chi2_split:.2f}",
-            f"Phenomenology stages 1-5: {lower}; Stage 6 outcomes: {upper}. "
-            f"chi2={chi2_split:.2f}; critical=3.84. "
-            + ("REJECT null — outcomes still dominate." if chi2_split > 3.84
-               else "FAIL TO REJECT null — the corpus distributes mass roughly "
+            f"Phenomenology (Stages {lower_stages[0]}-{lower_stages[-1]}) vs "
+            f"Behavioural outcomes (Stage {last_stage})",
+            f"chi2 (df={df_split})", f"{chi2_split:.2f}",
+            f"Phenomenology stages: {lower}; outcome stage: {upper}. "
+            f"chi2={chi2_split:.2f}; critical={crit_split:.2f}. "
+            + ("REJECT null — outcomes dominate."
+               if rejects_split
+               else "FAIL TO REJECT null — corpus distributes mass roughly "
                     "equally between anger phenomenology and behavioural outcomes, "
-                    "consistent with the reviewer's caveat that baghy/ṭughyān/ʿutuww "
-                    "are not exclusively anger-derived."),
+                    "consistent with the reviewer's caveat that the outcome-stage "
+                    "lexemes (e.g. baghy / tughyan / 'utuww) are not exclusively "
+                    "anger-derived."),
         ])
         w.writerow([
-            "sakhat (sxT) Meccan exclusivity (0/4)",
-            "binomial 2-sided p-value", f"{sxt_pvalue:.4f}",
-            "Under H0 of 0.60 Meccan rate, observing 0 Meccan in 4 trials is "
-            "extremely improbable; supports specialized Medinan use.",
+            f"sakhat (sxT) Meccan exclusivity ({sxt_m}/{sxt_n})",
+            "binomial 2-sided p-value", f"{sxt_p:.4f}",
+            f"Under H0 of {p_meccan} Meccan rate, observing {sxt_m}/{sxt_n} Meccan "
+            + ("supports specialized Medinan use."
+               if sxt_p < 0.05 and sxt_m == 0
+               else "is consistent with the corpus baseline."),
         ])
         w.writerow([
-            "asaf (Asf) Meccan exclusivity (5/0)",
-            "binomial 2-sided p-value", f"{asf_pvalue:.4f}",
-            "Under H0 of 0.60 Meccan rate, observing 5/5 Meccan is small but "
-            "consistent (n is tiny); the pattern is suggestive rather than "
-            "decisive on its own.",
+            f"asaf (Asf) Meccan exclusivity ({asf_m}/{asf_n})",
+            "binomial 2-sided p-value", f"{asf_p:.4f}",
+            f"Under H0 of {p_meccan} Meccan rate, observing {asf_m}/{asf_n} Meccan "
+            + ("is significantly Meccan-skewed."
+               if asf_p < 0.05
+               else "is suggestive but not decisive on its own (n is tiny)."),
         ])
         w.writerow([
-            "utuww (Etw) Meccan dominance (9/10)",
-            "binomial 2-sided p-value", f"{etw_pvalue:.4f}",
-            "Strong Meccan preference; consistent with the early-revelation "
-            "rebellion-against-revelation pattern.",
+            f"utuww (Etw) Meccan dominance ({etw_m}/{etw_n})",
+            "binomial 2-sided p-value", f"{etw_p:.4f}",
+            f"{etw_m} of {etw_n} Meccan; "
+            + ("Strong Meccan preference, consistent with early-revelation "
+               "rebellion-against-revelation patterns."
+               if etw_p < 0.10
+               else "Distribution consistent with the corpus baseline."),
         ])
         w.writerow([
-            "jrm (umbrella) Meccan dominance (60/66)",
-            "binomial 2-sided p-value", f"{jrm_pvalue:.4f}",
-            "Robust Meccan preference for the criminality lexeme; aligns with "
-            "early-revelation polemic with the mushrikun.",
+            f"jrm (umbrella) Meccan dominance ({jrm_m}/{jrm_n})",
+            "binomial 2-sided p-value", f"{jrm_p:.4f}",
+            f"{jrm_m} of {jrm_n} Meccan; "
+            + ("Robust Meccan preference, aligns with early-revelation "
+               "polemic with the mushrikun."
+               if jrm_p < 0.05
+               else "Distribution consistent with the corpus baseline."),
         ])
         w.writerow([
-            "fsq (umbrella) Medinan tilt (20/54)",
-            "binomial 2-sided p-value", f"{fsq_pvalue:.4f}",
-            "fsq tilts Medinan, reflecting community-discipline contexts.",
+            f"fsq (umbrella) Medinan tilt ({fsq_m}/{fsq_n})",
+            "binomial 2-sided p-value", f"{fsq_p:.4f}",
+            f"{fsq_m} Meccan / {fsq_n - fsq_m} Medinan; "
+            + ("Significant Medinan tilt, reflecting community-discipline contexts."
+               if fsq_p < 0.05 and fsq_m / fsq_n < p_meccan
+               else "Distribution consistent with the corpus baseline."),
         ])
     print(f"Wrote {out}")
 

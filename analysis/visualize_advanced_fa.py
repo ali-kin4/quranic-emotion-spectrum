@@ -274,7 +274,7 @@ def fig7_centrality() -> None:
     for xi, v in enumerate(cls):
         axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
 
-    fig.suptitle(ar("سنجه‌های مرکزیت شبکه برای ده ریشه کانونی"),
+    fig.suptitle(ar("سنجه‌های مرکزیت شبکه برای ۱۴ ریشه کانونی"),
                  fontsize=11.5)
     fig.tight_layout()
 

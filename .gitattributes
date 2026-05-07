@@ -1,0 +1,13 @@
+# Pin line endings for the canonical corpus file.
+# It must be byte-stable so the SHA-256 check in the notebook is meaningful
+# and reproducibility is preserved across Linux/macOS/Windows clones.
+data/quran/qac_morphology.txt   binary
+
+# Other large data assets - treat as binary so Git never normalises them.
+*.csv                            text eol=lf
+*.json                           text eol=lf
+*.bib                            text eol=lf
+*.md                             text eol=lf
+*.tex                            text eol=lf
+*.py                             text eol=lf
+*.ipynb                          text eol=lf

@@ -1,23 +1,29 @@
 # Quranic Emotion Spectrum
-### A Phenomenological–Computational Study of Negative Emotions in the Qur'an
+### A Phenomenological–Computational Study of the Anger Spectrum in the Qurʾān
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ali-kin4/quranic-emotion-spectrum/blob/master/notebooks/quranic_emotion_spectrum.ipynb)
+
+> **One-click reproducibility.** The notebook above clones this repo into a Colab runtime, verifies the corpus SHA-256, runs the entire pipeline (concordance → statistics → network → figures), regenerates all seven figures in English- and Persian-labelled variants, runs sparse-count robustness diagnostics, and can optionally commit the regenerated outputs back to a feature branch on GitHub. See [`notebooks/quranic_emotion_spectrum.ipynb`](notebooks/quranic_emotion_spectrum.ipynb).
 
 A research-paper repository accompanying:
 
-> *The Phenomenology of Negative Emotions in the Qur'an: A Semantic-Network
-> Analysis of Distress, Aggression, and Rebellion Along an Action-Intensity
-> Continuum.*
+> *The Phenomenology of the Anger Spectrum in the Qurʾān: A Semantic-Network
+> Analysis of Displeasure, Inflammation, and Destructiveness Along an
+> Action-Intensity Continuum.*
 
-The paper proposes that ten core Arabic roots in the Qur'an—
-**ḍyq, ḥzn, ʾsf, sxṭ, ġḍb, ġyẓ, myz, bġy, ṭġy, ʿtw**—form a single graded
-semantic field organised by *intensity of action*. The continuum traverses
-four phenomenological stages:
+The paper argues that **fourteen** core Arabic roots in the Qurʾān—
+**ʾff, krh, ḍyq, ḥzn, ʾsf, nqm, sxṭ, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw**—form
+a single graded semantic field organised by *intensity of action*. The
+continuum traverses **six** phenomenological stages:
 
 | Stage | Theme | Roots |
 |-------|-------|-------|
-| 1 | Internal distress (pre-anger) | ضيق, حزن, أسف |
-| 2 | Explicit anger | سخط, غضب |
-| 3 | Explosive rage | غيظ, تميّز من الغيظ |
-| 4 | Behavioural rebellion | بغي, طغيان, عتوّ |
+| 1 | Pre-anger displeasure | أُفّ, كره |
+| 2 | Inner pressure / contraction | ضيق, حزن, أسف |
+| 3 | Evaluative aversion | نقم, سخط, مقت |
+| 4 | Active anger | غضب, حرد |
+| 5 | Compressed / explosive rage | غيظ (with *tamayyuz* as manifestation) |
+| 6 | Behavioural outcomes (with caveats: bidirectional causation) | بغي, طغيان, عتوّ |
 
 The paper combines three methodological lenses—Izutsu-style semantic-field
 analysis, scalar semantics in the Kennedy–Sassoon tradition, and conceptual
@@ -150,9 +156,9 @@ If you use this work, please cite the manuscript:
 ```bibtex
 @article{jabbary2026spectrum,
   author  = {Jabbary, Karim and Jabbary, Ali},
-  title   = {The Phenomenology of Negative Emotions in the {Qur'\={a}n}:
-             A Semantic-Network Analysis of Distress, Aggression, and
-             Rebellion Along an Action-Intensity Continuum},
+  title   = {The Phenomenology of the Anger Spectrum in the {Qur'\={a}n}:
+             A Semantic-Network Analysis of Displeasure, Inflammation,
+             and Destructiveness Along an Action-Intensity Continuum},
   year    = {2026},
   affiliation = {Urmia University, Iran},
   note    = {Manuscript draft; repository at

@@ -169,8 +169,9 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                     color=[STAGE_COLORS[s] for s in stages],
                     edgecolor="black", linewidth=0.6)
     ax2.set_xticks(stages)
-    ax2.set_xticklabels([f"S{s}\n{STAGE_LABELS_EN[s].split(' — ')[1]}"
-                         for s in stages], fontsize=8.0)
+    ax2.set_xticklabels([f"S{s}: {STAGE_LABELS_EN[s].split(' — ')[1]}"
+                         for s in stages], fontsize=8.5,
+                        rotation=20, ha="right", rotation_mode="anchor")
     ax2.set_ylabel("Total occurrences")
     ax2.set_title("Stage-level totals")
     for b, s in zip(bars2, stages):

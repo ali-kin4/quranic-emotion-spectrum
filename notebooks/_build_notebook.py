@@ -507,7 +507,43 @@ The cells below extend the pipeline with nine analyses that go beyond standard c
 | 9.6 Stage-count model selection | `data/concordance/stage_model_selection.csv` |
 | 9.7 Translation-collapse KL divergence | `data/concordance/translation_kl.csv` |
 | 9.8 Sura narrative arcs | `data/concordance/sura_narrative_arcs.csv`; `figures/fig11_arcs.{pdf,png}` |
-| 9.9 Counterfactual leave-one-out | `data/concordance/counterfactual_results.csv` |"""
+| 9.9 Counterfactual leave-one-out | `data/concordance/counterfactual_results.csv` |
+
+> **Optional dependencies.** §9 cells use three packages that are *not* part of the minimal-core dependency budget (`pandas`, `numpy`, `matplotlib`, `networkx`, `arabic_reshaper`, `python-bidi`) listed in `analysis/requirements.txt`. We deliberately keep them out of the core to preserve the lean reproducibility profile of the pipeline; the cell below installs them on-demand only when you run the advanced-analysis section. They are: `plotly` (9.1 interactive network), `scikit-learn` (9.4 PCA fallback + 9.6 clustering metrics), `umap-learn` (9.4 embedding reduction). If you skip §9 entirely, the core pipeline (§3–§8) still runs with the original six dependencies."""
+    )
+)
+
+# ----- 9.0 OPTIONAL DEPENDENCY INSTALL -----
+cells.append(
+    code(
+        """# --- Install optional advanced-analysis dependencies -----------------
+# These are NOT in the minimal core (CLAUDE.md mandates avoiding scipy/sklearn
+# in the core pipeline); they are installed here only for §9 advanced analyses.
+
+OPTIONAL_DEPS = ["plotly>=5.0", "scikit-learn>=1.3", "umap-learn>=0.5"]
+print("Installing optional advanced-analysis dependencies (skip §9 if you don't want them):")
+for spec in OPTIONAL_DEPS:
+    print(f"  > {spec}")
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-q", spec],
+        check=False,    # tolerate failures; downstream cells degrade gracefully
+    )
+
+# Sanity check
+try:
+    import plotly                                           # noqa: F401
+    import sklearn                                          # noqa: F401
+    print(f"  plotly      {plotly.__version__}")
+    print(f"  scikit-learn {sklearn.__version__}")
+except ImportError as e:
+    print(f"  WARNING: optional dependency missing -- {e}")
+    print("  Cells 9.1, 9.4, 9.6 may degrade or skip.")
+try:
+    import umap                                              # noqa: F401
+    print(f"  umap-learn  {umap.__version__ if hasattr(umap, '__version__') else 'OK'}")
+except ImportError:
+    print("  umap-learn not available -- cell 9.4 will fall back to PCA.")
+"""
     )
 )
 
@@ -523,13 +559,14 @@ Static PNGs in the manuscript can't show *which* verses bridge two roots. Plotly
 cells.append(
     code(
         """# --- Interactive Plotly network --------------------------------------
-import plotly.graph_objects as go
-from plotly.offline import plot as plotly_offline
-
-if "plotly" not in sys.modules:
-    subprocess.run(["pip", "install", "-q", "plotly>=5.0"], check=True)
+# Requires the optional dep installed in cell 9.0.
+try:
     import plotly.graph_objects as go
     from plotly.offline import plot as plotly_offline
+except ImportError:
+    raise RuntimeError(
+        "plotly is not installed. Run cell 9.0 first (or `pip install plotly`)."
+    )
 
 # Re-use the graph G from cell 6.1 (we rebuild for safety)
 import networkx as nx
@@ -820,19 +857,13 @@ If `umap-learn` is unavailable, the cell falls back to scikit-learn PCA — same
 cells.append(
     code(
         """# --- Distributional fingerprint + 2D projection ---------------------
+# Requires the optional deps installed in cell 9.0 (umap-learn preferred,
+# scikit-learn as PCA fallback). The cell degrades gracefully.
 try:
-    import umap
+    import umap                                                # noqa: F401
     REDUCER = "UMAP"
 except ImportError:
-    if ON_COLAB:
-        subprocess.run(["pip", "install", "-q", "umap-learn"], check=True)
-        try:
-            import umap
-            REDUCER = "UMAP"
-        except ImportError:
-            REDUCER = "PCA"
-    else:
-        REDUCER = "PCA"
+    REDUCER = "PCA"
 print(f"Reducer: {REDUCER}")
 
 # Window-based co-occurrence (verse + 2 neighbours)
@@ -862,8 +893,14 @@ if REDUCER == "UMAP":
     reducer = umap.UMAP(n_components=2, n_neighbors=5, min_dist=0.3, random_state=42)
     coords = reducer.fit_transform(M_norm)
 else:
-    from sklearn.decomposition import PCA
-    coords = PCA(n_components=2, random_state=42).fit_transform(M_norm)
+    try:
+        from sklearn.decomposition import PCA
+        coords = PCA(n_components=2, random_state=42).fit_transform(M_norm)
+    except ImportError:
+        raise RuntimeError(
+            "Neither umap-learn nor scikit-learn is installed. "
+            "Run cell 9.0 first (or `pip install scikit-learn umap-learn`)."
+        )
 
 # Annotate with stages
 sm = pd.read_csv("data/concordance/summary_counts.csv").set_index("root_ar")
@@ -1030,8 +1067,15 @@ The six-stage partition is theoretically motivated, but empirically defensible? 
 cells.append(
     code(
         """# --- Stage-count model selection -------------------------------------
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, davies_bouldin_score
+# Requires scikit-learn (installed in cell 9.0; not part of the minimal core).
+try:
+    from sklearn.cluster import KMeans
+    from sklearn.metrics import silhouette_score, davies_bouldin_score
+except ImportError:
+    raise RuntimeError(
+        "scikit-learn is not installed. Run cell 9.0 first "
+        "(or `pip install scikit-learn`)."
+    )
 
 # Features for clustering
 X_emb = M_norm  # from cell 9.4

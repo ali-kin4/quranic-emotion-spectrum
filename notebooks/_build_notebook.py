@@ -445,10 +445,10 @@ for fig_id in range(1, 8):
     fa_match = next(iter(pathlib.Path("figures_fa").glob(f"fig{fig_id}_*.png")), None)
     display(Markdown(f"### Figure {fig_id}"))
     if en_match:
-        display(Markdown(f"**English labels** — `{en_match.relative_to(REPO_DIR)}`"))
+        display(Markdown(f"**English labels** — `{en_match.as_posix()}`"))
         display(Image(filename=str(en_match), width=720))
     if fa_match:
-        display(Markdown(f"**Persian labels** — `{fa_match.relative_to(REPO_DIR)}`"))
+        display(Markdown(f"**Persian labels** — `{fa_match.as_posix()}`"))
         display(Image(filename=str(fa_match), width=720))
 """
     )

@@ -317,8 +317,9 @@ def exact_binomial_two_sided(k: int, n: int, p: float) -> float:
 
 import json
 quran = json.loads(open("data/quran/quran_check.json", encoding="utf-8").read())
+# quran_check.json stores sura type as "type": "meccan" | "medinan" (lowercase)
 total_ayat   = sum(s["total_verses"] for s in quran)
-meccan_ayat  = sum(s["total_verses"] for s in quran if s["meccan_or_medinan"] == "Meccan")
+meccan_ayat  = sum(s["total_verses"] for s in quran if s["type"].lower() == "meccan")
 baseline     = meccan_ayat / total_ayat
 print(f"Verse-level Meccan baseline: {baseline:.4f}  ({meccan_ayat} / {total_ayat})")
 

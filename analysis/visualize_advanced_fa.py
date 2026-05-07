@@ -146,25 +146,28 @@ def fig6_metaphor() -> None:
             ar("(Lakoff & Kövecses, 1987) — اعمال‌شده بر سه‌گانهٔ غَیظ–کَظم–تَمَیُّز در قرآن"),
             ha="center", va="center", fontsize=10, color="dimgray", style="italic")
 
-    # Three vessel states across the bottom (Persian labels)
+    # Three vessel states across the bottom (Persian labels).
+    # Stage numbers reflect the six-stage spectrum (post-revision):
+    # ghaḍab is Stage 4; ghayẓ+kaẓm and tamayyuz are Stage 5 (the
+    # latter as manifestation of the former at peak).
     vessel_states = [
         # (x, y, color, fluid_height, label_top, label_bottom, ar_label)
         (1.5, 3.5, "#FFC857", 0.4,
-         ar("مرحله ۲: غَضَب"),
-         ar("ظرف باز / بدون مهر؛")
+         ar("مرحلهٔ ۴: غَضَب"),
+         ar("ظرفِ باز / بدونِ مهر؛")
          + "\n" + ar("هیجان حاضر است اما تحت فشار نیست."),
          "غَضَب"),
         (5.0, 3.5, "#E76F51", 0.7,
-         ar("مرحله ۳ (الف): غَیظ + کَظم"),
-         ar("ظرف مهر شده؛ فشار در حال افزایش؛")
+         ar("مرحلهٔ ۵ (الف): غَیظ + کَظم"),
+         ar("ظرفِ مهر شده؛ فشار در حال افزایش؛")
          + "\n" + ar("کنشگر با کَظم خود را مهار می‌کند (آل‌عمران ۳:۱۳۴،")
          + "\n" + ar("وَالْكَاظِمِينَ الْغَيْظَ") + ").",
          "غَيْظ + كَظْم"),
         (8.5, 3.5, "#9D2933", 0.95,
-         ar("مرحله ۳ (ب): تَمَیُّز"),
-         ar("گسستن ظرف (مُلک ۶۷:۸):") + "\n"
+         ar("مرحلهٔ ۵ (ب): تَمَیُّز"),
+         ar("گسستنِ ظرف (مُلک ۶۷:۸):") + "\n"
          + ar("تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ") + "\n"
-         + ar("— خود ظرف از هم می‌شکافد."),
+         + ar("— خودِ ظرف از هم می‌شکافد."),
          "تَمَيُّز"),
     ]
 
@@ -249,37 +252,39 @@ def fig7_centrality() -> None:
     x = list(range(len(canonical)))
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in canonical]
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+    # Wider canvas + rotated, larger labels so per-root tick text is
+    # readable at the printed size (reviewer-flagged ~5pt rendering).
+    fig, axes = plt.subplots(1, 3, figsize=(17, 5.4))
 
     # Panel 1: Weighted degree
     deg = [by_bw[bw]["degree_weighted"] for bw in canonical]
     axes[0].bar(x, deg, color=colors, edgecolor="black", linewidth=0.6)
     axes[0].set_xticks(x)
-    axes[0].set_xticklabels(labels, fontsize=11)
-    axes[0].set_ylabel(ar("درجه وزنی"))
-    axes[0].set_title(ar("الف) مرکزیت درجه"))
+    axes[0].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
+    axes[0].set_ylabel(ar("درجهٔ وزنی"), fontsize=11)
+    axes[0].set_title(ar("الف) مرکزیتِ درجه"), fontsize=11)
     for xi, v in enumerate(deg):
-        axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=8)
+        axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=9)
 
     # Panel 2: Betweenness
     btw = [by_bw[bw]["betweenness"] for bw in canonical]
     axes[1].bar(x, btw, color=colors, edgecolor="black", linewidth=0.6)
     axes[1].set_xticks(x)
-    axes[1].set_xticklabels(labels, fontsize=11)
-    axes[1].set_ylabel(ar("مرکزیت بینابینی"))
-    axes[1].set_title(ar("ب) مرکزیت بینابینی"))
+    axes[1].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
+    axes[1].set_ylabel(ar("مرکزیتِ بینابینی"), fontsize=11)
+    axes[1].set_title(ar("ب) مرکزیتِ بینابینی"), fontsize=11)
     for xi, v in enumerate(btw):
-        axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=8)
+        axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=9)
 
     # Panel 3: Closeness
     cls = [by_bw[bw]["closeness"] for bw in canonical]
     axes[2].bar(x, cls, color=colors, edgecolor="black", linewidth=0.6)
     axes[2].set_xticks(x)
-    axes[2].set_xticklabels(labels, fontsize=11)
-    axes[2].set_ylabel(ar("مرکزیت نزدیکی"))
-    axes[2].set_title(ar("ج) مرکزیت نزدیکی"))
+    axes[2].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
+    axes[2].set_ylabel(ar("مرکزیتِ نزدیکی"), fontsize=11)
+    axes[2].set_title(ar("ج) مرکزیتِ نزدیکی"), fontsize=11)
     for xi, v in enumerate(cls):
-        axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
+        axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=9)
 
     fig.suptitle(ar(f"سنجه‌های مرکزیت شبکه برای {_to_persian_digits(len(SPECTRUM))} ریشه کانونی"),
                  fontsize=11.5)

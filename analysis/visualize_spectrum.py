@@ -121,7 +121,9 @@ def fig1_continuum(rows: list[dict]) -> None:
                 fontsize=10.5, fontweight="bold", color="white", zorder=4)
         ax.text(i, 1.85, f"n = {rec['occurrences']}", ha="center", va="center",
                 fontsize=8.5, color="black", zorder=4)
-        ax.text(i, 1.45, f"({r.bw})", ha="center", va="center",
+        # Use scientific transliteration (e.g. ʾff, ḥzn, ġḍb), not Buckwalter
+        # codes (Aff, Hzn, gDb), so non-Arabist readers can decode the labels.
+        ax.text(i, 1.45, f"({r.translit})", ha="center", va="center",
                 fontsize=7.5, color="dimgray", zorder=4, style="italic")
 
     for i in range(1, n):
@@ -241,9 +243,27 @@ def fig4_cooccurrence() -> None:
     for (a, b), w in edges.items():
         G.add_edge(a, b, weight=w)
 
-    pos = nx.spring_layout(G, weight="weight", seed=42, k=1.5, iterations=300)
+    # Lay out the connected component(s) with a force-directed (spring)
+    # layout, then place isolated nodes (those that share no aya with any
+    # other spectrum root in the QAC) in a clearly-labelled sidebar so they
+    # aren't visually floating in the layout and misread as broken edges.
+    connected = [n for n in G.nodes() if G.degree(n) > 0]
+    isolated = [n for n in G.nodes() if G.degree(n) == 0]
+    G_main = G.subgraph(connected).copy()
+    if G_main.number_of_nodes() > 0:
+        pos = nx.spring_layout(G_main, weight="weight", seed=42,
+                               k=1.6, iterations=400)
+    else:
+        pos = {}
+    # Stack isolated nodes on the right at fixed x, evenly distributed in y
+    if isolated:
+        ys = ([0.0] if len(isolated) == 1
+              else [1.0 - 2.0 * i / (len(isolated) - 1)
+                    for i in range(len(isolated))])
+        for node, y in zip(isolated, ys):
+            pos[node] = (1.55, y * 0.7)
 
-    fig, ax = plt.subplots(figsize=(12, 9))
+    fig, ax = plt.subplots(figsize=(13, 9))
 
     if G.number_of_edges() > 0:
         max_w = max(d["weight"] for _, _, d in G.edges(data=True))
@@ -264,6 +284,16 @@ def fig4_cooccurrence() -> None:
                    edgecolor="black", linewidth=0.8, zorder=2)
         ax.text(x, y, ar(r.display()), ha="center", va="center",
                 fontsize=9.5, fontweight="bold", color="white", zorder=3)
+
+    # Label the sidebar of isolated (no co-occurrence) nodes so the visual
+    # placement reads correctly rather than as a layout failure.
+    if isolated:
+        ax.text(1.55, 0.95,
+                "no aya-level\nco-occurrence",
+                ha="center", va="bottom", fontsize=8.5, style="italic",
+                color="dimgray")
+        ax.axvline(x=1.30, ymin=0.05, ymax=0.95, color="lightgray",
+                   linestyle="--", linewidth=0.7, zorder=0)
 
     for st in sorted(set(r.stage for r in SPECTRUM)):
         ax.scatter([], [], color=STAGE_COLORS[st], s=120, edgecolor="black",

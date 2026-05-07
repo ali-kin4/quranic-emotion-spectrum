@@ -74,10 +74,13 @@ def fig5_morphology() -> None:
     canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
 
-    fig, ax = plt.subplots(figsize=(15, 5.5))
+    # Two-panel view per reviewer B4: (a) absolute-count stack so totals
+    # remain visible; (b) percentage stack so the small categories (ADJ,
+    # PCPL, OTHER) do not vanish from low-count bars.
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(20, 5.6),
+                                  gridspec_kw={"width_ratios": [1, 1]})
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     x = list(range(len(canonical)))
-    bottoms = [0] * len(canonical)
     categories = [
         ("verb", "VERB",        "#4878CF"),
         ("noun", "NOUN",        "#EE854A"),
@@ -85,32 +88,54 @@ def fig5_morphology() -> None:
         ("participle", "PCPL",  "#956CB4"),
         ("other", "OTHER",      "#D5D5D5"),
     ]
+
+    # Panel (a): absolute counts
+    bottoms = [0] * len(canonical)
     for key, label, color in categories:
         vals = [by_bw[bw][key] for bw in canonical]
         ax.bar(x, vals, bottom=bottoms, label=label,
                color=color, edgecolor="black", linewidth=0.4)
-        # In-bar text for non-trivial slices
         for xi, (b, v) in enumerate(zip(bottoms, vals)):
             if v >= 4:
                 ax.text(xi, b + v / 2, str(v), ha="center", va="center",
                         fontsize=8, color="black", fontweight="bold")
         bottoms = [bo + v for bo, v in zip(bottoms, vals)]
-    # Annotate totals on top
     for xi, bw in enumerate(canonical):
         total = by_bw[bw]["total"]
         ax.text(xi, total + 1.5, f"n = {total}", ha="center", va="bottom",
                 fontsize=9, fontweight="bold")
-
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=12)
-    ax.set_ylabel("Number of attestations")
-    ax.set_title("Morphological breakdown of spectrum lexemes "
-                 "(verb / noun / adjective / participle)\n"
-                 "showing the predominantly verbal profile of "
-                 "internal-distress and rage stages, vs. the "
-                 "noun/participle-leaning rebellion stage",
-                 fontsize=11)
-    ax.legend(loc="upper right", ncol=5, fontsize=9, frameon=False)
+    ax.set_ylabel("Number of attestations", fontsize=11)
+    ax.set_title("(a) Morphological breakdown — absolute counts", fontsize=11)
+
+    # Panel (b): percentage stack (so small categories remain visible)
+    bottoms_pct = [0.0] * len(canonical)
+    totals = [max(by_bw[bw]["total"], 1) for bw in canonical]
+    for key, label, color in categories:
+        vals = [by_bw[bw][key] for bw in canonical]
+        pcts = [100.0 * v / t for v, t in zip(vals, totals)]
+        ax2.bar(x, pcts, bottom=bottoms_pct, label=label,
+                color=color, edgecolor="black", linewidth=0.4)
+        for xi, (b, p) in enumerate(zip(bottoms_pct, pcts)):
+            if p >= 7:
+                ax2.text(xi, b + p / 2, f"{p:.0f}%",
+                         ha="center", va="center",
+                         fontsize=8, color="black", fontweight="bold")
+        bottoms_pct = [bo + p for bo, p in zip(bottoms_pct, pcts)]
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(labels, fontsize=12)
+    ax2.set_ylabel("Percent of attestations (within root)", fontsize=11)
+    ax2.set_ylim(0, 100)
+    ax2.set_title("(b) Morphological breakdown — percentage stack", fontsize=11)
+
+    ax2.legend(loc="upper right", ncol=5, fontsize=9, frameon=False,
+               bbox_to_anchor=(1.0, 1.12))
+    fig.suptitle(
+        "Morphological breakdown of spectrum lexemes (verb / noun / adjective"
+        " / participle / other) — verbal in low-intensity stages, nominal/participial"
+        " in high-intensity stages.", fontsize=11.5, y=1.02)
+    fig.tight_layout()
 
     out = FIG_DIR / "fig5_morphology_stack.pdf"
     plt.savefig(out)
@@ -135,21 +160,24 @@ def fig6_metaphor() -> None:
     ax.text(5, 7.2, "(Lakoff & Kövecses, 1987) — applied to the Qur'anic ġayẓ–kaẓm–tamayyuz triplet",
             ha="center", va="center", fontsize=10, color="dimgray", style="italic")
 
-    # Three vessel states across the bottom
+    # Three vessel states across the bottom.
+    # Stage numbers reflect the six-stage spectrum (post-revision):
+    # ghaḍab is Stage 4; ghayẓ+kaẓm and tamayyuz are Stage 5 (the
+    # latter as a manifestation of the former at peak).
     vessel_states = [
         # (x, y, color, fluid_height, label_top, label_bottom, ar_label)
-        (1.5, 3.5, "#FFC857", 0.4, "Stage 2: ġaḍab",
+        (1.5, 3.5, "#FFC857", 0.4, "Stage 4: ġaḍab (anger)",
          "Open / unsealed vessel;\nemotion present but not pressurized.",
-         "غَضَب"),
-        (5.0, 3.5, "#E76F51", 0.7, "Stage 3a: ġayẓ + kaẓm",
+         "غَضَب  (anger)"),
+        (5.0, 3.5, "#E76F51", 0.7, "Stage 5a: ġayẓ + kaẓm",
          "Sealed vessel; pressure rising;\nagent restrains via kaẓm (Q. 3:134,\n"
          + ar("وَالْكَاظِمِينَ الْغَيْظَ") + ").",
-         "غَيْظ + كَظْم"),
-        (8.5, 3.5, "#9D2933", 0.95, "Stage 3b: tamayyuz",
+         "غَيْظ + كَظْم  (compressed rage + restraint)"),
+        (8.5, 3.5, "#9D2933", 0.95, "Stage 5b: tamayyuz",
          "Container collapse (Q. 67:8):\n"
          + ar("تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ") + "\n"
          "— the vessel itself splits.",
-         "تَمَيُّز"),
+         "تَمَيُّز  (bursting apart)"),
     ]
 
     for (cx, cy, col, fh, top, bot, arabic) in vessel_states:
@@ -233,37 +261,42 @@ def fig7_centrality() -> None:
     x = list(range(len(canonical)))
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in canonical]
 
-    fig, axes = plt.subplots(1, 3, figsize=(18, 4.5))
+    # Wider figure + larger, rotated x-axis labels so the per-root tick text
+    # is readable at the printed size (reviewer-flagged ~5pt rendering).
+    fig, axes = plt.subplots(1, 3, figsize=(20, 5.4))
 
     # Panel 1: Weighted degree
     deg = [by_bw[bw]["degree_weighted"] for bw in canonical]
     axes[0].bar(x, deg, color=colors, edgecolor="black", linewidth=0.6)
     axes[0].set_xticks(x)
-    axes[0].set_xticklabels(labels, fontsize=9)
-    axes[0].set_ylabel("Weighted degree")
-    axes[0].set_title("(a) Weighted degree (sum of co-occurrence ties)")
+    axes[0].set_xticklabels(labels, fontsize=11, rotation=45, ha="right")
+    axes[0].set_ylabel("Weighted degree", fontsize=11)
+    axes[0].set_title("(a) Weighted degree (sum of co-occurrence ties)",
+                      fontsize=11)
     for xi, v in enumerate(deg):
-        axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=8)
+        axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=9)
 
     # Panel 2: Betweenness
     btw = [by_bw[bw]["betweenness"] for bw in canonical]
     axes[1].bar(x, btw, color=colors, edgecolor="black", linewidth=0.6)
     axes[1].set_xticks(x)
-    axes[1].set_xticklabels(labels, fontsize=9)
-    axes[1].set_ylabel("Betweenness centrality")
-    axes[1].set_title("(b) Betweenness centrality (bridge-node strength)")
+    axes[1].set_xticklabels(labels, fontsize=11, rotation=45, ha="right")
+    axes[1].set_ylabel("Betweenness centrality", fontsize=11)
+    axes[1].set_title("(b) Betweenness centrality (bridge-node strength)",
+                      fontsize=11)
     for xi, v in enumerate(btw):
-        axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=8)
+        axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=9)
 
     # Panel 3: Closeness
     cls = [by_bw[bw]["closeness"] for bw in canonical]
     axes[2].bar(x, cls, color=colors, edgecolor="black", linewidth=0.6)
     axes[2].set_xticks(x)
-    axes[2].set_xticklabels(labels, fontsize=9)
-    axes[2].set_ylabel("Closeness centrality")
-    axes[2].set_title("(c) Closeness centrality (proximity to all roots)")
+    axes[2].set_xticklabels(labels, fontsize=11, rotation=45, ha="right")
+    axes[2].set_ylabel("Closeness centrality", fontsize=11)
+    axes[2].set_title("(c) Closeness centrality (proximity to all roots)",
+                      fontsize=11)
     for xi, v in enumerate(cls):
-        axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=8)
+        axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=9)
 
     fig.suptitle(f"Network-centrality measures on the aya-level "
                  f"co-occurrence graph ({len(SPECTRUM)} core roots)",

@@ -5,11 +5,12 @@
 
 > **One-click reproducibility.** The notebook above clones this repo into a Colab runtime, verifies the corpus SHA-256, runs the entire pipeline (concordance → statistics → network → figures), regenerates all seven figures in English- and Persian-labelled variants, runs sparse-count robustness diagnostics, and can optionally commit the regenerated outputs back to a feature branch on GitHub. See [`notebooks/quranic_emotion_spectrum.ipynb`](notebooks/quranic_emotion_spectrum.ipynb).
 
-A research-paper repository accompanying:
+A research-paper repository accompanying a **dual-track scholarly project** (May 2026 revision):
 
-> *The Phenomenology of the Anger Spectrum in the Qurʾān: A Semantic-Network
-> Analysis of Displeasure, Inflammation, and Destructiveness Along an
-> Action-Intensity Continuum.*
+- **English (international target — JQS / Cognitive Linguistics / DSH)**: *The Phenomenology of the Anger Spectrum in the Qurʾān: A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum* (~14,300 words; full 14-root × 6-stage continuum with state-of-art uncertainty-aware quantitative methodology).
+- **Persian (Iranian target — NRGS Isfahan / QHS Imam Sadiq)**: «اوجِ طیفِ خشم در قرآن کریم: قرائتی تطبیقی-تفسیری از مرحله‌های فعّال، متراکم، و پیامدی» (~10,500 words; tafsir-comparative companion paper focused on Stages 4–6, with deep nine-tafsir engagement).
+
+The two papers share data infrastructure but answer different scholarly questions — fully COPE/ICMJE-compliant via substantive differentiation rather than translated republication.
 
 The paper argues that **fourteen** core Arabic roots in the Qurʾān—
 **ʾff, krh, ḍyq, ḥzn, ʾsf, nqm, sxṭ, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw**—form
@@ -48,43 +49,48 @@ than describing inner phenomenology for its own sake.
 ```
 quranic-emotion-spectrum/
 ├── paper/
-│   ├── persian/manuscript.md      Persian primary draft (~11,600 words)
-│   └── english/manuscript.md      English journal version (~9,400 words)
+│   ├── english/manuscript.{md,tex,pdf}  English JQS-target version (~14,300 words, 35pp)
+│   └── persian/manuscript.{md,tex,pdf}  Persian NRGS-target tafsir-companion (~10,500 words, 33pp)
 ├── analysis/
 │   ├── buckwalter.py              Arabic ↔ Buckwalter transliteration
 │   ├── qac_parser.py              Parses Quranic Arabic Corpus v0.4
-│   ├── spectrum_roots.py          Defines the 10 core + 6 expansion roots
+│   ├── spectrum_roots.py          14 core + 5 umbrella roots; 6-stage definition
 │   ├── extract_concordance.py     Extraction pipeline → CSV concordances
-│   ├── advanced_metrics.py        Morphology, χ²-tests, network centrality
+│   ├── advanced_metrics.py        χ², monotonic-trend, permutation null,
+│   │                              Cramér's V / Cohen's w, FDR (Holm-Bonferroni),
+│   │                              bootstrap CIs (1000 resamples), centrality
 │   ├── visualize_spectrum.py      Generates figures 1–4
 │   └── visualize_advanced.py      Generates figures 5–7
 ├── data/
 │   ├── quran/
-│   │   ├── qac_morphology.txt     Quranic Arabic Corpus (Dukes 2011, GPL)
+│   │   ├── qac_morphology.txt     QAC v0.4 (Dukes 2011, GPL); SHA-256 pinned
 │   │   └── quran_check.json       Verse text + Meccan/Medinan metadata
 │   └── concordance/
-│       ├── master_concordance.csv     833 attestations across 16 roots
-│       ├── summary_counts.csv         Per-root frequency table
-│       ├── sura_distribution.csv      Per-sura per-root counts
-│       ├── morphology_by_root.csv     POS / form breakdown per root
-│       ├── statistical_tests.csv      χ² and binomial test results
-│       ├── network_centrality.csv     Degree/betweenness/closeness measures
-│       ├── umbrella_cooccurrence.csv  Cross-field co-occurrence with ẓlm/jrm/fsq
-│       └── by_root/*.csv              Per-root concordances
-├── figures/
-│   ├── fig1_continuum.{pdf,png}              4-stage spectrum diagram
+│       ├── master_concordance.csv         312 spectrum + 544 umbrella attestations
+│       ├── summary_counts.csv             Per-root frequency table
+│       ├── sura_distribution.csv          Per-sura per-root counts
+│       ├── morphology_by_root.csv         POS / form breakdown per root
+│       ├── statistical_tests.csv          χ², trend tests, FDR, sensitivity table
+│       ├── network_centrality.csv         Centrality + bootstrap 95% CIs
+│       ├── umbrella_cooccurrence.csv      Cross-field co-occurrence
+│       ├── stage6_causation_coding.csv    κ=0.79 anger-derived/structural audit
+│       ├── validation_audit.md            14/14 + 50/50 manual validation
+│       └── by_root/*.csv                  Per-root concordances
+├── figures/ (and figures_fa/)
+│   ├── fig1_continuum.{pdf,png}              6-stage spectrum diagram
 │   ├── fig2_frequency_by_stage.{pdf,png}     Frequency bars
 │   ├── fig3_meccan_medinan.{pdf,png}         Revelation-context distribution
 │   ├── fig4_cooccurrence.{pdf,png}           Aya-level co-occurrence network
 │   ├── fig5_morphology_stack.{pdf,png}       POS breakdown per root
-│   ├── fig6_metaphor_diagram.{pdf,png}       ANGER IS PRESSURIZED CONTAINER
-│   └── fig7_centrality.{pdf,png}             Network centrality metrics
+│   ├── fig6_metaphor_diagram.{pdf,png}       Container-collapse schema
+│   └── fig7_centrality.{pdf,png}             Network centrality (with CI panel)
 ├── references/
-│   ├── english.bib                BibTeX bibliography for the English version
-│   ├── persian.bib                BibTeX bibliography for the Persian version
+│   ├── english.bib                BibTeX bibliography (incl. Kövecses 2025,
+│   │                              Gaanoun & Alsuhaibani 2025, Khan 2025, etc.)
+│   ├── persian.bib                BibTeX bibliography for Persian version
 │   └── classical_sources.md       Annotated edition info for classical works
 └── docs/
-    ├── original_idea.docx         The original idea document (Persian)
+    ├── original_idea.docx         Original idea document (Persian)
     └── extracted_idea.txt         Plain-text extraction
 ```
 
@@ -118,34 +124,38 @@ python analysis/visualize_advanced.py
 The pipeline is deterministic; identical inputs produce byte-identical CSVs
 and figure pixels.
 
-### Headline empirical results
+### Headline empirical results (May 2026 revision — research-grade methodology)
 
-- χ²(3) = **165.45**, *p* < 0.001 against uniform stage distribution
-- χ²(1) = **7.11**, *p* = 0.008 against equal Stage 1+2+3 vs Stage 4 split
-- *sakhaṭ* exclusively Medinan: binomial *p* = **0.026** under H₀ = 0.60
-- *jrm* (umbrella) Meccan dominance: binomial *p* < 0.0001
-- *baghy* highest betweenness centrality (**0.39**) — bridge node between the
-  emotional and the moral-evaluation field
-- Q. 67:8 (*takādu tamayyazu min al-ġayẓ*) instantiates Lakoff–Kövecses
-  "container collapse" with greater clarity than any English exemplar in the
-  CMT literature
+**Statistical findings, reported with full uncertainty awareness:**
+
+- **Asymptotic χ²(5) = 227.15** against uniform six-stage distribution; Cohen's *w* = 0.85 (large effect). However, **marginal-preserving permutation null** *p* = 0.24 indicates the asymptotic *p*-value over-states evidence on this sparse, marginally-imbalanced design — the substantive case for the six-stage architecture rests on qualitative lexicographic, exegetical, and metaphorical evidence rather than the omnibus *p*-value alone.
+- **Three monotonic-trend tests** all fail to reject the no-trend null (Spearman ρ = −0.09, *p* = 0.85; Mann-Kendall *p* = 0.71; Cochran-Armitage-style OLS *p* = 0.40) — the *expected* result, since the continuum is an ordering of *semantic* intensity, not of attestation frequency.
+- **Phenomenology-vs-outcomes split** χ²(1) = 1.55 (Cohen's *w* = 0.07, trivial effect) — fails to reject. *Consistent with* the bidirectional-causation reading of Stage 6, supported by the κ = 0.79-validated tafsir-coding audit (26% A / 49% S / 25% A+S; A-only re-analysis χ²(1) = 81.4, *p* < 0.001).
+- ***sakhaṭ* exclusively Medinan** (0/4): raw binomial *p* = 0.005 (robust across baselines 0.70–0.78); **Holm-Bonferroni adjusted *p* = 0.05** over the family of 14 per-root binomials — borderline rather than emphatic post-FDR. The only spectrum root surviving FDR correction at α = 0.05.
+- **Network centrality** point-estimate: *baghy* highest closeness 0.55, betweenness 0.15 (tied with *ghaḍab*, *asaf*); **bootstrap 95% percentile CIs** are wide (e.g., *baghy* betweenness ∈ [0.00, 0.31]; closeness ∈ [0.23, 0.84]), reflecting the small graph (14 nodes); bridging-role claim is *consistent with* point estimates, qualified by bootstrap.
+- **Q. 67:8 container-collapse claim** softened to "an unusually transparent linguistic instance" (the verb *tamayyaza* lexicalises the disintegration of the *vessel* itself rather than the exit of *contents*); strong universalist claim reserved pending a cross-cultural philological survey commended in §5.6.
 
 ---
 
-## Findings at a glance
+## Findings at a glance — full 14-root × 6-stage continuum
 
-| Stage | Root | Arabic | n | Meccan | Medinan |
-|------:|:----:|:------:|--:|------:|--------:|
-| 1 | Dyq | ضيق | 13 | 9 | 4 |
-| 1 | Hzn | حزن | 42 | 26 | 16 |
-| 1 | Asf | أسف | 5 | **5** | 0 |
-| 2 | sxṭ | سخط | 4 | 0 | **4** |
-| 2 | ġḍb | غضب | 24 | 13 | 11 |
-| 3 | ġyẓ | غيظ | 11 | 3 | 8 |
-| 3 | myz | تميّز | 4 | 2 | 2 |
-| 4 | bġy | بغي | 96 | 55 | 41 |
-| 4 | ṭġy | طغيان | 39 | 29 | 10 |
-| 4 | ʿtw | عتوّ | 10 | 9 | 1 |
+| Stage | Root | Arabic | n | Meccan | Medinan | Note |
+|------:|:----:|:------:|--:|------:|--------:|:--|
+| 1 | ʾff | أفّ | 3 | 3 | 0 | All Meccan; lowest verbal displeasure |
+| 1 | krh | كره | 41 | 14 | 27 | Dual karāha/ikrāh structure |
+| 2 | ḍyq | ضيق | 13 | 9 | 4 | Inner constriction (*ḍīq al-ṣadr*) |
+| 2 | ḥzn | حزن | 42 | 26 | 16 | Most frequent Stage 2; 88% verbal |
+| 2 | ʾsf | أسف | 5 | 5 | 0 | Suggestive Meccan-only (raw *p* = 0.34, adj. 1.00) |
+| 3 | nqm | نقم | 17 | 12 | 5 | Vengeful disapproval; *al-Muntaqim* |
+| 3 | sxṭ | سخط | 4 | 0 | **4** | **Holm-adj. *p* = 0.05** — borderline post-FDR |
+| 3 | mqt | مقت | 6 | 4 | 2 | *Ashaddu al-ibghāḍ* (Zajjāj) |
+| 4 | ġḍb | غضب | 24 | 13 | 11 | Central anger lexeme |
+| 4 | ḥrd | حرد | 1 | 1 | 0 | Qurʾānic hapax (Q. 68:25) |
+| 5 | ġyẓ | غيظ | 11 | 3 | 8 | Compressed rage; *kaẓm* metaphor |
+| 6 | bġy | بغي | 96 | 55 | 41 | Bridge node; bidirectional |
+| 6 | ṭġy | طغيان | 39 | 29 | 10 | Pharaonic; appraisal of *istighnāʾ* |
+| 6 | ʿtw | عتوّ | 10 | 9 | 1 | Settled defiance; *istikbār*-attached |
+| **Σ** | — | — | **312** | **183** | **129** | |
 
 ---
 

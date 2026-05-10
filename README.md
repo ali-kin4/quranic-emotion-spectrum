@@ -7,10 +7,10 @@
 
 A research-paper repository accompanying a **dual-track scholarly project** (May 2026 revision):
 
-- **English (international target — JQS / Cognitive Linguistics / DSH)**: *The Phenomenology of the Anger Spectrum in the Qurʾān: A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum* (~14,300 words; full 14-root × 6-stage continuum with state-of-art uncertainty-aware quantitative methodology).
-- **Persian (Iranian target — NRGS Isfahan / QHS Imam Sadiq)**: «اوجِ طیفِ خشم در قرآن کریم: قرائتی تطبیقی-تفسیری از مرحله‌های فعّال، متراکم، و پیامدی» (~10,500 words; tafsir-comparative companion paper focused on Stages 4–6, with deep nine-tafsir engagement).
+- **English (international target — JQS / Cognitive Linguistics / DSH)**: *The Phenomenology of the Anger Spectrum in the Qurʾān: A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum* (~13,000 words; full 14-root × 6-stage continuum with state-of-art uncertainty-aware quantitative methodology; JQS-style numbered short-title endnotes; cross-cultural philological survey of anger-vessel imagery in Akkadian, Hebrew, Greek, Sanskrit, Chinese, and pre-Islamic Arabic).
+- **Persian (Iranian target — NRGS Isfahan / QHS Imam Sadiq)**: «اوجِ طیفِ خشم در قرآن کریم: قرائتی تطبیقی-تفسیری از مرحله‌های فعّال، متراکم، و پیامدی» (~8,000 body words; tafsir-comparative companion paper focused on Stages 4–6, with deep nine-tafsir engagement and Persian-native academic polish).
 
-The two papers share data infrastructure but answer different scholarly questions — fully COPE/ICMJE-compliant via substantive differentiation rather than translated republication.
+The two papers share data infrastructure but answer different scholarly questions — fully COPE/ICMJE-compliant via substantive differentiation rather than translated republication. **Cover letters drafted** for both submissions (`paper/{english,persian}/cover_letter.md`); **author-facing checklist** at `SUBMISSION_CHECKLIST.md`; **Zenodo archival instructions** at `ZENODO.md`.
 
 The paper argues that **fourteen** core Arabic roots in the Qurʾān—
 **ʾff, krh, ḍyq, ḥzn, ʾsf, nqm, sxṭ, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw**—form

@@ -508,7 +508,10 @@ commit_msg = (
     f"diachronic test, PMI network ({date.today().isoformat()})"
 )
 run(f'git commit -m "{commit_msg}"')
-run(f"git push -u origin {BRANCH}")
+# --force-with-lease is safe here: this branch is only used by this notebook, and we
+# explicitly want to replace a prior contaminated run's outputs if the branch already
+# exists upstream.
+run(f"git push --force-with-lease -u origin {BRANCH}")
 
 print(f"\n✓ Pushed outputs to branch `{BRANCH}`")
 print(f"  Open at: https://github.com/{REPO_OWNER}/{REPO_NAME}/tree/{BRANCH}/outputs/nlp_upgrade")

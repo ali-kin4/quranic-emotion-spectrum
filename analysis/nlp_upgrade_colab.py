@@ -76,49 +76,27 @@ OUTDIR.mkdir(parents=True, exist_ok=True)
 
 # %%
 master = pd.read_csv("data/concordance/master_concordance.csv")
-# Expected columns: root_buckwalter, root_arabic, sura, aya, word, surface_form, ...
-print(master.head())
-print(f"Total attestations: {len(master)}")
+# Actual columns: sura, aya, word, root_bw, root_ar, stage, english_gloss, persian_gloss,
+#                 surface_form_bw, surface_form_ar, lemma_bw, lemma_ar, pos, sura_name,
+#                 sura_type, verse_text
+print(master.columns.tolist())
+print(f"Total rows in master: {len(master)} (includes expansion/diagnostic roots)")
 
-# Stage assignments from spectrum_roots.py (mirror them here so the notebook is self-contained).
-STAGE_BY_ROOT = {
-    "Off": 1, "krh": 1,
-    "DyQ": 2, "Hzn": 2, "Asf": 2,
-    "nqm": 3, "sxT": 3, "mqt": 3,
-    "gDb": 4, "Hrd": 4,
-    "gyZ": 5,
-    "bgy": 6, "Tgy": 6, "Etw": 6,
-}
-master["stage"] = master["root_buckwalter"].map(STAGE_BY_ROOT)
-master = master.dropna(subset=["stage"]).copy()
+# Filter to just the 14 SPECTRUM roots (stages 1-6); drop expansion (umbrella moral terms)
+# and the diagnostic tamayyuz row, which carry no `stage` value 1..6.
+master = master[master["stage"].between(1, 6, inclusive="both")].copy()
 master["stage"] = master["stage"].astype(int)
+print(f"Spectrum-only attestations: {len(master)}")
 print(master["stage"].value_counts().sort_index())
 
 # %% [markdown]
 # ## 2. Pull verse context for each attestation
 
 # %%
-# Download Tanzil Uthmani text if not present.
-TANZIL_URL = "https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt"
-quran_path = Path("data/quran-uthmani.txt")
-if not quran_path.exists():
-    quran_path.parent.mkdir(parents=True, exist_ok=True)
-    import urllib.request
-    urllib.request.urlretrieve(TANZIL_URL, quran_path)
-
-# Build a (sura, aya) -> text dictionary.
-verse_text = {}
-for line in open(quran_path, encoding="utf-8"):
-    line = line.strip()
-    if not line or line.startswith("#"):
-        continue
-    sura, aya, text = line.split("|", 2)
-    verse_text[(int(sura), int(aya))] = text
-
-master["verse_text"] = master.apply(
-    lambda r: verse_text.get((int(r.sura), int(r.aya)), ""), axis=1
-)
-assert master["verse_text"].str.len().min() > 0, "Some attestations missing verse text"
+# verse_text is already populated in the master CSV (column 16). Sanity check.
+assert "verse_text" in master.columns, "master CSV missing verse_text column"
+assert master["verse_text"].str.len().min() > 0, "Some attestations have empty verse_text"
+print(f"verse_text already populated for all {len(master)} attestations.")
 
 
 # %% [markdown]
@@ -163,11 +141,11 @@ def embed_with_root_context(verse, root_surface, max_len=128):
 
 
 emb = np.stack([
-    embed_with_root_context(r.verse_text, r.surface_form)
+    embed_with_root_context(r.verse_text, r.surface_form_ar)
     for r in tqdm(master.itertuples(), total=len(master), desc="Embedding")
 ])
 np.savez(OUTDIR / "embeddings_arabert.npz", emb=emb, stage=master["stage"].values,
-         root=master["root_buckwalter"].values)
+         root=master["root_bw"].values)
 print("emb shape:", emb.shape)
 
 # %% [markdown]
@@ -180,7 +158,7 @@ from sklearn.metrics import (silhouette_score, adjusted_rand_score,
 import umap
 
 stages = master["stage"].values
-roots = master["root_buckwalter"].values
+roots = master["root_bw"].values
 
 km = KMeans(n_clusters=6, n_init=20, random_state=42).fit(emb)
 sil = silhouette_score(emb, stages, metric="cosine")
@@ -286,7 +264,7 @@ for r in tqdm(master.itertuples(), total=len(master), desc="Translation drift"):
     np.fill_diagonal(sim, np.nan)
     mean_sim = np.nanmean(sim)
     drift_rows.append({
-        "sura": r.sura, "aya": r.aya, "root": r.root_buckwalter,
+        "sura": r.sura, "aya": r.aya, "root": r.root_bw,
         "stage": r.stage, "n_translations": len(versions),
         "mean_pairwise_cosine_sim": float(mean_sim),
         "drift": float(1 - mean_sim),
@@ -388,18 +366,18 @@ from collections import Counter
 from itertools import combinations
 
 # Build per-aya root sets.
-aya_roots = master.groupby(["sura", "aya"])["root_buckwalter"].apply(set).reset_index()
+aya_roots = master.groupby(["sura", "aya"])["root_bw"].apply(set).reset_index()
 N_AYAS = 6236  # total Quranic ayāt
 
 # Marginal counts (ayāt containing root r).
 root_aya_counts = Counter()
-for s in aya_roots["root_buckwalter"]:
+for s in aya_roots["root_bw"]:
     for r in s:
         root_aya_counts[r] += 1
 
 # Joint counts (ayāt containing both r1 and r2).
 joint = Counter()
-for s in aya_roots["root_buckwalter"]:
+for s in aya_roots["root_bw"]:
     for r1, r2 in combinations(sorted(s), 2):
         joint[(r1, r2)] += 1
 

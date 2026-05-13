@@ -529,7 +529,9 @@ Cairns, Douglas L. 'Ethics, Ethology, Terminology: Iliadic Anger and the Cross-c
 
 *Chicago Assyrian Dictionary (CAD)*. Edited by Martha T. Roth et al. 21 vols. Chicago: The Oriental Institute, 1956-2010. (Cited as CAD with volume letter and page; e.g. CAD L 163-164 s.v. *labābu*, *libbātu malû*.)
 
-Cochran, William G. 'Some Methods for Strengthening the Common χ² Tests'. *Biometrics* 10:4 (1954), pp. 417-451. (Bibliography entry to be confirmed at proof stage.)
+Agresti, Alan. *Categorical Data Analysis*. 3rd edn. Wiley Series in Probability and Statistics. Hoboken, NJ: John Wiley & Sons, 2013. (Cited at §3.5 for exact-conditional inference on sparse contingency tables.)
+
+Cochran, William G. 'Some Methods for Strengthening the Common χ² Tests'. *Biometrics* 10:4 (1954), pp. 417-451. DOI: 10.2307/3001616.
 
 Cogent Authors. 'Semantic Untranslatability in Qurʾānic Discourse: Challenges and Contextual Remedies in English Translation'. *Cogent Arts & Humanities* (2025). DOI: 10.1080/23311983.2025.2542336. (Author attribution unresolved in source bibliography; to be updated on author follow-up.)
 
@@ -540,6 +542,8 @@ Dukes, Kais. *Quranic Arabic Corpus (Morphology, Version 0.4)*. Leeds: Universit
 El-Awa, Salwa M. S. *Textual Relations in the Qurʾan: Relevance, Coherence and Structure*. Routledge Studies in the Qurʾan. London and New York: Routledge, 2006.
 
 ELQV Authors. 'Leveraging Large Language Models for Detecting and Preserving Emotions in Quran Translations (introducing the ELQV dataset)'. *Journal of King Saud University -- Computer and Information Sciences* 37 (2025), Article 271. DOI: 10.1007/s44443-025-00269-y. (Author attribution unresolved in source bibliography; to be updated on author follow-up.)
+
+Fisher, Ronald A. 'On the Interpretation of χ² from Contingency Tables, and the Calculation of *P*'. *Journal of the Royal Statistical Society* 85:1 (1922), pp. 87-94. DOI: 10.2307/2340521.
 
 Frijda, Nico H. *The Emotions*. Studies in Emotion and Social Interaction. Cambridge and Paris: Cambridge University Press and Éditions de la Maison des Sciences de l'Homme, 1986.
 
@@ -593,11 +597,15 @@ Maalej, Zouheir. 'Figurative Language in Anger Expressions in Tunisian Arabic: A
 
 Maalej, Zouheir A. and Ning Yu (eds). *Embodiment via Body Parts: Studies from Various Languages and Cultures*. Human Cognitive Processing 31. Amsterdam and Philadelphia: John Benjamins, 2011. DOI: 10.1075/hcp.31.
 
+Mehta, Cyrus R. and Nitin R. Patel. 'A Network Algorithm for Performing Fisher's Exact Test in *r* × *c* Contingency Tables'. *Journal of the American Statistical Association* 78:382 (1983), pp. 427-434. DOI: 10.2307/2288652.
+
 Mottaghi, M. S. et al. 'A Graph-based Algorithm for Clustering Qurʾānic Surahs'. *Signal and Data Processing Journal (Iran)* (2024). http://jsdp.rcisp.ac.ir/article-1-1220-en.html.
 
 Muellner, Leonard C. *The Anger of Achilles: Mēnis in Greek Epic*. Ithaca, NY: Cornell University Press, 1996.
 
 Nandan, M., I. Godbole, P. Kapparad and S. Bhattacharjee. 'Comparative Analysis of Religious Texts: NLP Approaches to the Bible, Quran, and Bhagavad Gītā'. In *Proceedings of the Workshop on New Horizons in Computational Linguistics for Religious Texts (CLRel)*. Stroudsburg, PA: Association for Computational Linguistics, 2025. https://aclanthology.org/2025.clrel-1.1/.
+
+Patefield, W. M. 'Algorithm AS 159: An Efficient Method of Generating Random *R* × *C* Tables with Given Row and Column Totals'. *Journal of the Royal Statistical Society, Series C (Applied Statistics)* 30:1 (1981), pp. 91-97. DOI: 10.2307/2346669.
 
 Plutchik, Robert. *Emotion: A Psychoevolutionary Synthesis*. New York: Harper & Row, 1980.
 

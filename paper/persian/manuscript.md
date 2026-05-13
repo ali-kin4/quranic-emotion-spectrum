@@ -347,15 +347,21 @@
 ### الف) منابع عربی و قرآنی
 
 - ابن فارس، احمد بن فارس. (۱۴۰۴ ق / ۱۹۸۴ م). *معجم مقاييس اللغة*. تحقیق عبد السلام محمد هارون. بیروت: دار الفکر.
+- ابن کثیر، اسماعیل بن عمر الدمشقي. (۱۴۱۹ ق / ۱۹۹۹ م). *تفسير القرآن العظيم* (۸ مجلد). تحقیق سامي بن محمد السلامة. الریاض: دار طیبة للنشر و التوزیع.
 - ابن منظور، محمد بن مکرم. (۱۴۱۴ ق / ۱۹۹۳ م). *لسان العرب* (الطبعة الثالثة، ۱۵ مجلد). بیروت: دار صادر.
 - ابن عاشور، محمد الطاهر. (۱۹۸۴ م). *التحرير والتنوير* (۳۰ مجلد). تونس: الدار التونسية للنشر.
 - الراغب الأصفهاني، حسین بن محمد. (۱۴۱۲ ق / ۱۹۹۲ م). *المفردات في غريب القرآن*. تحقیق صفوان عدنان داوودی. دمشق و بیروت: دار القلم و الدار الشامية.
+- رشید رضا، محمد. (۱۳۶۶ ق / ۱۹۴۷ م). *تفسير القرآن الحكيم (تفسير المنار)* (۱۲ مجلد). القاهرة: دار المنار.
 - الزبیدی، محمد مرتضی. *تاج العروس من جواهر القاموس* (۴۰ مجلد). الکویت: التراث العربی.
 - الزمخشري، محمود بن عمر. (۱۴۰۷ ق). *الكشاف عن حقائق غوامض التنزيل* (۴ مجلد). بیروت: دار الکتاب العربی.
+- سیّد قطب، إبراهیم حسین الشاذلي. (۱۴۰۲ ق / ۱۹۸۲ م). *في ظلال القرآن* (۶ مجلد). بیروت و القاهرة: دار الشروق.
 - الطباطبائي، محمد حسین. (۱۳۹۰ ق / ۱۹۷۰ م). *الميزان في تفسير القرآن* (۲۰ مجلد). بیروت: مؤسسة الأعلمي للمطبوعات.
+- الطبري، محمد بن جریر. (۱۴۲۰ ق / ۲۰۰۰ م). *جامع البيان عن تأويل آي القرآن* (۲۴ مجلد). تحقیق أحمد محمد شاکر. بیروت: مؤسسة الرسالة.
 - الطبرسي، الفضل بن الحسن. *مجمع البيان في تفسير القرآن* (۱۰ مجلد). بیروت: دار المعرفة.
 - الفخر الرازي، محمد بن عمر. (۱۴۲۰ ق / ۱۹۹۹ م). *مفاتيح الغيب (التفسير الكبير)* (۳۲ مجلد). بیروت: دار إحياء التراث العربي.
 - الفیروزآبادي، محمد بن یعقوب. *القاموس المحيط*. بیروت: مؤسسة الرسالة.
+- القرطبي، محمد بن أحمد. (۱۹۶۴ م). *الجامع لأحكام القرآن* (۲۰ مجلد). القاهرة: دار الکتب المصرية.
+- القشیري، عبد الکریم بن هوازن. (۲۰۰۰ م). *لطائف الإشارات* (۶ مجلد). تحقیق إبراهیم البسيوني. القاهرة: الهيئة المصرية العامة للکتاب.
 - المصطفوي، حسن. (۱۴۱۶ ق / ۱۹۹۵ م). *التحقيق في كلمات القرآن الكريم* (۱۴ مجلد). تهران: وزارة الثقافة و الإرشاد الإسلامي.
 
 ### ب) منابع فارسی
@@ -399,8 +405,10 @@
 - Kövecses, Z. (2010). \emph{Metaphor: A Practical Introduction} (2nd ed.). Oxford: Oxford University Press.
 - Lakoff, G., & Johnson, M. (1980). \emph{Metaphors We Live By}. Chicago: University of Chicago Press.
 - Lakoff, G., & Kövecses, Z. (1987). The cognitive model of anger inherent in American English. In D. Holland & N. Quinn (Eds.), \emph{Cultural Models in Language and Thought} (pp. 195–221). Cambridge: Cambridge University Press.
+- Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. \emph{Biometrics}, 33(1), 159–174. doi:10.2307/2529310.
 - Lazarus, R. S. (1991). \emph{Emotion and Adaptation}. New York: Oxford University Press.
 - Maalej, Z. (2004). Figurative language in anger expressions in Tunisian Arabic. \emph{Metaphor and Symbol}, 19(1), 51–75.
+- Marcus-Newhall, A., et al. (2025). [VERIFY: Citation as given in body §۴-۴-۲ refers to "spiteful aggression" research; a publication matching this author-string and year could not be independently verified. The classic reference is Marcus-Newhall, A., Pedersen, W. C., Carlson, M., & Miller, N. (2000), 'Displaced Aggression Is Alive and Well: A Meta-analytic Review', \emph{Journal of Personality and Social Psychology}, 78(4), 670–689, doi:10.1037/0022-3514.78.4.670. To be confirmed at proof stage.]
 - Maalej, Z. A., & Yu, N. (Eds.). (2011). \emph{Embodiment via Body Parts: Studies from Various Languages and Cultures}. Amsterdam and Philadelphia: John Benjamins.
 - Mottaghi, M. S., et al. (2024). A graph-based algorithm for clustering Qur'\={a}nic surahs. \emph{Signal and Data Processing Journal (Iran)}.
 - Nandan, M., Godbole, I., Kapparad, P., & Bhattacharjee, S. (2025). Comparative analysis of religious texts: NLP approaches to the Bible, Quran, and Bhagavad Gita. In \emph{Proceedings of the Workshop on New Horizons in Computational Linguistics for Religious Texts (CLRel)}. ACL Anthology 2025.clrel-1.1.

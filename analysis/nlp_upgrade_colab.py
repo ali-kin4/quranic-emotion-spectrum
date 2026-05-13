@@ -459,7 +459,7 @@ plt.show()
 # one-shot use). Then provide it via Colab's secrets UI:
 #
 # 1. Open Colab's left sidebar → key icon "Secrets"
-# 2. Add a new secret named `GITHUB_TOKEN` with the PAT as value
+# 2. Add a new secret named `QURAN_REPO_TOKEN` with the PAT as value
 # 3. Toggle "Notebook access" ON for this notebook
 #
 # The cell below reads the token from Colab secrets, configures git, commits the outputs
@@ -471,12 +471,12 @@ import subprocess
 
 try:
     from google.colab import userdata
-    TOKEN = userdata.get("GITHUB_TOKEN")
+    TOKEN = userdata.get("QURAN_REPO_TOKEN")
 except Exception:
     import getpass
     TOKEN = getpass.getpass("Paste GitHub PAT (input hidden): ")
 
-assert TOKEN, "GITHUB_TOKEN is empty. Set it in Colab Secrets or paste when prompted."
+assert TOKEN, "QURAN_REPO_TOKEN is empty. Set it in Colab Secrets or paste when prompted."
 
 REPO_OWNER = "ali-kin4"
 REPO_NAME = "quranic-emotion-spectrum"

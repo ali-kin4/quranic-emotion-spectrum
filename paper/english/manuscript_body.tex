@@ -522,6 +522,28 @@ stratified 50-segment audit on the four most frequent core roots
 segment-to-root assignment against Tanzil. Full audit at
 \texttt{data/concordance/validation\_audit.md}.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig8_methodology.jpg}
+\caption{End-to-end pipeline from corpus to findings. Sources tier: QAC
+v0.4 (Dukes 2011, GPL), Tanzil Project Uthmani text (CC-BY-ND 3.0), and
+the nine classical \emph{tafāsīr} whose qualitative readings ground
+§§4--5. Parse tier: Buckwalter → Unicode collapse, segment-to-word
+aggregation. Selection tier: the fourteen spectrum roots and the five
+umbrella-moral roots used for the robustness checks of §4.9. Analyses
+tier: distributional statistics (χ² with marginal-preserving permutation
+null, Holm-Bonferroni-adjusted binomials, Cochran--Armitage trend),
+network analysis (aya-level co-occurrence, weighted
+degree/betweenness/closeness with bootstrap 95\% CIs),
+\emph{tafsīr}-grounded coding (145 Stage-6 attestations, κ = 0.79), and
+the illustrative comparative-translation audit. Outputs tier: 312
+attestations across six stages (S1 = 44, S2 = 60, S3 = 27, S4 = 25, S5 =
+11, S6 = 145), seven figures and the supporting CSV tables, and the
+Stage-6 causation breakdown (26\% anger-derived / 49\% structurally
+derived / 25\% mixed). Pipeline is deterministic --- identical inputs
+produce byte-identical CSVs and figures from a fresh repository clone.}
+\end{figure}
+
 \subsubsection{3.4. Quantitative analyses}\label{quantitative-analyses}
 
 Quantitative tests beyond frequency tabulation: (a) χ²(5) and χ²(1) for

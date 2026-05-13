@@ -1,8 +1,12 @@
-"""Generate the advanced (research-grade) figures (Persian-localized variant).
+"""Generate the advanced (research-grade) figures — Persian-localised.
 
-    figures_fa/fig5_morphology_stack.{pdf,png}     Per-root morphological breakdown
-    figures_fa/fig6_metaphor_diagram.{pdf,png}     خشم، ظرفی است تحت فشار
-    figures_fa/fig7_centrality.{pdf,png}           Centrality measures bar chart
+    figures_fa/fig5_morphology_stack.{pdf,png}    Per-root POS profile
+    figures_fa/fig6_metaphor_diagram.{pdf,png}    Container-under-pressure metaphor
+    figures_fa/fig7_centrality.{pdf,png}          Three centrality measures
+
+All Persian/Arabic strings are reshaped + bidi-reordered. Persian numerals
+are used in every annotation and tick label. Vazirmatn for Persian UI text,
+Amiri for Arabic root glyphs.
 """
 from __future__ import annotations
 
@@ -14,7 +18,8 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch  # noqa: E402
+from matplotlib import font_manager as fm  # noqa: E402
+from matplotlib.patches import FancyBboxPatch, Rectangle  # noqa: E402
 import arabic_reshaper  # noqa: E402
 from bidi.algorithm import get_display  # noqa: E402
 
@@ -30,6 +35,26 @@ FIG_DIR = ROOT_DIR / "figures_fa"
 FIG_DIR.mkdir(exist_ok=True)
 
 
+# --------------------------------------------------------------------- #
+#  Font registration                                                    #
+# --------------------------------------------------------------------- #
+FONT_DIR = ROOT_DIR / "paper" / "fonts"
+for _f in ("vazirmatn-regular.ttf", "vazirmatn-bold.ttf",
+           "vazirmatn-light.ttf", "amiri-regular.ttf", "amiri-bold.ttf"):
+    _path = FONT_DIR / _f
+    if _path.exists():
+        fm.fontManager.addfont(str(_path))
+
+FP_FA = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-regular.ttf"))
+FP_FA_BOLD = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-bold.ttf"))
+FP_FA_LIGHT = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-light.ttf"))
+FP_AR = fm.FontProperties(fname=str(FONT_DIR / "amiri-regular.ttf"))
+FP_AR_BOLD = fm.FontProperties(fname=str(FONT_DIR / "amiri-bold.ttf"))
+
+
+# --------------------------------------------------------------------- #
+#  Helpers                                                              #
+# --------------------------------------------------------------------- #
 def ar(s: str) -> str:
     return get_display(arabic_reshaper.reshape(s)) if s else s
 
@@ -37,34 +62,79 @@ def ar(s: str) -> str:
 _PERSIAN_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
 
 
-def _to_persian_digits(n: int) -> str:
-    return str(n).translate(_PERSIAN_DIGITS)
+def fa_num(value) -> str:
+    s = str(value)
+    return s.translate(_PERSIAN_DIGITS).replace(".", "٫")
+
+
+FA_STAGE_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶"}
 
 
 plt.rcParams.update({
-    "font.family": ["Tahoma", "DejaVu Sans"],
-    "font.size": 10,
-    "axes.labelsize": 11,
-    "axes.titlesize": 12,
+    "font.family": ["Vazirmatn", "Tahoma", "DejaVu Sans"],
+    "font.size": 9.5,
+    "axes.labelsize": 10,
+    "axes.titlesize": 11,
     "legend.fontsize": 9,
     "axes.spines.top": False,
     "axes.spines.right": False,
+    "axes.edgecolor": "#444444",
+    "axes.linewidth": 0.8,
+    "xtick.color": "#444444",
+    "ytick.color": "#444444",
     "figure.dpi": 150,
     "savefig.bbox": "tight",
     "savefig.dpi": 300,
+    "pdf.fonttype": 42,
 })
 
+# Synced with visualize_spectrum_fa.py
 STAGE_COLORS = {
-    1: "#7FB3D5", 2: "#4C72B0", 3: "#DD8452",
-    4: "#C44E52", 5: "#8E0E25", 6: "#55A868",
+    1: "#A8D8B9",
+    2: "#5BA9C1",
+    3: "#3B6C9B",
+    4: "#9E5F2E",
+    5: "#7C1D3F",
+    6: "#3A1F47",
 }
+
+# Okabe-Ito categorical palette for morphology (CVD-safe).
+MORPH_COLORS = {
+    "verb":       "#0072B2",  # blue
+    "noun":       "#E69F00",  # orange
+    "adjective":  "#009E73",  # bluish-green
+    "participle": "#CC79A7",  # reddish-purple
+    "other":      "#999999",  # neutral grey
+}
+
 CANONICAL_ORDER = [r.bw for r in SPECTRUM]
 
 
-# -------------------------------------------------------------------- #
-#  Figure 5 — Morphological breakdown                                  #
-# -------------------------------------------------------------------- #
+def style_axes(ax, *, ygrid: bool = True) -> None:
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color("#666666")
+        ax.spines[side].set_linewidth(0.7)
+    if ygrid:
+        ax.yaxis.grid(True, color="#DDDDDD", linewidth=0.6, zorder=0)
+        ax.set_axisbelow(True)
 
+
+def set_fa_yaxis(ax) -> None:
+    labels = []
+    for t in ax.get_yticks():
+        if abs(t - int(t)) < 1e-9:
+            labels.append(fa_num(int(t)))
+        else:
+            labels.append(fa_num(f"{t:.2f}"))
+    ax.set_yticks(ax.get_yticks())
+    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=9)
+
+
+# --------------------------------------------------------------------- #
+#  Figure 5 — Morphological breakdown                                   #
+# --------------------------------------------------------------------- #
 def fig5_morphology() -> None:
     rows = []
     with (CONC_DIR / "morphology_by_root.csv").open("r", encoding="utf-8") as fh:
@@ -73,7 +143,7 @@ def fig5_morphology() -> None:
             for k in ("verb", "noun", "adjective", "participle", "other", "total"):
                 r[k] = int(r[k])
             rows.append(r)
-    # Core spectrum only (10 roots)
+
     core_bw = [r.bw for r in SPECTRUM]
     rows = [r for r in rows if r["root_bw"] in core_bw]
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
@@ -81,160 +151,226 @@ def fig5_morphology() -> None:
     canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
 
-    fig, ax = plt.subplots(figsize=(12, 5.5))
+    fig, ax = plt.subplots(figsize=(13.5, 5.6))
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     x = list(range(len(canonical)))
     bottoms = [0] * len(canonical)
-    # Persian POS labels
     categories = [
-        ("verb",       ar("فعل"),    "#4878CF"),
-        ("noun",       ar("اسم"),    "#EE854A"),
-        ("adjective",  ar("صفت"),    "#6ACC65"),
-        ("participle", ar("اسم فاعل/مفعول"), "#956CB4"),
-        ("other",      ar("سایر"),    "#D5D5D5"),
+        ("verb",       ar("فعل"),               MORPH_COLORS["verb"]),
+        ("noun",       ar("اسم"),               MORPH_COLORS["noun"]),
+        ("adjective",  ar("صفت"),               MORPH_COLORS["adjective"]),
+        ("participle", ar("اسمِ فاعل/مفعول"),    MORPH_COLORS["participle"]),
+        ("other",      ar("سایر"),              MORPH_COLORS["other"]),
     ]
     for key, label, color in categories:
         vals = [by_bw[bw][key] for bw in canonical]
         ax.bar(x, vals, bottom=bottoms, label=label,
-               color=color, edgecolor="black", linewidth=0.4)
-        # In-bar text for non-trivial slices
+               color=color, edgecolor="white", linewidth=0.6, zorder=2)
         for xi, (b, v) in enumerate(zip(bottoms, vals)):
             if v >= 4:
-                ax.text(xi, b + v / 2, str(v), ha="center", va="center",
-                        fontsize=8, color="black", fontweight="bold")
+                # Choose text color by luminance of the underlying slice.
+                ax.text(xi, b + v / 2, fa_num(v),
+                        ha="center", va="center",
+                        fontsize=8.5, fontproperties=FP_FA_BOLD,
+                        color="white" if color != MORPH_COLORS["other"]
+                        else "#222222")
         bottoms = [bo + v for bo, v in zip(bottoms, vals)]
-    # Annotate totals on top
+
+    # Totals above
     for xi, bw in enumerate(canonical):
         total = by_bw[bw]["total"]
-        ax.text(xi, total + 1.5, f"n = {total}", ha="center", va="bottom",
-                fontsize=9, fontweight="bold")
+        ax.text(xi, total + 2, ar(f"n = {fa_num(total)}"),
+                ha="center", va="bottom",
+                fontsize=8.5, fontproperties=FP_FA_BOLD, color="#222222")
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=12)
-    ax.set_ylabel(ar("تعداد بسامد"))
-    # Add headroom so the title and legend don't collide with tall bars / n-labels
+    ax.set_xticklabels(labels, fontsize=13, fontproperties=FP_AR_BOLD)
+    ax.set_ylabel(ar("شمارِ بسامد"), fontproperties=FP_FA, fontsize=10.5)
     max_total = max(by_bw[bw]["total"] for bw in canonical)
-    ax.set_ylim(0, max_total * 1.25)
-    ax.set_title(ar("پروفایل ریخت‌شناختی واژگان طیف "
-                    "(فعل / اسم / صفت / اسم فاعل-مفعول)") + "\n"
-                 + ar("نشان‌دهندهٔ غلبه فعلی در مراحل آزردگی و خشم در "
-                      "برابر غلبه اسمی در مرحله عصیان"),
-                 fontsize=11, pad=14)
-    ax.legend(loc="upper left", ncol=5, fontsize=9, frameon=False)
+    ax.set_ylim(0, max_total * 1.28)
+    style_axes(ax)
+    set_fa_yaxis(ax)
 
+    # Two-line figure title (uses fig.text so we can place precisely above
+    # the legend without overlapping bars).
+    fig.text(0.5, 0.99,
+             ar("پروفایلِ ریخت‌شناختیِ واژگانِ طیف — فعل / اسم / صفت / اسمِ فاعل-مفعول"),
+             ha="center", va="top",
+             fontproperties=FP_FA_BOLD, fontsize=13, color="#1A1A1A")
+    fig.text(0.5, 0.945,
+             ar("غلبهٔ صورت‌های فعلی در مراحلِ آزردگی و خشم؛ "
+                "غلبهٔ اسمی در مرحلهٔ پیامدِ رفتاری"),
+             ha="center", va="top",
+             fontsize=9.5, fontproperties=FP_FA, color="#666666",
+             style="italic")
+
+    # Legend below the title, inside the axes top region but not blocking bars.
+    leg = ax.legend(loc="upper center", ncol=5, fontsize=9.5,
+                    frameon=False, prop=FP_FA,
+                    bbox_to_anchor=(0.5, 1.02))
+    for txt in leg.get_texts():
+        txt.set_fontproperties(FP_FA)
+
+    fig.tight_layout(rect=[0, 0, 1, 0.90])
     out = FIG_DIR / "fig5_morphology_stack.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
-# -------------------------------------------------------------------- #
-#  Figure 6 — Conceptual metaphor diagram                              #
-# -------------------------------------------------------------------- #
-
+# --------------------------------------------------------------------- #
+#  Figure 6 — Conceptual-metaphor diagram                               #
+# --------------------------------------------------------------------- #
 def fig6_metaphor() -> None:
-    fig, ax = plt.subplots(figsize=(11, 7))
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 8)
+    fig, ax = plt.subplots(figsize=(13.5, 7.6))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 9)
     ax.axis("off")
 
-    # Central frame title (Persian)
-    ax.text(5, 7.6, ar("خشم، ظرفی است تحت فشار"),
-            ha="center", va="center", fontsize=13, fontweight="bold")
-    ax.text(5, 7.2,
-            ar("(Lakoff & Kövecses, 1987) — اعمال‌شده بر سه‌گانهٔ غَیظ–کَظم–تَمَیُّز در قرآن"),
-            ha="center", va="center", fontsize=10, color="dimgray", style="italic")
+    # Title
+    ax.text(6, 8.4, ar("خشم، ظرفی است تحت فشار"),
+            ha="center", va="center",
+            fontsize=15, fontproperties=FP_FA_BOLD, color="#1A1A1A")
+    ax.text(6, 7.85,
+            ar("استعارهٔ مفهومیِ Lakoff & Kövecses (۱۹۸۷) — "
+               "اعمال‌شده بر سه‌گانهٔ غَیظ–کَظم–تَمَیُّز در قرآن کریم"),
+            ha="center", va="center",
+            fontsize=10, fontproperties=FP_FA, color="#666666",
+            style="italic")
 
-    # Three vessel states across the bottom (Persian labels).
-    # Stage numbers reflect the six-stage spectrum (post-revision):
-    # ghaḍab is Stage 4; ghayẓ+kaẓm and tamayyuz are Stage 5 (the
-    # latter as manifestation of the former at peak).
+    # Three vessel states across the bottom row.
+    # The Persian RTL convention reads from right to left, so progression
+    # of pressure should also flow right→left. We place Stage 4 (open vessel)
+    # on the RIGHT, then Stage 5α (sealed) in the MIDDLE, then Stage 5β
+    # (rupturing) on the LEFT — escalation moves leftward.
     vessel_states = [
-        # (x, y, color, fluid_height, label_top, label_bottom, ar_label)
-        (1.5, 3.5, "#FFC857", 0.4,
+        # (cx, color, fluid_height_ratio, top_label, bottom_label, ar_label, lid, crack)
+        (10.0, "#FFC857", 0.30,
          ar("مرحلهٔ ۴: غَضَب"),
-         ar("ظرفِ باز / بدونِ مهر؛")
-         + "\n" + ar("هیجان حاضر است اما تحت فشار نیست."),
-         "غَضَب"),
-        (5.0, 3.5, "#E76F51", 0.7,
+         ar("ظرفِ باز / بدونِ مهر؛") + "\n"
+         + ar("هیجان حاضر است اما تحت فشار نیست."),
+         "غَضَب", False, False),
+        (6.0, "#E76F51", 0.65,
          ar("مرحلهٔ ۵ (الف): غَیظ + کَظم"),
-         ar("ظرفِ مهر شده؛ فشار در حال افزایش؛")
-         + "\n" + ar("کنشگر با کَظم خود را مهار می‌کند (آل‌عمران ۳:۱۳۴،")
-         + "\n" + ar("وَالْكَاظِمِينَ الْغَيْظَ") + ").",
-         "غَيْظ + كَظْم"),
-        (8.5, 3.5, "#9D2933", 0.95,
+         ar("ظرفِ مهر شده؛ فشار رو به افزایش؛") + "\n"
+         + ar("کنشگر با کَظم خود را مهار می‌کند") + "\n"
+         + ar("(آل‌عمران ۳:۱۳۴، وَالْکاظِمِينَ الْغَيْظَ).") ,
+         "غَيْظ + كَظْم", True, False),
+        (2.0, "#9D2933", 0.90,
          ar("مرحلهٔ ۵ (ب): تَمَیُّز"),
          ar("گسستنِ ظرف (مُلک ۶۷:۸):") + "\n"
          + ar("تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ") + "\n"
          + ar("— خودِ ظرف از هم می‌شکافد."),
-         "تَمَيُّز"),
+         "تَمَيُّز", True, True),
     ]
 
-    for (cx, cy, col, fh, top, bot, arabic) in vessel_states:
-        # Vessel as rounded rectangle
+    vessel_y = 4.3   # vessel centre
+    vessel_w = 1.5
+    vessel_h = 1.9
+
+    for (cx, col, fh_ratio, top, bot, arabic, lid, crack) in vessel_states:
+        # Outer vessel
         ax.add_patch(FancyBboxPatch(
-            (cx - 0.7, cy - 0.9), 1.4, 1.8,
-            boxstyle="round,pad=0.05,rounding_size=0.15",
-            facecolor="white", edgecolor="black", linewidth=1.6
+            (cx - vessel_w / 2, vessel_y - vessel_h / 2),
+            vessel_w, vessel_h,
+            boxstyle="round,pad=0.05,rounding_size=0.18",
+            facecolor="white", edgecolor="#1A1A1A", linewidth=1.8,
+            zorder=2,
         ))
         # Fluid level
-        ax.fill_between([cx - 0.65, cx + 0.65],
-                        cy - 0.85, cy - 0.85 + fh * 1.7,
-                        color=col, alpha=0.7, edgecolor="none")
-        # Lid: only present for sealed states
-        if fh > 0.5:
-            ax.plot([cx - 0.7, cx + 0.7], [cy + 0.9, cy + 0.9],
-                    color="black", linewidth=2)
-            ax.text(cx, cy + 1.05, ar("(مهر شده)"), ha="center", va="bottom",
-                    fontsize=8, style="italic", color="dimgray")
-            # Steam/pressure escape arrows for tamayyuz state
-            if fh > 0.9:
-                # Crack
-                ax.plot([cx - 0.6, cx - 0.4, cx - 0.5, cx - 0.3, cx - 0.5],
-                        [cy + 0.4, cy + 0.6, cy + 0.55, cy + 0.75, cy + 0.85],
-                        color="black", linewidth=1.5)
-                ax.text(cx + 0.85, cy + 0.5, ar("انفجار"),
-                        fontsize=8, color="darkred", fontweight="bold")
-        # Arabic label inside vessel
-        ax.text(cx, cy - 1.45, ar(arabic), ha="center", va="center",
-                fontsize=12, fontweight="bold", color="black")
+        fluid_h = vessel_h * fh_ratio - 0.1
+        ax.add_patch(Rectangle(
+            (cx - vessel_w / 2 + 0.08,
+             vessel_y - vessel_h / 2 + 0.08),
+            vessel_w - 0.16, fluid_h,
+            facecolor=col, edgecolor="none", alpha=0.78, zorder=2.5,
+        ))
+        # Lid
+        if lid:
+            ax.plot([cx - vessel_w / 2 - 0.05, cx + vessel_w / 2 + 0.05],
+                    [vessel_y + vessel_h / 2, vessel_y + vessel_h / 2],
+                    color="#1A1A1A", linewidth=2.4, zorder=3,
+                    solid_capstyle="round")
+            ax.text(cx, vessel_y + vessel_h / 2 + 0.22,
+                    ar("(مهر شده)"), ha="center", va="bottom",
+                    fontsize=8.5, fontproperties=FP_FA,
+                    style="italic", color="#666666")
+        # Crack & burst
+        if crack:
+            ax.plot([cx - 0.55, cx - 0.35, cx - 0.45, cx - 0.25, cx - 0.4],
+                    [vessel_y + 0.30, vessel_y + 0.50, vessel_y + 0.45,
+                     vessel_y + 0.65, vessel_y + 0.80],
+                    color="#1A1A1A", linewidth=1.6, zorder=4)
+            ax.text(cx + 0.95, vessel_y + 0.45, ar("انفجار"),
+                    fontsize=9, fontproperties=FP_FA_BOLD,
+                    color="#7C1D3F", zorder=4)
+        # Arabic label under vessel
+        ax.text(cx, vessel_y - vessel_h / 2 - 0.35, ar(arabic),
+                ha="center", va="top",
+                fontsize=14, fontproperties=FP_AR_BOLD, color="#1A1A1A")
         # Stage label above
-        ax.text(cx, cy + 1.55, top, ha="center", va="bottom",
-                fontsize=10, fontweight="bold")
-        # Description below
-        ax.text(cx, cy - 2.2, bot, ha="center", va="top", fontsize=8.5,
-                color="black")
+        ax.text(cx, vessel_y + vessel_h / 2 + 0.65, top,
+                ha="center", va="bottom",
+                fontsize=10.5, fontproperties=FP_FA_BOLD, color="#1A1A1A")
+        # Description well below the Arabic label
+        ax.text(cx, vessel_y - vessel_h / 2 - 1.05, bot,
+                ha="center", va="top",
+                fontsize=8.8, fontproperties=FP_FA, color="#333333")
 
-    # Arrows between states
-    arrow_kw = dict(arrowstyle="->", color="gray", lw=2,
+    # Arrows (RTL flow: right → left)
+    arrow_kw = dict(arrowstyle="-|>", color="#888888", lw=2.2,
+                    mutation_scale=18,
                     connectionstyle="arc3,rad=0.0")
-    ax.annotate("", xy=(4.2, 3.5), xytext=(2.3, 3.5), arrowprops=arrow_kw)
-    ax.annotate("", xy=(7.7, 3.5), xytext=(5.8, 3.5), arrowprops=arrow_kw)
-    ax.text(3.25, 3.85, ar("تشدید"), ha="center", va="bottom",
-            fontsize=9, color="gray", style="italic")
-    ax.text(6.75, 3.85, ar("شکستن مهار"), ha="center", va="bottom",
-            fontsize=9, color="gray", style="italic")
+    ax.annotate("", xy=(6.9, vessel_y), xytext=(9.1, vessel_y),
+                arrowprops=arrow_kw, zorder=1)
+    ax.annotate("", xy=(2.9, vessel_y), xytext=(5.1, vessel_y),
+                arrowprops=arrow_kw, zorder=1)
+    ax.text(8.0, vessel_y + 0.45, ar("تشدید"),
+            ha="center", va="bottom",
+            fontsize=9.5, fontproperties=FP_FA_BOLD,
+            style="italic", color="#666666")
+    ax.text(4.0, vessel_y + 0.45, ar("شکستنِ مهار"),
+            ha="center", va="bottom",
+            fontsize=9.5, fontproperties=FP_FA_BOLD,
+            style="italic", color="#666666")
 
-    # Side annotation: source-domain / target-domain mapping (Persian)
-    ax.text(5, 0.5,
-            ar("حوزهٔ مبدأ (ظرف): ظرف · مهر · فشار · انفجار   →   "
-               "حوزهٔ مقصد (خشم): غَیظِ مهارشده با کَظم · گسستِ تَمَیُّز"),
-            ha="center", va="center", fontsize=9.5, color="black",
-            bbox=dict(boxstyle="round,pad=0.4", fc="#F5F0E1",
-                      ec="dimgray", linewidth=0.6))
+    # Source / target mapping (Persian RTL reads right-to-left; we render
+    # the "source domain" on the right and "target domain" on the left,
+    # joined by a graphical arrow drawn separately rather than a Unicode
+    # arrow glyph Vazirmatn does not cover).
+    ax.text(9.4, 0.7,
+            ar("حوزهٔ مبدأ (ظرف):  ظرف · مهر · فشار · انفجار"),
+            ha="center", va="center",
+            fontsize=10, fontproperties=FP_FA, color="#1A1A1A",
+            bbox=dict(boxstyle="round,pad=0.45", facecolor="#F5F0E1",
+                      edgecolor="#9E8E5A", linewidth=0.8))
+    ax.text(2.6, 0.7,
+            ar("حوزهٔ مقصد (خشم):  غَیظِ مهارشده با کَظم · گسستِ تَمَیُّز"),
+            ha="center", va="center",
+            fontsize=10, fontproperties=FP_FA, color="#1A1A1A",
+            bbox=dict(boxstyle="round,pad=0.45", facecolor="#EFE6F2",
+                      edgecolor="#7C5C8E", linewidth=0.8))
+    # Connecting arrow: source -> target (right-to-left)
+    ax.annotate("", xy=(4.4, 0.7), xytext=(7.6, 0.7),
+                arrowprops=dict(arrowstyle="-|>", color="#666666",
+                                lw=1.8, mutation_scale=18))
+    ax.text(6.0, 1.05, ar("نگاشت"),
+            ha="center", va="bottom",
+            fontsize=9, fontproperties=FP_FA, style="italic",
+            color="#666666")
 
+    fig.tight_layout()
     out = FIG_DIR / "fig6_metaphor_diagram.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
-# -------------------------------------------------------------------- #
-#  Figure 7 — Centrality metrics                                       #
-# -------------------------------------------------------------------- #
-
+# --------------------------------------------------------------------- #
+#  Figure 7 — Network centrality                                        #
+# --------------------------------------------------------------------- #
 def fig7_centrality() -> None:
     rows = []
     with (CONC_DIR / "network_centrality.csv").open("r", encoding="utf-8") as fh:
@@ -252,47 +388,49 @@ def fig7_centrality() -> None:
     x = list(range(len(canonical)))
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in canonical]
 
-    # Wider canvas + rotated, larger labels so per-root tick text is
-    # readable at the printed size (reviewer-flagged ~5pt rendering).
-    fig, axes = plt.subplots(1, 3, figsize=(17, 5.4))
+    fig, axes = plt.subplots(1, 3, figsize=(17, 5.8))
 
-    # Panel 1: Weighted degree
-    deg = [by_bw[bw]["degree_weighted"] for bw in canonical]
-    axes[0].bar(x, deg, color=colors, edgecolor="black", linewidth=0.6)
-    axes[0].set_xticks(x)
-    axes[0].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
-    axes[0].set_ylabel(ar("درجهٔ وزنی"), fontsize=11)
-    axes[0].set_title(ar("الف) مرکزیتِ درجه"), fontsize=11)
-    for xi, v in enumerate(deg):
-        axes[0].text(xi, v + 0.1, f"{v:.0f}", ha="center", fontsize=9)
+    panels = [
+        ("degree_weighted", ar("الف) درجهٔ وزنی"),
+         ar("درجهٔ وزنی"), "{:.0f}", 0.10),
+        ("betweenness",     ar("ب) مرکزیتِ بینابینی"),
+         ar("مرکزیتِ بینابینی"), "{:.2f}", 0.005),
+        ("closeness",       ar("ج) مرکزیتِ نزدیکی"),
+         ar("مرکزیتِ نزدیکی"), "{:.2f}", 0.012),
+    ]
 
-    # Panel 2: Betweenness
-    btw = [by_bw[bw]["betweenness"] for bw in canonical]
-    axes[1].bar(x, btw, color=colors, edgecolor="black", linewidth=0.6)
-    axes[1].set_xticks(x)
-    axes[1].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
-    axes[1].set_ylabel(ar("مرکزیتِ بینابینی"), fontsize=11)
-    axes[1].set_title(ar("ب) مرکزیتِ بینابینی"), fontsize=11)
-    for xi, v in enumerate(btw):
-        axes[1].text(xi, v + 0.005, f"{v:.2f}", ha="center", fontsize=9)
+    for ax, (key, title, ylabel, fmt, gap) in zip(axes, panels):
+        vals = [by_bw[bw][key] for bw in canonical]
+        ax.bar(x, vals, color=colors, edgecolor="white", linewidth=0.6,
+               zorder=2)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=12,
+                           fontproperties=FP_AR_BOLD,
+                           rotation=45, ha="right")
+        ax.set_ylabel(ylabel, fontproperties=FP_FA, fontsize=10.5)
+        ax.set_title(title, fontproperties=FP_FA_BOLD,
+                     fontsize=11.5, pad=10)
+        style_axes(ax)
+        vmax = max(vals) if vals else 1
+        for xi, v in enumerate(vals):
+            if v > 0:
+                ax.text(xi, v + max(vmax * 0.02, gap),
+                        fa_num(fmt.format(v)),
+                        ha="center", va="bottom",
+                        fontsize=8.5, fontproperties=FP_FA,
+                        color="#222222")
+        ax.set_ylim(0, vmax * 1.18 if vmax > 0 else 1)
+        set_fa_yaxis(ax)
 
-    # Panel 3: Closeness
-    cls = [by_bw[bw]["closeness"] for bw in canonical]
-    axes[2].bar(x, cls, color=colors, edgecolor="black", linewidth=0.6)
-    axes[2].set_xticks(x)
-    axes[2].set_xticklabels(labels, fontsize=12, rotation=45, ha="right")
-    axes[2].set_ylabel(ar("مرکزیتِ نزدیکی"), fontsize=11)
-    axes[2].set_title(ar("ج) مرکزیتِ نزدیکی"), fontsize=11)
-    for xi, v in enumerate(cls):
-        axes[2].text(xi, v + 0.01, f"{v:.2f}", ha="center", fontsize=9)
+    fig.suptitle(
+        ar(f"سنجه‌های مرکزیتِ شبکه برای {fa_num(len(SPECTRUM))} ریشهٔ کانونیِ طیف"),
+        fontproperties=FP_FA_BOLD, fontsize=13, y=0.99)
 
-    fig.suptitle(ar(f"سنجه‌های مرکزیت شبکه برای {_to_persian_digits(len(SPECTRUM))} ریشه کانونی"),
-                 fontsize=11.5)
-    fig.tight_layout()
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
 
     out = FIG_DIR / "fig7_centrality.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 

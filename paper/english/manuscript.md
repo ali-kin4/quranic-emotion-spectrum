@@ -71,7 +71,7 @@ The three layers operate complementarily: Izutsu identifies field boundaries; Ke
 ---
 
 
-![The six-stage Qur’anic anger-spectrum continuum along the *action-intensity* axis. Node area scales with QAC attestation frequency. Stages: S1 pre-anger displeasure (*ʾff–krh*); S2 inner pressure (*ḍyq–ḥzn–ʾsf*); S3 evaluative aversion (*nqm–sxṭ–mqt*); S4 active anger (*ġḍb–ḥrd*); S5 compressed/explosive rage (*ġyẓ*; *tamayyuz* as manifestation); S6 behavioural outcomes (*bġy–ṭġy–ʿtw*) — causation *bidirectional* rather than purely downstream (§4.8.5). Mass at S6 (n=145) ≈ S1–5 (n=167); the χ²(1) = 1.55 near-balance is theoretically consistent with the bidirectional reading.](fig1_continuum.pdf){width=100%}
+![The six-stage Qur’anic anger-spectrum continuum along the *action-intensity* axis. Node area scales with QAC attestation frequency. Stages: S1 pre-anger displeasure (*ʾff–krh*); S2 inner pressure (*ḍyq–ḥzn–ʾsf*); S3 evaluative aversion (*nqm–sxṭ–mqt*); S4 active anger (*ġḍb–ḥrd*); S5 compressed/explosive rage (*ġyẓ*; *tamayyuz* as manifestation); S6 behavioural outcomes (*bġy–ṭġy–ʿtw*) — causation *bidirectional* rather than purely downstream (§4.8.5). Mass at S6 (n=145) ≈ S1–5 (n=167); the χ²(1) = 1.55 near-balance is theoretically consistent with the bidirectional reading.](fig1_continuum_v2.jpg){width=100%}
 
 
 ## 3. Methods

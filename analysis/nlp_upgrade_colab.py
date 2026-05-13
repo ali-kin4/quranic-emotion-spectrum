@@ -82,12 +82,22 @@ master = pd.read_csv("data/concordance/master_concordance.csv")
 print(master.columns.tolist())
 print(f"Total rows in master: {len(master)} (includes expansion/diagnostic roots)")
 
-# Filter to just the 14 SPECTRUM roots (stages 1-6); drop expansion (umbrella moral terms)
-# and the diagnostic tamayyuz row, which carry no `stage` value 1..6.
-master = master[master["stage"].between(1, 6, inclusive="both")].copy()
+# Filter to the 14 SPECTRUM roots only. Filtering by stage alone is NOT enough: the
+# expansion umbrella roots (Zlm, jrm, fsq, Edw, $nA) are also tagged stage=6 since they
+# co-cluster with the behavioural-outcome pole, so we whitelist root_bw explicitly.
+SPECTRUM_BW = {
+    "Aff", "krh",                 # Stage 1
+    "Dyq", "Hzn", "Asf",          # Stage 2
+    "nqm", "sxT", "mqt",          # Stage 3
+    "gDb", "Hrd",                 # Stage 4
+    "gyZ",                        # Stage 5
+    "bgy", "Tgy", "Etw",          # Stage 6
+}
+master = master[master["root_bw"].isin(SPECTRUM_BW)].copy()
 master["stage"] = master["stage"].astype(int)
-print(f"Spectrum-only attestations: {len(master)}")
+print(f"Spectrum-only attestations: {len(master)} (expected 312)")
 print(master["stage"].value_counts().sort_index())
+print("Roots present:", sorted(master["root_bw"].unique()))
 
 # %% [markdown]
 # ## 2. Pull verse context for each attestation

@@ -446,22 +446,106 @@ plt.show()
 
 
 # %% [markdown]
-# ## 7. Wrap up
+# ## 7. Push outputs back to the GitHub repo
 #
-# Outputs to copy back to the repo:
-# - `outputs/nlp_upgrade/embeddings_arabert.npz`
-# - `outputs/nlp_upgrade/embeddings_umap.png`
-# - `outputs/nlp_upgrade/cluster_vs_stage.csv`
-# - `outputs/nlp_upgrade/silhouette.json`
-# - `outputs/nlp_upgrade/translation_drift_per_root.csv`
-# - `outputs/nlp_upgrade/translation_drift.png`
-# - `outputs/nlp_upgrade/diachronic_stage_rank.csv`
-# - `outputs/nlp_upgrade/diachronic_plot.png`
-# - `outputs/nlp_upgrade/pmi_network.csv`
-# - `outputs/nlp_upgrade/pmi_network.png`
+# This cell pushes the `outputs/nlp_upgrade/` directory to a **new branch** of the repo
+# (never directly to master or the active feature branch). After the push completes, the
+# claude.ai/code agent picks up the branch and integrates the numerical findings into the
+# manuscript prose.
 #
-# Then in chat, give me the contents of the JSON/CSV files (or upload them to the repo) and I'll
-# write the corresponding manuscript subsections:
+# **You need a GitHub fine-grained Personal Access Token (PAT)** with `Contents: Read & write`
+# scoped to `ali-kin4/quranic-emotion-spectrum` only. Create one at
+# https://github.com/settings/personal-access-tokens/new (expires in 7 days is fine for
+# one-shot use). Then provide it via Colab's secrets UI:
+#
+# 1. Open Colab's left sidebar → key icon "Secrets"
+# 2. Add a new secret named `GITHUB_TOKEN` with the PAT as value
+# 3. Toggle "Notebook access" ON for this notebook
+#
+# The cell below reads the token from Colab secrets, configures git, commits the outputs
+# folder to a new branch named `nlp-outputs-YYYY-MM-DD`, and pushes.
+
+# %%
+from datetime import date
+import subprocess
+
+try:
+    from google.colab import userdata
+    TOKEN = userdata.get("GITHUB_TOKEN")
+except Exception:
+    import getpass
+    TOKEN = getpass.getpass("Paste GitHub PAT (input hidden): ")
+
+assert TOKEN, "GITHUB_TOKEN is empty. Set it in Colab Secrets or paste when prompted."
+
+REPO_OWNER = "ali-kin4"
+REPO_NAME = "quranic-emotion-spectrum"
+BRANCH = f"nlp-outputs-{date.today().isoformat()}"
+
+
+def run(cmd, check=True, env=None):
+    """Run a shell command; on failure, print stderr and raise."""
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, env=env)
+    if check and result.returncode != 0:
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+        raise RuntimeError(f"Command failed: {cmd}")
+    return result
+
+
+run('git config --global user.email "nlp-pipeline@local"')
+run('git config --global user.name "NLP Colab Pipeline"')
+
+# Use the token in the remote URL via HTTPS basic auth (token-as-password).
+remote = f"https://x-access-token:{TOKEN}@github.com/{REPO_OWNER}/{REPO_NAME}.git"
+run(f'git remote set-url origin "{remote}"')
+
+# Fetch the default branch so we branch from the latest state.
+run("git fetch origin")
+
+# Branch from the active branch (the one this repo was cloned with). Create a fresh branch
+# to keep the outputs reviewable.
+run(f"git checkout -b {BRANCH}")
+
+# Stage only the outputs folder — do not stage anything else.
+run("git add outputs/nlp_upgrade")
+
+# Show what's about to be committed.
+print(run("git status --short", check=False).stdout)
+
+# Commit + push. If the branch already exists upstream (rerun), force-with-lease is safer
+# than --force; we use plain push to a fresh branch name so collisions are unlikely.
+commit_msg = (
+    f"NLP upgrade outputs: AraBERT clusters, translation drift, "
+    f"diachronic test, PMI network ({date.today().isoformat()})"
+)
+run(f'git commit -m "{commit_msg}"')
+run(f"git push -u origin {BRANCH}")
+
+print(f"\n✓ Pushed outputs to branch `{BRANCH}`")
+print(f"  Open at: https://github.com/{REPO_OWNER}/{REPO_NAME}/tree/{BRANCH}/outputs/nlp_upgrade")
+print(f"\nNext: tell the claude.ai/code agent 'NLP outputs pushed to {BRANCH}'")
+print("      and I will pull and write the corresponding manuscript subsections:")
+print("      - English §4.11 (new): Contextual-embedding corroboration")
+print("      - English §4.10b (new): Quantifying cross-translation semantic drift")
+print("      - English §4.2.2 (extension): Diachronic null result")
+print("      - English §4.8.x (refactor): PMI-weighted co-occurrence")
+print("      - Persian §۴-۷ (extension): translation-drift section")
+print("      - Persian §۴-۶ (extension): PMI re-analysis with bridge-role focus")
+
+
+# %% [markdown]
+# ## (Legacy) Manual handoff
+#
+# If the push cell fails or you'd rather inspect locally first, the outputs are in
+# `outputs/nlp_upgrade/` and can be downloaded from Colab's file panel:
+#
+# - `embeddings_arabert.npz`, `embeddings_umap.png`, `cluster_vs_stage.csv`, `silhouette.json`
+# - `translation_drift_per_root.csv`, `translation_drift.png`
+# - `diachronic_stage_rank.csv`, `diachronic_plot.png`
+# - `pmi_network.csv`, `pmi_network.png`
+#
+# Manuscript subsections that will integrate them:
 #
 # - **English §4.11 (new)**: "Contextual-embedding corroboration of the six-stage structure"
 # - **English §4.10b (new)**: "Quantifying cross-translation semantic drift"

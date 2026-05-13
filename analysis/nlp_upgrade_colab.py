@@ -508,10 +508,11 @@ commit_msg = (
     f"diachronic test, PMI network ({date.today().isoformat()})"
 )
 run(f'git commit -m "{commit_msg}"')
-# --force-with-lease is safe here: this branch is only used by this notebook, and we
-# explicitly want to replace a prior contaminated run's outputs if the branch already
-# exists upstream.
-run(f"git push --force-with-lease -u origin {BRANCH}")
+# Plain --force is used here (not --force-with-lease) because in a fresh Colab clone
+# there is no local remote-tracking ref for this branch, so the lease check has nothing
+# to compare against and would refuse. The branch is exclusive to this notebook so the
+# overwrite is safe.
+run(f"git push --force -u origin {BRANCH}")
 
 print(f"\n✓ Pushed outputs to branch `{BRANCH}`")
 print(f"  Open at: https://github.com/{REPO_OWNER}/{REPO_NAME}/tree/{BRANCH}/outputs/nlp_upgrade")

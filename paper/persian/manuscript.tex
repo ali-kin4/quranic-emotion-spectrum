@@ -112,6 +112,17 @@
 \widowpenalty=10000
 \clubpenalty=10000
 
+% polyglossia compatibility shim — pandoc emits \begin{otherlanguage}{persian}
+% around content; xepersian already makes Persian the default, so we make these
+% commands no-ops to preserve compilability.
+\providecommand{\otherlanguage}[1]{}
+\newenvironment{Otherlanguage}[1]{}{}
+\let\beginotherlanguage\relax
+\makeatletter
+\@namedef{otherlanguage}#1{}
+\@namedef{endotherlanguage}{}
+\makeatother
+
 \begin{document}
 
 \begin{RTL}
@@ -343,7 +354,7 @@ k.jabbary@urmia.ac.ir شناسه‌ی ORCID: 0000-0000-0000-0000
 
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig1_continuum.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig1_continuum.pdf}
 \caption{پیوستارِ شش‌مرحله‌ایِ طیفِ هیجانیِ خشم در قرآنِ کریم، بر محورِ افقیِ
 \emph{شدتِ کنش}. هر گره به یکی از چهارده ریشه‌ی عربیِ کانونی نگاشته می‌شود؛
 سطحِ گره با بسامدِ ریشه در پیکره‌ی ریخت‌شناختیِ قرآنی (دوکس ۲۰۱۱) متناسب است.
@@ -571,7 +582,7 @@ k.jabbary@urmia.ac.ir شناسه‌ی ORCID: 0000-0000-0000-0000
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig2_frequency_by_stage.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig2_frequency_by_stage.pdf}
 \caption{بسامدِ ریشه‌ای و مرحله‌ایِ ۳۱۲ بسامدِ کانونیِ طیف. \emph{پنلِ راست}:
 بسامد به‌تفکیکِ ریشه؛ رنگِ میله، کدِ مرحله را نشان می‌دهد. عدمِ تقارنِ نمایانِ
 مرحله‌ی ۶ (بَغی ۹۶ در برابرِ عتوّ ۱۰)، بازتابِ تقسیمِ کارِ واژگانی میانِ
@@ -584,7 +595,7 @@ k.jabbary@urmia.ac.ir شناسه‌ی ORCID: 0000-0000-0000-0000
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig3_meccan_medinan.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig3_meccan_medinan.pdf}
 \caption{توزیعِ تجمیعیِ مکّی/مدنی برای چهارده ریشه‌ی کانونی. اعدادِ بالای
 میله‌ها نسبتِ خامِ مکّی/مدنی را نشان می‌دهند. الگوهای شاخص: أَسَف
 \emph{انحصاراً} مکّی (۵/۰)؛ سَخَط \emph{انحصاراً} مدنی (۰/۴، p = ۰٫۰۰۵ در
@@ -595,7 +606,7 @@ p = ۰٫۰۰۵)؛ حَرد هاپَکسِ مکّی. این الگو، \emph{تخ
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig5_morphology_stack.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig5_morphology_stack.pdf}
 \caption{پروفایلِ ریخت‌شناختیِ چهارده ریشه به‌تفکیکِ جزءِ سخن (فعل/اسم/صفت/اسمِ
 فاعل). شیبِ چپ به راست، \emph{جابه‌جاییِ گونه‌شناختی} را در پیوستار نشان
 می‌دهد: مراحلِ ۱ و ۲ غالباً فعلی‌اند (حُزن ۸۸٪ فعلی، ضِیق ۶۲٪) --- هم‌خوان با
@@ -971,7 +982,7 @@ n=۳۹، عُتُوّ n=۱۰) منتهی می‌شود: مسیرِ بالا، خ
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig4_cooccurrence.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig4_cooccurrence.pdf}
 \caption{شبکه‌ی هم‌رخدادگیریِ آیه‌ایِ چهارده ریشه. هر یال نشان‌دهنده‌ی حضورِ
 مشترکِ دو ریشه در یک یا چند آیه است؛ عددِ روی یال، تعدادِ آیاتِ مشترک را
 می‌نمایاند. قوی‌ترین یال --- حُزن---ضِیق (وزن ۳) --- تأییدی پیکره‌ای برای
@@ -984,7 +995,7 @@ n=۳۹، عُتُوّ n=۱۰) منتهی می‌شود: مسیرِ بالا، خ
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig7_centrality.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{fig7_centrality.pdf}
 \caption{سه سنجه‌ی مرکزیت بر شبکه‌ی هم‌رخدادگیری: (الف) درجه‌ی وزن‌دار، (ب)
 بینابینی، (ج) نزدیکی. بَغی بالاترین مرکزیتِ نزدیکی را به‌دست می‌آورد (۰٫۵۵)
 و در بینابینی (۰٫۱۵) با غضب و أَسَف هم‌رتبه است --- \emph{لولایی} میانِ طیفِ
@@ -1077,7 +1088,7 @@ n=۳۹، عُتُوّ n=۱۰) منتهی می‌شود: مسیرِ بالا، خ
 
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig6_metaphor_diagram.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{fig6_metaphor_diagram.pdf}
 \caption{طرحواره‌ی «خشم به‌مثابهِ ظرفِ تحتِ فشار» (لیکاف و کوچش ۱۹۸۷)،
 عملیاتی‌شده با مثلثِ قرآنیِ غضب ← غیظ+کَظم ← تمیّز. \textbf{پنلِ نخست} (مرحله‌ی
 ۴): غضب --- ظرفِ \emph{باز}؛ هیجان حاضر است، اما متراکم نشده. \textbf{پنلِ
@@ -1286,7 +1297,7 @@ n=۳۹، عُتُوّ n=۱۰) منتهی می‌شود: مسیرِ بالا، خ
 - Alsuhaibani, M., et al. (2025). Leveraging large language models for detecting and preserving emotions in Quran translations (introducing the ELQV dataset). \emph{Journal of King Saud University -- Computer and Information Sciences}, 37, Article 271. doi:10.1007/s44443-025-00269-y.
 - Averill, J. R. (1982). \emph{Anger and Aggression: An Essay on Emotion}. New York: Springer-Verlag.
 - Berkowitz, L. (1993). \emph{Aggression: Its Causes, Consequences, and Control}. New York: McGraw-Hill.
-- Derki, M. (2022). Conceptualization of anger in Modern Standard Arabic and English: A comparative study. \emph{Professional Discourse & Communication}.
+- Derki, M. (2022). Conceptualization of anger in Modern Standard Arabic and English: A comparative study. \emph{Professional Discourse \& Communication}.
 - Dukes, K. (2011). \emph{Quranic Arabic Corpus (Morphology, Version 0.4)}. University of Leeds.
 - El-Awa, S. M. S. (2006). \emph{Textual Relations in the Qur'an: Relevance, Coherence and Structure}. London and New York: Routledge.
 - Frijda, N. H. (1986). \emph{The Emotions}. Cambridge and Paris: Cambridge University Press & Éditions de la Maison des Sciences de l'Homme.

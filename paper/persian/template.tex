@@ -112,6 +112,17 @@
 \widowpenalty=10000
 \clubpenalty=10000
 
+% polyglossia compatibility shim — pandoc emits \begin{otherlanguage}{persian}
+% around content; xepersian already makes Persian the default, so we make these
+% commands no-ops to preserve compilability.
+\providecommand{\otherlanguage}[1]{}
+\newenvironment{Otherlanguage}[1]{}{}
+\let\beginotherlanguage\relax
+\makeatletter
+\@namedef{otherlanguage}#1{}
+\@namedef{endotherlanguage}{}
+\makeatother
+
 \begin{document}
 
 $body$

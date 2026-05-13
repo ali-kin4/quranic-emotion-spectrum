@@ -384,7 +384,7 @@
 - Alsuhaibani, M., et al. (2025). Leveraging large language models for detecting and preserving emotions in Quran translations (introducing the ELQV dataset). \emph{Journal of King Saud University -- Computer and Information Sciences}, 37, Article 271. doi:10.1007/s44443-025-00269-y.
 - Averill, J. R. (1982). \emph{Anger and Aggression: An Essay on Emotion}. New York: Springer-Verlag.
 - Berkowitz, L. (1993). \emph{Aggression: Its Causes, Consequences, and Control}. New York: McGraw-Hill.
-- Derki, M. (2022). Conceptualization of anger in Modern Standard Arabic and English: A comparative study. \emph{Professional Discourse & Communication}.
+- Derki, M. (2022). Conceptualization of anger in Modern Standard Arabic and English: A comparative study. \emph{Professional Discourse \& Communication}.
 - Dukes, K. (2011). \emph{Quranic Arabic Corpus (Morphology, Version 0.4)}. University of Leeds.
 - El-Awa, S. M. S. (2006). \emph{Textual Relations in the Qur'an: Relevance, Coherence and Structure}. London and New York: Routledge.
 - Frijda, N. H. (1986). \emph{The Emotions}. Cambridge and Paris: Cambridge University Press & Éditions de la Maison des Sciences de l'Homme.

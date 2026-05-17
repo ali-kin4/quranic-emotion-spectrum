@@ -123,6 +123,35 @@
 \@namedef{endotherlanguage}{}
 \makeatother
 
+% English-abstract environment: forces LTR direction, EB Garamond body font,
+% Latin digits, and Western punctuation regardless of the surrounding xepersian
+% RTL flow. Uses xepersian's \setlatintextfont mechanism via \textlatin to
+% defeat the global digit-substitution that otherwise renders Latin numerals
+% as missing-glyph boxes inside xepersian-controlled pages.
+%
+% Use as `\begin{englishabstract}...\end{englishabstract}`.
+% Pre-declare a Latin font family so we can switch to it cleanly inside
+% the english abstract; this avoids inline \fontspec invocation that
+% xepersian's tokeniser sometimes mis-handles when followed by [options].
+\newfontfamily\englishbody{EB Garamond}[Path=../fonts/, Extension=.ttf,%
+  UprightFont=ebgaramond-regular, ItalicFont=ebgaramond-regular,%
+  BoldFont=ebgaramond-regular, Numbers=Lining]
+% xepersian provides \DefaultMathsDigits etc. to suppress auto-conversion
+% of ASCII digits. We use \LRE around digits inside an LTR block — but a
+% blanket no-conversion is cleanest. \DefaultMathsDigits + the LTR env
+% achieves a clean Latin-digit render with EB Garamond.
+\newenvironment{englishabstract}
+  {%
+    \clearpage
+    \begin{LTR}%
+    \DefaultMathsDigits
+    \englishbody
+    \setstretch{1.25}%
+    \setlength{\parindent}{0pt}%
+    \setlength{\parskip}{0.6em plus 0.2em}%
+  }%
+  {\end{LTR}}
+
 \begin{document}
 
 $body$

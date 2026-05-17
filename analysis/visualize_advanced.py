@@ -50,13 +50,13 @@ _serif_stack = ["EB Garamond", "DejaVu Serif", "Times New Roman", "Times", "seri
 plt.rcParams.update({
     "font.family": "serif",
     "font.serif": _serif_stack,
-    "font.size": 10,
-    "axes.labelsize": 10.5,
-    "axes.titlesize": 11.5,
-    "legend.fontsize": 9,
+    "font.size": 11,
+    "axes.labelsize": 12,
+    "axes.titlesize": 12,
+    "legend.fontsize": 10,
     "legend.frameon": False,
-    "xtick.labelsize": 9.5,
-    "ytick.labelsize": 9.5,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.linewidth": 0.8,
@@ -64,6 +64,7 @@ plt.rcParams.update({
     "ytick.major.width": 0.7,
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
     "pdf.fonttype": 42,
     "ps.fonttype": 42,
@@ -127,7 +128,7 @@ def fig5_morphology() -> None:
         for xi, (b, v) in enumerate(zip(bottoms, vals)):
             if v >= 4:
                 ax.text(xi, b + v / 2, str(v), ha="center", va="center",
-                        fontsize=8, color="white" if key == "verb" else "#222222",
+                        fontsize=9.5, color="white" if key == "verb" else "#222222",
                         fontweight="bold", family="serif")
         bottoms = [bo + v for bo, v in zip(bottoms, vals)]
     ymax_a = max(bottoms) * 1.15
@@ -136,20 +137,21 @@ def fig5_morphology() -> None:
         total = by_bw[bw]["total"]
         ax.text(xi, total + ymax_a * 0.015, f"n = {total}",
                 ha="center", va="bottom",
-                fontsize=8.6, fontweight="bold", color="#222222",
+                fontsize=10, fontweight="bold", color="#222222",
                 family="serif")
     ax.set_xticks(x)
     ax.set_xticklabels([""] * len(x))
     for xi, bw in enumerate(canonical):
         ax.text(xi, -ymax_a * 0.04, ar(surface_by_bw[bw]),
-                ha="center", va="top", fontsize=13,
+                ha="center", va="top", fontsize=15,
                 fontproperties=ARABIC_FP)
         ax.text(xi, -ymax_a * 0.10, translit_by_bw[bw],
-                ha="center", va="top", fontsize=7.6, style="italic",
+                ha="center", va="top", fontsize=9, style="italic",
                 color="#555555", family="serif")
-    ax.set_ylabel("Number of attestations", fontsize=11, family="serif")
-    ax.set_title("(a) Absolute counts", fontsize=11.5, loc="left", family="serif")
+    ax.set_ylabel("Number of attestations", fontsize=12, family="serif")
+    ax.set_title("(a) Absolute counts", fontsize=12, loc="left", family="serif")
     _ax_clean(ax)
+    ax.tick_params(axis="y", labelsize=11)
 
     # Panel (b): percentage stack
     bottoms_pct = [0.0] * len(canonical)
@@ -163,7 +165,7 @@ def fig5_morphology() -> None:
             if p >= 7:
                 ax2.text(xi, b + p / 2, f"{p:.0f}%",
                          ha="center", va="center",
-                         fontsize=7.8,
+                         fontsize=9.5,
                          color="white" if key == "verb" else "#222222",
                          fontweight="bold", family="serif")
         bottoms_pct = [bo + p for bo, p in zip(bottoms_pct, pcts)]
@@ -171,38 +173,31 @@ def fig5_morphology() -> None:
     ax2.set_xticklabels([""] * len(x))
     for xi, bw in enumerate(canonical):
         ax2.text(xi, -4, ar(surface_by_bw[bw]),
-                 ha="center", va="top", fontsize=13,
+                 ha="center", va="top", fontsize=15,
                  fontproperties=ARABIC_FP)
         ax2.text(xi, -10, translit_by_bw[bw],
-                 ha="center", va="top", fontsize=7.6, style="italic",
+                 ha="center", va="top", fontsize=9, style="italic",
                  color="#555555", family="serif")
     ax2.set_ylabel("Percent of attestations (within root)",
-                   fontsize=11, family="serif")
+                   fontsize=12, family="serif")
     ax2.set_ylim(0, 100)
-    ax2.set_title("(b) Percentage stack", fontsize=11.5, loc="left",
+    ax2.set_title("(b) Percentage stack", fontsize=12, loc="left",
                   family="serif")
     _ax_clean(ax2)
+    ax2.tick_params(axis="y", labelsize=11)
 
     # Shared legend on top
     handles, labels = ax2.get_legend_handles_labels()
     leg = fig.legend(handles, labels, loc="upper center", ncol=5,
-                     fontsize=9.5, frameon=False,
+                     fontsize=11, frameon=False,
                      bbox_to_anchor=(0.5, 1.01))
     for t in leg.get_texts():
         t.set_family("serif")
 
-    # Embedded finding (verbal→nominal trend)
-    finding = ("Verbal share by stage:  "
-               r"S1: 52%  ·  S2: 77%  ·  S3: 48%  ·  S4: 24%  ·  S5: 27%  ·  S6: 57%"
-               "\n"
-               "Stage 4 ġaḍab nominalises (67% noun) — anger reified as attributable referent;"
-               "  Stage 6 participles ($\\bar{a}$ghin, $\\dot{t}\\bar{a}$gh$\\bar{u}$t) — identity-grade.")
-    fig.text(0.5, -0.03, finding, ha="center", va="top",
-             fontsize=8.7, family="serif", color="#222222",
-             bbox=dict(boxstyle="round,pad=0.4", fc="#F5F1E8",
-                       ec="#888888", lw=0.6))
+    # Verbal-share-by-stage trend is documented in the manuscript caption;
+    # not embedded as overlay here.
 
-    fig.tight_layout(rect=(0, 0.02, 1, 0.97))
+    fig.tight_layout(rect=(0, 0.0, 1, 0.97))
 
     out = FIG_DIR / "fig5_morphology_stack.pdf"
     plt.savefig(out)
@@ -428,19 +423,20 @@ def fig7_centrality() -> None:
         ax.set_ylim(0, ymax)
         for xi, lab_ar in enumerate(labels_ar):
             ax.text(xi, -ymax * 0.04, ar(lab_ar),
-                    ha="center", va="top", fontsize=12.5,
+                    ha="center", va="top", fontsize=15,
                     fontproperties=ARABIC_FP)
             ax.text(xi, -ymax * 0.105, labels_tr[xi],
-                    ha="center", va="top", fontsize=7.5, style="italic",
+                    ha="center", va="top", fontsize=9, style="italic",
                     color="#555555", family="serif", rotation=0)
-        ax.set_ylabel(ylabel, fontsize=10.5, family="serif")
-        ax.set_title(title, fontsize=10.8, loc="left", family="serif")
+        ax.set_ylabel(ylabel, fontsize=12, family="serif")
+        ax.set_title(title, fontsize=12, loc="left", family="serif")
         for xi, v in enumerate(vals):
             if v > 0:
                 ax.text(xi, v + ymax * 0.015, fmt.format(v),
-                        ha="center", va="bottom", fontsize=8.2,
+                        ha="center", va="bottom", fontsize=10,
                         color="#222222", family="serif")
         _ax_clean(ax)
+        ax.tick_params(axis="y", labelsize=11)
 
     _panel(axes[0], "degree_weighted", "degree_ci_lower", "degree_ci_upper",
            "Weighted degree",
@@ -453,32 +449,10 @@ def fig7_centrality() -> None:
            "Closeness centrality",
            "(c) Closeness (proximity to all roots)", fmt="{:.2f}")
 
-    # Highlight baghy as top bridge node on panel (c)
-    if "bgy" in canonical:
-        bi = canonical.index("bgy")
-        bgy_close = by_bw["bgy"]["closeness"]
-        axes[2].annotate("baghy — highest closeness\nCI [0.23, 0.84]",
-                         xy=(bi, bgy_close),
-                         xytext=(bi - 4.5, bgy_close + 0.13),
-                         fontsize=8.6, color="#009E73", family="serif",
-                         arrowprops=dict(arrowstyle="->", color="#009E73",
-                                         lw=0.9, alpha=0.85))
+    # Bridge-node bootstrap CIs and baghy-as-pivot interpretation live in
+    # the manuscript caption (no embedded overlay or suptitle here).
 
-    fig.suptitle("Centrality on the aya-level co-occurrence graph "
-                 "(14 core roots, bootstrap 95% CI, "
-                 "1 000 resamples, seed 42)",
-                 fontsize=11.5, family="serif", y=1.02)
-
-    # Embedded finding banner
-    finding = ("baghy:  closeness 0.55,  betweenness 0.15"
-               " — pivot between anger spectrum and umbrella moral-evaluation field"
-               "  (315 ẓlm · 106 ʿdw · 66 jrm · 54 fsq)")
-    fig.text(0.5, -0.04, finding, ha="center", va="top",
-             fontsize=9, family="serif", color="#222222",
-             bbox=dict(boxstyle="round,pad=0.4", fc="#F5F1E8",
-                       ec="#888888", lw=0.6))
-
-    fig.tight_layout(rect=(0, 0.02, 1, 1.0))
+    fig.tight_layout()
     out = FIG_DIR / "fig7_centrality.pdf"
     plt.savefig(out)
     plt.savefig(out.with_suffix(".png"), dpi=200)

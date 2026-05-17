@@ -72,10 +72,12 @@ FA_STAGE_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶"}
 
 plt.rcParams.update({
     "font.family": ["Vazirmatn", "Tahoma", "DejaVu Sans"],
-    "font.size": 9.5,
-    "axes.labelsize": 10,
-    "axes.titlesize": 11,
-    "legend.fontsize": 9,
+    "font.size": 11,
+    "axes.labelsize": 12,
+    "axes.titlesize": 12,
+    "legend.fontsize": 10,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.edgecolor": "#444444",
@@ -84,6 +86,7 @@ plt.rcParams.update({
     "ytick.color": "#444444",
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
     "pdf.fonttype": 42,
 })
@@ -129,7 +132,7 @@ def set_fa_yaxis(ax) -> None:
         else:
             labels.append(fa_num(f"{t:.2f}"))
     ax.set_yticks(ax.get_yticks())
-    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=9)
+    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=11)
 
 
 # --------------------------------------------------------------------- #
@@ -171,7 +174,7 @@ def fig5_morphology() -> None:
                 # Choose text color by luminance of the underlying slice.
                 ax.text(xi, b + v / 2, fa_num(v),
                         ha="center", va="center",
-                        fontsize=8.5, fontproperties=FP_FA_BOLD,
+                        fontsize=10, fontproperties=FP_FA_BOLD,
                         color="white" if color != MORPH_COLORS["other"]
                         else "#222222")
         bottoms = [bo + v for bo, v in zip(bottoms, vals)]
@@ -181,37 +184,26 @@ def fig5_morphology() -> None:
         total = by_bw[bw]["total"]
         ax.text(xi, total + 2, ar(f"n = {fa_num(total)}"),
                 ha="center", va="bottom",
-                fontsize=8.5, fontproperties=FP_FA_BOLD, color="#222222")
+                fontsize=10.5, fontproperties=FP_FA_BOLD, color="#222222")
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=13, fontproperties=FP_AR_BOLD)
-    ax.set_ylabel(ar("شمارِ بسامد"), fontproperties=FP_FA, fontsize=10.5)
+    ax.set_xticklabels(labels, fontsize=15, fontproperties=FP_AR_BOLD)
+    ax.set_ylabel(ar("شمارِ بسامد"), fontproperties=FP_FA, fontsize=12)
     max_total = max(by_bw[bw]["total"] for bw in canonical)
     ax.set_ylim(0, max_total * 1.28)
     style_axes(ax)
     set_fa_yaxis(ax)
 
-    # Two-line figure title (uses fig.text so we can place precisely above
-    # the legend without overlapping bars).
-    fig.text(0.5, 0.99,
-             ar("پروفایلِ ریخت‌شناختیِ واژگانِ طیف — فعل / اسم / صفت / اسمِ فاعل-مفعول"),
-             ha="center", va="top",
-             fontproperties=FP_FA_BOLD, fontsize=13, color="#1A1A1A")
-    fig.text(0.5, 0.945,
-             ar("غلبهٔ صورت‌های فعلی در مراحلِ آزردگی و خشم؛ "
-                "غلبهٔ اسمی در مرحلهٔ پیامدِ رفتاری"),
-             ha="center", va="top",
-             fontsize=9.5, fontproperties=FP_FA, color="#666666",
-             style="italic")
+    # Figure title and verbal/nominal trend live in the manuscript caption.
 
-    # Legend below the title, inside the axes top region but not blocking bars.
-    leg = ax.legend(loc="upper center", ncol=5, fontsize=9.5,
+    # Legend at the top — bigger Persian labels.
+    leg = ax.legend(loc="upper center", ncol=5, fontsize=11,
                     frameon=False, prop=FP_FA,
-                    bbox_to_anchor=(0.5, 1.02))
+                    bbox_to_anchor=(0.5, 1.06))
     for txt in leg.get_texts():
         txt.set_fontproperties(FP_FA)
 
-    fig.tight_layout(rect=[0, 0, 1, 0.90])
+    fig.tight_layout()
     out = FIG_DIR / "fig5_morphology_stack.pdf"
     plt.savefig(out)
     plt.savefig(out.with_suffix(".png"), dpi=200)
@@ -404,12 +396,12 @@ def fig7_centrality() -> None:
         ax.bar(x, vals, color=colors, edgecolor="white", linewidth=0.6,
                zorder=2)
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, fontsize=12,
+        ax.set_xticklabels(labels, fontsize=15,
                            fontproperties=FP_AR_BOLD,
                            rotation=45, ha="right")
-        ax.set_ylabel(ylabel, fontproperties=FP_FA, fontsize=10.5)
+        ax.set_ylabel(ylabel, fontproperties=FP_FA, fontsize=12)
         ax.set_title(title, fontproperties=FP_FA_BOLD,
-                     fontsize=11.5, pad=10)
+                     fontsize=12, pad=10)
         style_axes(ax)
         vmax = max(vals) if vals else 1
         for xi, v in enumerate(vals):
@@ -417,16 +409,14 @@ def fig7_centrality() -> None:
                 ax.text(xi, v + max(vmax * 0.02, gap),
                         fa_num(fmt.format(v)),
                         ha="center", va="bottom",
-                        fontsize=8.5, fontproperties=FP_FA,
+                        fontsize=10.5, fontproperties=FP_FA,
                         color="#222222")
         ax.set_ylim(0, vmax * 1.18 if vmax > 0 else 1)
         set_fa_yaxis(ax)
 
-    fig.suptitle(
-        ar(f"سنجه‌های مرکزیتِ شبکه برای {fa_num(len(SPECTRUM))} ریشهٔ کانونیِ طیف"),
-        fontproperties=FP_FA_BOLD, fontsize=13, y=0.99)
+    # Figure title (and 14-core-roots banner) live in the manuscript caption.
 
-    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.tight_layout()
 
     out = FIG_DIR / "fig7_centrality.pdf"
     plt.savefig(out)

@@ -1,0 +1,130 @@
+% Persian cover letter — Quranic Emotion Spectrum
+% Karim Jabbary & Ali Jabbary — University of Urmia
+% Target: Pizhuhish'ha-yi Zabanshenakhti-yi Qur'an, University of Isfahan
+% Compile: xelatex cover_letter.tex   (uses the project template.tex via pandoc)
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+
+% Fonts (XeLaTeX) ------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+
+\setmainfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+  Numbers     = Lining,
+]
+
+\newfontfamily\arabicfont{Amiri}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = amiri-regular,
+  BoldFont    = amiri-bold,
+  Script      = Arabic,
+]
+\newcommand{\textarabic}[1]{{\arabicfont #1}}
+\DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
+
+% xepersian — must come AFTER fontspec
+\usepackage{xepersian}
+\settextfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  BoldFont    = vazirmatn-bold,
+  Script      = Arabic,
+  Scale       = 1.0,
+]
+\setlatintextfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+]
+\setdigitfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  Script      = Arabic,
+]
+
+\setcounter{secnumdepth}{-1}
+
+\usepackage{setspace}
+\setstretch{1.35}
+\setlength{\parskip}{0.45\baselineskip}
+\setlength{\parindent}{1.4em}
+
+\usepackage{enumitem}
+\setlist{leftmargin=1.8em,topsep=0.3ex,itemsep=0.3ex}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Cover Letter — Quranic Anger Spectrum (Persian)},
+  pdfauthor={Karim Jabbary; Ali Jabbary},
+  colorlinks=false,
+}
+
+% Pandoc compatibility (in case compiled through pandoc template)
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\widowpenalty=10000
+\clubpenalty=10000
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{flushright}\small
+\textbf{تاریخ}: ۲۶ اردیبهشت ۱۴۰۵ (۱۶ مه ۲۰۲۶)
+\end{flushright}
+
+\begin{center}\large\bfseries
+به نام خدا
+\end{center}
+
+\vspace{0.4em}
+
+\noindent\textbf{به}: سردبیرِ محترمِ نشریه‌ی \emph{پژوهش‌های زبان‌شناختیِ قرآن}، دانشگاه اصفهان\\
+\textbf{از}: کریم جباری (نویسنده‌ی مسئول) و علی جباری، دانشگاه ارومیه\\
+\textbf{موضوع}: ارسالِ مقاله‌ی پژوهشی-تحلیلی جهتِ بررسی و داوری
+
+\vspace{0.4em}\hrule\vspace{0.6em}
+
+\noindent جنابِ آقای دکتر سردبیرِ محترمِ نشریه‌ی پژوهش‌های زبان‌شناختیِ قرآن،
+
+\noindent با سلام و احترام،
+
+به پیوست، مقاله‌ای پژوهشی-تحلیلی با عنوانِ «اوجِ طیفِ خشم در قرآن کریم: قرائتی تطبیقی-تفسیری از مرحله‌های فعّال، متراکم، و پیامدی»، جهتِ بررسی و داوری در آن نشریه‌ی وزین تقدیم می‌گردد. موضوعِ این پژوهش --- تحلیلِ شبکه‌ی واژگانیِ خشم در پرتوِ معناشناسیِ میدانی و نظریه‌ی استعاره‌ی مفهومی --- با گستره‌ی موضوعیِ نشریه‌ی شما در مطالعاتِ زبان‌شناختی و معناشناختیِ قرآن کریم تناسبِ مستقیم دارد.
+
+\textbf{خلاصه‌ی سهمِ پژوهش.} بنده در این پژوهش، با تکیه بر پیکره‌ی ریخت‌شناختیِ قرآنیِ دوکس (۲۰۱۱) و در مجموع ۳۱۲ بسامد از چهارده ریشه‌ی کانونی، پیوستاری شش‌مرحله‌ای از طیفِ خشمِ قرآنی صورت‌بندی کرده و تحلیلِ تفصیلی را بر سه مرحله‌ی اوج --- فعّال، متراکم و پیامدی --- متمرکز ساخته‌ام. در مرحله‌ی پیامدی، کدگذاریِ تفسیر-بنیادِ هر ۱۴۵ بسامد، با کاپای کوهنِ \lr{$\kappa = 0.79$}، نشان می‌دهد که علّیتِ این مرحله یک‌سویه نیست و در کنارِ مسیرِ هیجانی، مسیرِ ساختاریِ مستقلی (طمع، استکبار، عُلوّ فی الأرض) نیز در کار است. هم‌چنین تلاش شده است سه‌گانه‌ی غیظ-کَظم-تَمَیُّز (آل عمران: ۱۳۴ و ۱۱۹؛ مُلک: ۸) به‌مثابهِ عملیاتی‌سازیِ چهار-گامیِ استعاره‌ی \emph{خشم به‌مثابهِ ظرفِ تحتِ فشار} بازخوانی شود.
+
+\textbf{هم‌خوانی با گستره‌ی نشریه.} سه ویژگیِ این مقاله، آن را به‌طورِ خاص با مأموریتِ \emph{پژوهش‌های زبان‌شناختیِ قرآن} هم‌سو می‌کند. نخست، تحلیلِ تطبیقیِ نُه مفسّرِ کانونیِ شیعی و سنّی (المیزان، مجمع‌البیان، الکشّاف، التحریر و التنویر، جامع‌البیان، الجامعِ قرطبی، ابن‌کثیر، فی ظِلال القرآن و المنار)، با مراجعه‌ی موضعی به لطائف‌الإشاراتِ قشیری در بحثِ کَظمِ غیظ. دوم، گفت‌وگوی نظام‌مند با میراثِ معناشناسیِ شناختیِ ایرانی-اسلامی، به‌ویژه آثارِ قائمی‌نیا (۱۳۹۰، ۱۳۹۳) و پاکتچی (۱۳۸۷ به بعد)، و در امتدادِ پژوهش‌های اخیرِ نَریمانی و همکاران (۱۴۰۰) و قاری‌زاده و همکاران (۱۴۰۲). سوم، تکیه بر یک خط‌لوله‌ی پردازشیِ بازتولیدپذیر به زبانِ پایتون که، در حدِّ بررسیِ ادبیات، گامی روش‌شناختی در پیکره‌خوانیِ فارسی‌محورِ متنِ قرآن به‌شمار می‌آید.
+
+\textbf{اظهارنامه‌های اخلاقی.} این مقاله اثرِ اصیلِ نویسندگان است؛ پیش از این در نشریه‌ی دیگری چاپ نشده، هم‌اکنون در دستِ داوریِ نشریه‌ی دیگری نیست و برای ارسالِ هم‌زمان به نشریه‌ی دیگری در نظر گرفته نشده است. هر دو نویسنده در طراحی، نگارش و بازنگری مشارکتِ معنادار داشته‌اند و هیچ‌یک تعارضِ منافع برای اعلام ندارند. مجوزهای پیکره‌ای (\lr{QAC, GPL}؛ تنزیل، \lr{CC-BY-ND}) در بدنه‌ی مقاله تصریح شده است.
+
+\textbf{پیشنهادِ داور} (با احترام به اختیارِ تامِ هیئتِ تحریریه):
+
+\begin{itemize}\setlength{\itemsep}{0pt}
+  \item جنابِ آقای دکتر علیرضا قائمی‌نیا (پژوهشگاهِ فرهنگ و اندیشه‌ی اسلامی) --- معناشناسیِ شناختیِ قرآن و استعاره‌ی مفهومی.
+  \item جنابِ آقای دکتر احمد پاکتچی (دانشگاه امام صادق علیه‌السلام) --- معناشناسیِ تاریخی-تفسیریِ قرآن.
+  \item سرکار خانم دکتر زهرا نَریمانی (دانشگاه تهران) --- معناشناسیِ تفسیریِ واژگانِ هیجانی در قرآن.
+\end{itemize}
+
+از توجه و وقتِ ارزشمندِ جنابعالی و هیئتِ تحریریه‌ی محترم، صمیمانه سپاس‌گزارم. این‌جانب آماده‌ام هرگونه اصلاحیه‌ی پیشنهادیِ داورانِ محترم را با گشاده‌رویی بپذیرم.
+
+\vspace{0.6em}
+\noindent با تشکر و احترام،
+
+\vspace{0.8em}
+\noindent\textbf{کریم جباری} (نویسنده‌ی مسئول، به نیابت از هر دو نویسنده)\\
+گروهِ زبان و ادبیاتِ عرب، دانشگاه ارومیه\\
+رایانامه: \lr{\texttt{k.jabbary@urmia.ac.ir}}
+
+\vspace{0.4em}
+\noindent\textbf{علی جباری}\\
+گروهِ مهندسیِ کامپیوتر، دانشگاه ارومیه
+
+\end{document}

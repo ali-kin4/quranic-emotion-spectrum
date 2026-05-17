@@ -70,15 +70,15 @@ _serif_stack = ["EB Garamond", "DejaVu Serif", "Times New Roman", "Times", "seri
 plt.rcParams.update({
     "font.family": "serif",
     "font.serif": _serif_stack,
-    "font.size": 10,
-    "axes.labelsize": 10.5,
-    "axes.titlesize": 11.5,
+    "font.size": 11,
+    "axes.labelsize": 12,
+    "axes.titlesize": 12,
     "axes.titleweight": "normal",
     "axes.labelweight": "normal",
-    "legend.fontsize": 9,
+    "legend.fontsize": 10,
     "legend.frameon": False,
-    "xtick.labelsize": 9.5,
-    "ytick.labelsize": 9.5,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.linewidth": 0.8,
@@ -88,6 +88,7 @@ plt.rcParams.update({
     "ytick.major.size": 3.5,
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
     "pdf.fonttype": 42,
     "ps.fonttype": 42,
@@ -250,20 +251,21 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
     ax1.set_ylim(0, ymax_left)
     for xi, (lab_ar, lab_tr) in enumerate(zip(labels_ar, translit)):
         ax1.text(xi, -ymax_left * 0.04, ar(lab_ar),
-                 ha="center", va="top", fontsize=14,
+                 ha="center", va="top", fontsize=15,
                  fontproperties=ARABIC_FP)
         ax1.text(xi, -ymax_left * 0.13, lab_tr,
-                 ha="center", va="top", fontsize=8, style="italic",
+                 ha="center", va="top", fontsize=9.5, style="italic",
                  color="#555555", family="serif")
 
-    ax1.set_ylabel("Occurrences in the Qur'an", fontsize=11, family="serif")
-    ax1.set_title("(a) Per-root frequency", fontsize=11.5, loc="left",
+    ax1.set_ylabel("Occurrences in the Qur'an", fontsize=12, family="serif")
+    ax1.set_title("(a) Per-root frequency", fontsize=12, loc="left",
                   family="serif")
     for b, c in zip(bars, counts):
         ax1.text(b.get_x() + b.get_width() / 2, c + max(counts) * 0.015,
-                 str(c), ha="center", va="bottom", fontsize=8.5,
+                 str(c), ha="center", va="bottom", fontsize=10,
                  color="#222222", family="serif")
     _ax_clean(ax1)
+    ax1.tick_params(axis="y", labelsize=11)
 
     # Stage panel
     stage_totals: dict[int, int] = defaultdict(int)
@@ -282,9 +284,9 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
               .replace("Compressed Rage", "Compr. Rage")
               .replace("Active Anger", "Active Anger") for s in short]
     ax2.set_xticklabels([f"S{s}\n{lbl}" for s, lbl in zip(stages, short)],
-                        fontsize=8.6, family="serif")
-    ax2.set_ylabel("Total occurrences", fontsize=11, family="serif")
-    ax2.set_title("(b) Stage-level totals", fontsize=11.5, loc="left",
+                        fontsize=10.5, family="serif")
+    ax2.set_ylabel("Total occurrences", fontsize=12, family="serif")
+    ax2.set_title("(b) Stage-level totals", fontsize=12, loc="left",
                   family="serif")
     ymax_right = max(stage_totals.values()) * 1.2
     ax2.set_ylim(0, ymax_right)
@@ -292,23 +294,13 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
         ax2.text(b.get_x() + b.get_width() / 2,
                  stage_totals[s] + ymax_right * 0.015,
                  str(stage_totals[s]),
-                 ha="center", va="bottom", fontsize=10.5, fontweight="bold",
+                 ha="center", va="bottom", fontsize=11, fontweight="bold",
                  color="#222222", family="serif")
     _ax_clean(ax2)
+    ax2.tick_params(axis="y", labelsize=11)
 
-    # Embedded statistical findings — drawn in panel (b)'s axes coords
-    finding = (
-        r"$\chi^2(5) = 227.15$,  asymptotic $p < 0.001$"
-        "\n"
-        r"permutation $p = 0.24$  (10 000 reshuffles, seed 20260509)"
-        "\n"
-        r"S1–5 vs. S6:  $\chi^2(1) = 1.55$  (fail to reject)"
-    )
-    ax2.text(0.98, 0.97, finding, transform=ax2.transAxes,
-             ha="right", va="top", fontsize=8.6, family="serif",
-             color="#222222",
-             bbox=dict(boxstyle="round,pad=0.45", fc="#F5F1E8",
-                       ec="#888888", lw=0.6))
+    # Statistical-test annotations are documented in the manuscript caption
+    # (chi-squared, permutation p, S1-5 vs. S6 contrast); not embedded here.
 
     fig.tight_layout()
     out = FIG_DIR / "fig2_frequency_by_stage.pdf"
@@ -347,12 +339,12 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
     ax.set_xticklabels([""] * len(x))
     for xi, (lab_ar, lab_tr) in enumerate(zip(labels_ar, translit)):
         ax.text(xi, -ymax * 0.04, ar(lab_ar),
-                ha="center", va="top", fontsize=14,
+                ha="center", va="top", fontsize=15,
                 fontproperties=ARABIC_FP)
         ax.text(xi, -ymax * 0.10, lab_tr,
-                ha="center", va="top", fontsize=8, style="italic",
+                ha="center", va="top", fontsize=9.5, style="italic",
                 color="#555555", family="serif")
-    ax.set_ylabel("Occurrences", fontsize=11, family="serif")
+    ax.set_ylabel("Occurrences", fontsize=12, family="serif")
 
     # Per-bar Meccan-share annotation
     for xi, bw in enumerate(CANONICAL_ORDER):
@@ -362,44 +354,23 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
             pct = 100.0 * rec["meccan_hits"] / tot
             ax.text(xi, tot + ymax * 0.015,
                     f"{rec['meccan_hits']}/{rec['medinan_hits']}",
-                    ha="center", va="bottom", fontsize=8.2,
+                    ha="center", va="bottom", fontsize=9.5,
                     color="#444444", family="serif")
             ax.text(xi, tot + ymax * 0.055,
                     f"{pct:.0f}% Mec.",
-                    ha="center", va="bottom", fontsize=7.6,
+                    ha="center", va="bottom", fontsize=9,
                     color="#777777", style="italic", family="serif")
 
-    # Baseline Meccan-rate reference line (proportion of ayat, weighted by sura)
-    baseline = load_meccan_baseline()
-    # Convert proportion → reference line in *expected stacked share*: instead
-    # of a single horizontal line (meaningless here), annotate as text and
-    # mark the binomial-significant root in red.
-    ax.legend(loc="upper left", fontsize=10, frameon=False)
+    # Baseline Meccan-rate reference (verse-weighted) — value documented in
+    # the manuscript caption; not embedded as overlay here.
+    _ = load_meccan_baseline()
+    ax.legend(loc="upper left", fontsize=11, frameon=False)
 
-    # Embedded finding box (top-right)
-    finding = (
-        f"Meccan baseline (verse-weighted): {baseline*100:.1f}%\n"
-        r"$\bf{sakhaṭ}$: 0/4 Meccan, raw $p=0.005$, Holm $p=0.05$"
-        " — sole FDR survivor"
-    )
-    ax.text(0.99, 0.97, finding, transform=ax.transAxes,
-            ha="right", va="top", fontsize=8.6, family="serif",
-            color="#222222",
-            bbox=dict(boxstyle="round,pad=0.45", fc="#F5F1E8",
-                      ec="#888888", lw=0.6))
-
-    # Highlight the sakhat bar with an arrow
-    if "sxT" in CANONICAL_ORDER:
-        sx_i = CANONICAL_ORDER.index("sxT")
-        sx_tot = totals[sx_i]
-        ax.annotate("sakhaṭ — 0/4\n(only FDR-significant)",
-                    xy=(sx_i, sx_tot),
-                    xytext=(sx_i + 1.6, sx_tot + ymax * 0.30),
-                    fontsize=8.5, color="#7B1E25", family="serif",
-                    arrowprops=dict(arrowstyle="->", color="#7B1E25",
-                                    lw=0.9, alpha=0.85))
+    # Statistical findings (sakhaṭ binomial, Holm-adjusted p) live in the
+    # manuscript caption.
 
     _ax_clean(ax)
+    ax.tick_params(axis="y", labelsize=11)
     fig.tight_layout()
     out = FIG_DIR / "fig3_meccan_medinan.pdf"
     plt.savefig(out)
@@ -450,8 +421,6 @@ def fig4_cooccurrence() -> None:
 
     fig, ax = plt.subplots(figsize=(10, 8.5))
 
-    bw_to_root = {r.bw: r for r in SPECTRUM}
-
     if G.number_of_edges() > 0:
         max_w = max(d["weight"] for _, _, d in G.edges(data=True))
         for u, v, d in G.edges(data=True):
@@ -462,91 +431,49 @@ def fig4_cooccurrence() -> None:
                     solid_capstyle="round")
             mx = (pos[u][0] + pos[v][0]) / 2
             my = (pos[u][1] + pos[v][1]) / 2
-            ax.text(mx, my, str(d["weight"]), fontsize=7.5,
-                    ha="center", va="center", color="#333333",
+            # Plain hairline-bordered label (no rounded fill).
+            ax.text(mx, my, str(d["weight"]), fontsize=9.5,
+                    ha="center", va="center", color="#222222",
                     family="serif",
-                    bbox=dict(boxstyle="round,pad=0.18", fc="white",
-                              ec="#888888", lw=0.4, alpha=0.9))
+                    bbox=dict(boxstyle="square,pad=0.18", fc="white",
+                              ec="#888888", lw=0.5))
 
     for r in SPECTRUM:
         x, y = pos[r.bw]
-        ax.scatter(x, y, s=1050, color=STAGE_COLORS[r.stage],
+        ax.scatter(x, y, s=1250, color=STAGE_COLORS[r.stage],
                    edgecolor="#222222", linewidth=0.9, zorder=2)
         ax.text(x, y + 0.012, ar(r.display()), ha="center", va="center",
-                fontsize=12, color="white", zorder=3,
+                fontsize=15, color="white", zorder=3,
                 fontproperties=ARABIC_BOLD_FP)
-        ax.text(x, y - 0.085, r.translit, ha="center", va="center",
-                fontsize=7.2, color="#222222", zorder=3,
+        ax.text(x, y - 0.090, r.translit, ha="center", va="center",
+                fontsize=9, color="#222222", zorder=3,
                 family="serif", style="italic")
 
     if isolated:
         ax.text(1.55, 0.78,
                 "isolated\n(no aya-level\nco-occurrence)",
-                ha="center", va="bottom", fontsize=8.2, style="italic",
-                color="#777777", family="serif")
+                ha="center", va="bottom", fontsize=10, style="italic",
+                color="#555555", family="serif")
         ax.axvline(x=1.30, ymin=0.04, ymax=0.94, color="#CCCCCC",
                    linestyle="--", linewidth=0.7, zorder=0)
 
-    # Bridge-node annotation. Compute betweenness on the *main* connected
-    # subgraph for a quick highlight (the precise CIs live in fig 7).
-    if G_main.number_of_edges() > 0:
-        btw = nx.betweenness_centrality(G_main, weight="weight")
-        top_bridges = sorted(btw.items(), key=lambda kv: -kv[1])[:3]
-        # Compose a small caption listing the top bridge nodes
-        top_text = "Top bridge nodes (betweenness):\n" + " · ".join(
-            f"{bw_to_root[bw].translit} ({v:.2f})"
-            for bw, v in top_bridges if v > 0
-        )
-    else:
-        top_text = ""
-
-    # Legend
+    # Legend — plain hairline border, no rounded fill.
     legend_handles = []
     for st in sorted(set(r.stage for r in SPECTRUM)):
         legend_handles.append(plt.scatter([], [], color=STAGE_COLORS[st],
-                                          s=130, edgecolor="#222222",
+                                          s=140, edgecolor="#222222",
                                           linewidth=0.6,
                                           label=STAGE_LABELS_EN[st]))
     leg = ax.legend(handles=legend_handles, loc="upper left",
-                    fontsize=8.5, framealpha=0.95, frameon=True,
-                    edgecolor="#888888")
+                    fontsize=10.5, framealpha=1.0, frameon=True,
+                    edgecolor="#888888", facecolor="white",
+                    fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
     for txt in leg.get_texts():
         txt.set_family("serif")
 
-    # Stats banner
-    n_edges = G.number_of_edges()
-    total_cooc = sum(d["weight"] for _, _, d in G.edges(data=True))
-    stats = (f"Nodes: {G.number_of_nodes()}   "
-             f"Edges: {n_edges}   "
-             f"Σ co-occurrences: {total_cooc}")
-    ax.text(0.02, 0.02, stats, transform=ax.transAxes,
-            ha="left", va="bottom", fontsize=8.4, color="#444444",
-            family="serif",
-            bbox=dict(boxstyle="round,pad=0.35", fc="white",
-                      ec="#AAAAAA", lw=0.5))
-    if top_text:
-        ax.text(0.98, 0.02, top_text, transform=ax.transAxes,
-                ha="right", va="bottom", fontsize=8.4, color="#222222",
-                family="serif",
-                bbox=dict(boxstyle="round,pad=0.4", fc="#F5F1E8",
-                          ec="#888888", lw=0.6))
-
-    # Embed strongest-edge / bridging finding. When multiple edges tie at the
-    # maximum weight, list all of them; this avoids hiding the S2 ḥzn–ḍyq
-    # corpus-validation tie that the manuscript foregrounds.
-    if G.number_of_edges() > 0:
-        max_w = max(d["weight"] for _, _, d in G.edges(data=True))
-        top_edges = [(u, v, d) for u, v, d in G.edges(data=True)
-                     if d["weight"] == max_w]
-        ties = "  ·  ".join(
-            f"{bw_to_root[u].translit}–{bw_to_root[v].translit}"
-            for u, v, _ in top_edges
-        )
-        tip = (f"Strongest ties (w = {max_w}):  {ties}"
-               "  — S2 corpus-validation & S1↔S6 bridge")
-        ax.text(0.5, 0.97, tip, transform=ax.transAxes,
-                ha="center", va="top", fontsize=8.8, color="#222222",
-                family="serif", style="italic")
+    # Bridge-node / strongest-tie statistics live in the manuscript caption
+    # (and in fig 7 with bootstrap CIs).
 
     ax.axis("off")
     fig.tight_layout()

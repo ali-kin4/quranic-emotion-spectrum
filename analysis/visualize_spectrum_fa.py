@@ -88,10 +88,12 @@ FA_STAGE_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶"}
 # --------------------------------------------------------------------- #
 plt.rcParams.update({
     "font.family": ["Vazirmatn", "Tahoma", "DejaVu Sans"],
-    "font.size": 9.5,
-    "axes.labelsize": 10,
-    "axes.titlesize": 11,
-    "legend.fontsize": 9,
+    "font.size": 11,
+    "axes.labelsize": 12,
+    "axes.titlesize": 12,
+    "legend.fontsize": 10,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.edgecolor": "#444444",
@@ -102,6 +104,7 @@ plt.rcParams.update({
     "ytick.major.size": 3,
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
     "pdf.fonttype": 42,
 })
@@ -155,7 +158,7 @@ def set_fa_yaxis(ax) -> None:
         else:
             labels.append(fa_num(f"{t:.2f}"))
     ax.set_yticks(ax.get_yticks())
-    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=9)
+    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=11)
 
 
 def load_summary() -> list[dict]:
@@ -298,17 +301,17 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
     bars = ax1.bar(range(len(canonical)), counts, color=colors,
                    edgecolor="white", linewidth=0.8, zorder=2)
     ax1.set_xticks(range(len(canonical)))
-    ax1.set_xticklabels(labels, fontsize=12,
+    ax1.set_xticklabels(labels, fontsize=15,
                         fontproperties=FP_AR_BOLD)
     ax1.set_ylabel(ar("بسامد در پیکرهٔ قرآن"),
-                   fontproperties=FP_FA, fontsize=10.5)
+                   fontproperties=FP_FA, fontsize=12)
     ax1.set_title(ar("الف) بسامد به تفکیکِ ریشه"),
-                  fontproperties=FP_FA_BOLD, fontsize=11.5, pad=10)
+                  fontproperties=FP_FA_BOLD, fontsize=12, pad=10)
     style_axes(ax1)
     for b, c in zip(bars, counts):
         ax1.text(b.get_x() + b.get_width() / 2, c + max(counts) * 0.02,
                  fa_num(c), ha="center", va="bottom",
-                 fontsize=9, fontproperties=FP_FA, color="#222222")
+                 fontsize=10.5, fontproperties=FP_FA, color="#222222")
     ax1.set_ylim(0, max(counts) * 1.18)
     set_fa_yaxis(ax1)
 
@@ -324,11 +327,11 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
     # Use only the stage number on the x-axis to avoid label collision;
     # the full label is shown beneath each bar via a secondary annotation.
     stage_tick_labels = [ar(f"مرحلهٔ {FA_STAGE_NUM[s]}") for s in stages]
-    ax2.set_xticklabels(stage_tick_labels, fontsize=10,
+    ax2.set_xticklabels(stage_tick_labels, fontsize=11.5,
                         fontproperties=FP_FA_BOLD)
-    ax2.set_ylabel(ar("بسامد کل"), fontproperties=FP_FA, fontsize=10.5)
+    ax2.set_ylabel(ar("بسامد کل"), fontproperties=FP_FA, fontsize=12)
     ax2.set_title(ar("ب) مجموع به تفکیکِ مرحله"),
-                  fontproperties=FP_FA_BOLD, fontsize=11.5, pad=10)
+                  fontproperties=FP_FA_BOLD, fontsize=12, pad=10)
     style_axes(ax2)
     max_total = max(stage_totals.values())
     for b, s in zip(bars2, stages):
@@ -336,29 +339,13 @@ def fig2_frequency_by_stage(rows: list[dict]) -> None:
                  stage_totals[s] + max_total * 0.015,
                  fa_num(stage_totals[s]),
                  ha="center", va="bottom",
-                 fontsize=10, fontproperties=FP_FA_BOLD, color="#222222")
+                 fontsize=11, fontproperties=FP_FA_BOLD, color="#222222")
     ax2.set_ylim(0, max_total * 1.20)
     set_fa_yaxis(ax2)
 
-    # Statistical annotation (Persian, embedded inside Panel B):
-    # χ²(5) = 227.15, p < 0.001 asymptotic; permutation p = 0.24
-    # We spell out «کای-دوی» rather than the Greek χ² so the glyph stays
-    # within Vazirmatn's coverage.
-    stat_text = (ar("آزمونِ کای-دوی مرحله‌ای:") + "\n" +
-                 ar("کای-دو(۵) = ۲۲۷٫۱۵،  p < ۰٫۰۰۱  (مجانبی)") + "\n" +
-                 ar("p = ۰٫۲۴  (آزمونِ جایگشتیِ حافظِ حاشیه‌ها)"))
-    ax2.text(0.02, 0.98, stat_text, transform=ax2.transAxes,
-             ha="left", va="top",
-             fontsize=8, fontproperties=FP_FA, color="#222222",
-             bbox=dict(boxstyle="round,pad=0.5", facecolor="#FAFAFA",
-                       edgecolor="#BBBBBB", linewidth=0.6, alpha=0.92))
+    # Chi-square / permutation test results live in the manuscript caption.
 
-    total_hits = sum(by_bw[bw]["occurrences"] for bw in canonical)
-    fig.suptitle(
-        ar("بسامدِ واژگانیِ طیفِ خشم در پیکرهٔ قرآن — "
-           f"{fa_num(total_hits)} بسامد در {fa_num(len(SPECTRUM))} ریشهٔ کانونی"),
-        fontproperties=FP_FA_BOLD, fontsize=12.5, y=0.99)
-    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    fig.tight_layout()
 
     out = FIG_DIR / "fig2_frequency_by_stage.pdf"
     plt.savefig(out)
@@ -392,9 +379,9 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
            linewidth=0.7, label=ar("مدنی"), zorder=2)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=13, fontproperties=FP_AR_BOLD)
+    ax.set_xticklabels(labels, fontsize=15, fontproperties=FP_AR_BOLD)
     ax.set_ylabel(ar("بسامد در پیکره"),
-                  fontproperties=FP_FA, fontsize=10.5)
+                  fontproperties=FP_FA, fontsize=12)
     style_axes(ax)
 
     max_total = max(totals) if totals else 1
@@ -404,32 +391,18 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
             ax.text(xi, t + max_total * 0.015,
                     f"{fa_num(m)}/{fa_num(d)}",
                     ha="center", va="bottom",
-                    fontsize=8.5, fontproperties=FP_FA, color="#555555")
+                    fontsize=10.5, fontproperties=FP_FA, color="#555555")
     ax.set_ylim(0, max_total * 1.20)
 
-    # Baseline reference: Meccan rate ≈ 74% of total ayat.
-    # Show as horizontal dashed line on a secondary y-axis (rate-scale)
-    # for context. We overlay a faint band rather than a separate axis to
-    # keep the figure simple.
+    # Legend — plain hairline border (no rounded fill).
     leg = ax.legend(loc="upper right", frameon=True,
-                    facecolor="white", edgecolor="#BBBBBB", framealpha=0.95,
-                    prop=FP_FA, fontsize=10)
-    leg.get_frame().set_linewidth(0.7)
+                    facecolor="white", edgecolor="#888888", framealpha=1.0,
+                    prop=FP_FA, fontsize=11, fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
 
-    # Statistical annotation (Persian): sakhaṭ binomial result.
-    # Subscript ₀ and ∈ are outside Vazirmatn's coverage — spell them out.
-    stat_text = (ar("آزمونِ دوجمله‌ایِ سَخَط (۰/۴):  p خام = ۰٫۰۰۴۶") + "\n" +
-                 ar("(فرضِ صفر: نرخِ مکی = ۰٫۷۴؛  p تعدیل‌شدهٔ Holm = ۰٫۰۵)") + "\n" +
-                 ar("حساسیتِ پایه ۰٫۷۰–۰٫۷۸:  p در بازهٔ ۰٫۰۰۲ تا ۰٫۰۰۸"))
-    ax.text(0.02, 0.97, stat_text, transform=ax.transAxes,
-            ha="left", va="top",
-            fontsize=8.5, fontproperties=FP_FA, color="#222222",
-            bbox=dict(boxstyle="round,pad=0.45", facecolor="#FAFAFA",
-                      edgecolor="#BBBBBB", linewidth=0.6, alpha=0.95))
+    # Sakhaṭ binomial result and baseline-sensitivity figures live in the
+    # manuscript caption (no embedded overlay here).
 
-    ax.set_title(
-        ar("توزیعِ واژگانِ طیفِ خشم میانِ پیکرهٔ مکی و مدنی"),
-        fontproperties=FP_FA_BOLD, fontsize=12.5, pad=12)
     set_fa_yaxis(ax)
 
     fig.tight_layout()
@@ -491,54 +464,48 @@ def fig4_cooccurrence(window: int = 0) -> None:
             ax.plot([pos[u][0], pos[v][0]], [pos[u][1], pos[v][1]],
                     color="#888888", alpha=alpha, linewidth=lw,
                     solid_capstyle="round", zorder=1)
-            # Edge-weight label
+            # Edge-weight label — plain hairline border, no rounded fill.
             mx = (pos[u][0] + pos[v][0]) / 2
             my = (pos[u][1] + pos[v][1]) / 2
             ax.text(mx, my, fa_num(d["weight"]),
-                    fontsize=7.5, fontproperties=FP_FA,
-                    ha="center", va="center", color="#444444",
-                    bbox=dict(boxstyle="round,pad=0.18",
-                              facecolor="white", edgecolor="#CCCCCC",
-                              linewidth=0.5, alpha=0.92), zorder=1.5)
+                    fontsize=10, fontproperties=FP_FA,
+                    ha="center", va="center", color="#222222",
+                    bbox=dict(boxstyle="square,pad=0.18",
+                              facecolor="white", edgecolor="#888888",
+                              linewidth=0.5), zorder=1.5)
 
     # Draw nodes — labels in Amiri (Arabic), white on coloured fill.
     for r in SPECTRUM:
         x, y = pos[r.bw]
-        ax.scatter(x, y, s=1100, color=STAGE_COLORS[r.stage],
+        ax.scatter(x, y, s=1300, color=STAGE_COLORS[r.stage],
                    edgecolor="white", linewidth=1.6, zorder=2)
         ax.text(x, y, ar(r.display()), ha="center", va="center",
-                fontsize=12, fontproperties=FP_AR_BOLD,
+                fontsize=15, fontproperties=FP_AR_BOLD,
                 color="white", zorder=3)
 
     # Sidebar for isolated nodes
     if isolated:
         ax.text(1.68, 1.07, ar("بدونِ هم‌رخدادگیریِ آیه‌ای"),
                 ha="center", va="bottom",
-                fontsize=9.5, fontproperties=FP_FA_BOLD,
+                fontsize=11, fontproperties=FP_FA_BOLD,
                 style="italic", color="#555555")
         ax.plot([1.40, 1.40], [-0.95, 0.95],
                 color="#BBBBBB", linestyle="--", linewidth=0.7, zorder=0)
 
-    # Legend (Persian stage labels)
+    # Legend (Persian stage labels) — plain hairline border.
     for st in sorted(set(r.stage for r in SPECTRUM)):
-        ax.scatter([], [], color=STAGE_COLORS[st], s=150, edgecolor="white",
+        ax.scatter([], [], color=STAGE_COLORS[st], s=160, edgecolor="white",
                    linewidth=0.6, label=ar(STAGE_LABELS[st]))
     leg = ax.legend(loc="lower left", frameon=True,
-                    facecolor="white", edgecolor="#BBBBBB",
-                    framealpha=0.95, prop=FP_FA, fontsize=8.5,
+                    facecolor="white", edgecolor="#888888",
+                    framealpha=1.0, prop=FP_FA, fontsize=10.5,
                     title=ar("مراحلِ طیف"),
-                    title_fontproperties=FP_FA_BOLD)
-    leg.get_frame().set_linewidth(0.7)
-    leg.get_title().set_fontsize(9.5)
+                    title_fontproperties=FP_FA_BOLD,
+                    fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
+    leg.get_title().set_fontsize(11)
 
     ax.axis("off")
-    n_edges = G.number_of_edges()
-    n_co = sum(d["weight"] for _, _, d in G.edges(data=True))
-    ax.set_title(
-        ar(f"شبکهٔ هم‌رخدادگیریِ آیه‌ایِ {fa_num(len(SPECTRUM))} ریشهٔ کانونیِ طیف") + "\n" +
-        ar(f"وزنِ یال = شمارِ آیاتِ مشترک   ·   {fa_num(n_edges)} یال "
-           f"·   {fa_num(n_co)} هم‌رخدادگیری"),
-        fontproperties=FP_FA_BOLD, fontsize=12.5, pad=10)
 
     fig.tight_layout()
     out = FIG_DIR / "fig4_cooccurrence.pdf"
@@ -546,6 +513,7 @@ def fig4_cooccurrence(window: int = 0) -> None:
     plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
+    n_co = sum(d["weight"] for _, _, d in G.edges(data=True))
     print(f"Graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges, "
           f"total co-occurrences = {n_co}")
 

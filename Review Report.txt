@@ -1,0 +1,159 @@
+# Peer-Review Report — Reviewer's Comments to the Authors
+
+**Manuscript:** *The Phenomenology of the Anger Spectrum in the Qur?an: A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum* (English version, 33 pp.) / *???????????? ???? ??????? ??? ?? ???? ????* (Persian version, 45 pp.)
+
+**Authors:** K. Jabbary & A. Jabbary (Urmia University, Iran) — April 2026
+**Reviewer's recommendation:** **Major Revision** (both versions). The substantive argument is genuinely original and the corpus pipeline is admirable; however, the manuscript is *not yet camera-ready*. It contains several unfilled editorial placeholders, internal inconsistencies between figures and text, and — in the Persian version — typographic, BiDi (right-to-left), and font-coverage problems that must be corrected before publication. I detail the issues below by category.
+
+---
+
+## A. Issues affecting BOTH the English and the Persian manuscripts (substantive / methodological)
+
+**A1. Originality claim is overstated.** The paper repeatedly asserts (Abstract; §1.2 (i); §6.1) that the Izutsu + Kennedy–Sassoon + Lakoff–Kövecses integration is "the first" in published Qur?anic studies. This is a strong claim that requires either (a) a systematic review of recent Persian and Arabic Qur?anic-linguistic scholarship (e.g. *Pizhuhish-ha-yi Zabanshinakhti-yi Qur?an*, *al-Dirasat al-Lughawiyya*, *Journal of Qur?anic Studies*) demonstrating the absence of such an integration, or (b) the more cautious wording "to our knowledge." The current text mixes both formulations inconsistently. The authors' own §1.3 lists Qa?iminiya (2011, 2014) as already integrating Izutsu + cognitive linguistics, which weakens the trifold-novelty claim.
+
+**A2. Statistical interpretation problems.**
+- The ?²(1) = 1.55 result is presented (Abstract, §4, §5.4, §6.2) as *positive* evidence for "bidirectional causation" between Stages 1–5 and Stage 6. This is a logical overreach: failure to reject the null of equal split is *absence of evidence of a difference*, **not evidence of equality** (and certainly not of any specific causal architecture). The text should be reformulated as "the data are *consistent with* a bidirectional reading; the test is underpowered to discriminate between a balanced-distribution model and competing hypotheses."
+- The binomial test for *sakha?* (n = 4, p = 0.005 reported in §4 / Table 2) is dependent on a baseline of 0.74 Meccan ayat. The baseline derivation is described only in passing — please make explicit the denominator (suras vs. ayat vs. attestable contexts) and conduct a sensitivity analysis. With n = 4, even minor shifts in baseline (0.70 vs. 0.78) materially change the conclusion. The Abstract reports the same test with **p = 0.005** but Table 2 in the English version (p. 12) reports **p = 0.026** for the *exclusively Medinan sakha?*. This is an internal inconsistency.
+- For *asaf* (5/0), the manuscript itself acknowledges in §4.4.3 that "binomial p = 0.16, suggestive but not decisive given the small sample" — but the Abstract and §1.2 still describe this as a "discovery" of an "exclusively-Meccan distribution" and a principal contribution. The framing should be downgraded accordingly.
+- The headline result for the six-stage chi-squared (?²(5) = 227.15, p < .001) is mathematically dominated by Stage 6 (n = 145) being four to fourteen times the size of Stages 3–5. The test as run only confirms that the distribution is non-uniform; it does not validate the specific six-stage *ordering* the paper advances. A more discriminating test (e.g. monotonic-trend test, or comparison against a permutation null preserving total marginal counts) is needed to support the *continuum* claim.
+
+**A3. Selection of "fourteen core roots" is partly post-hoc.** The criteria in §3.2 ("appearance as a focal reference in at least three of the four authoritative lexica… minimum corpus frequency of one… thematic membership… without significant overlap with adjacent fields") are not formally operationalised. *?ard* is admitted as a hapax legomenon "when the lexical and tafsir profile is sufficiently rich" — a subjective gate. The authors should publish the full filter list: which candidate roots (e.g. *q-h-r*, *š-n-?*, *?-d-w*, *?-r-b*, *q-?-w*, *g-l-?*, *?-n-f*) were *excluded* and why. As it stands, the fourteen-root inventory has the appearance of an ad-hoc choice whose statistical results are then reported as if they were predicted in advance.
+
+**A4. Bidirectional-causation caveat is not yet operationalised.** §4.8.5 acknowledges that *baghy / ?ughyan / ?utuww* may arise from greed, *istikbar*, or structural arrogance rather than from acute anger. Yet the entire continuum framework, the chi-squared comparison, and the Gross-mapping table still treat them as Stage 6 *outcomes* of the anger spectrum. Either (i) drop them from the spectrum proper and reposition them as a *related but logically distinct* moral-evaluation field (which would also strengthen A2), or (ii) explicitly model the bidirectional relationship — e.g. by tagging each attestation as "anger-derived" vs. "structurally derived" on tafsir grounds and re-running the chi-squared on the anger-derived subset. The current half-measure undermines both the empirical and the theoretical contribution.
+
+**A5. Tafsir engagement is selective and skewed.** The four tafsirs cited (al-?abarsi, al-Zamakhshari, al-?aba?aba?i, Ibn ?Ashur) are predominantly Twelver-Shi?i or Sunni-Ash?ari rationalist; the older philological tafsir tradition (al-?abari's *Jami? al-Bayan*, al-Qur?ubi, Ibn Kathir), the Mu?tazili tradition beyond al-Zamakhshari, the Sufi tafsirs (al-Qushayri, Ibn ?Arabi's school), and the modernist tafsirs (Sayyid Qu?b, ?Abduh-Ri?a's *al-Manar*) are absent. The §6.3 limitations paragraph acknowledges this in passing, but a reader cannot tell whether the lexical claims (e.g. that *ghay?* is exclusively predicated of unbelievers) survive beyond the four chosen tafsirs.
+
+**A6. The claim that Q. 67:8 is "one of the most articulated linguistic instances of container collapse in any documented historical text" (Abstract; §1.2; §5.6; §6.1) is comparative and therefore requires comparative data.** No survey of pre-modern Greek (e.g. Homeric *kholos*, *menis*), Akkadian (*ezzu*), Sanskrit (*krodha*), or Hebrew (*?emâ*, *?aph*) anger-vessel imagery is offered. Without this, the universalist claim is unsubstantiated. At minimum, the formulation should be softened to "an unusually transparent instance" rather than "the most articulated."
+
+**A7. Missing literature.** The bibliography omits several works directly relevant to the paper's core claims:
+- For Qur?anic emotion: el-Awa's *Textual Relations in the Qur?an* (2006); Sinai's *The Qur?an: A Historical-Critical Introduction* (2017) on Meccan/Medinan diachrony.
+- For appraisal-anger: Frijda 1986; Roseman 1996.
+- For Arabic anger metaphors beyond Maalej 2004: Yu 1995 (Chinese), Soriano 2003 (Spanish), Soriano & Maalej eds. 2014.
+- For computational Qur?anic NLP: Atwell et al.; the QurAna and QurSim corpora.
+- The reference list contains only **one Kennedy entry** (2007); the paper repeatedly cites "Kennedy 1999" but it is not in the bibliography.
+- "Pakatchi" is named in §2.1 but not listed in the references.
+
+**A8. The github repository link cannot be verified through the manuscript itself.** Both versions list `github.com/ali-kin4/quranic-emotion-spectrum` as the data/code archive, but the §3.3 description ("five-step pipeline… master concordance CSV…") does not specify the licences of the derivative outputs, the QAC version pinned, or how the morphological collapses were validated against a gold standard. For reproducibility, please add (i) a `requirements.txt` lockfile reference, (ii) the QAC SHA-256 used, and (iii) a confusion matrix between the pipeline's segment-to-root mapping and at least 200 manually-tagged tokens.
+
+**A9. Translation-criticism Table 6 (English) is too small a sample to support §5.7's strong recommendation set.** Four verses × five English translations is anecdotal. A reviewer would expect at least all 312 attestations × the five translations, or — more practically — a stratified random sample of 30 verses with inter-rater coding.
+
+**A10. Ethics, consent, and human-subjects clearance** are not discussed (corpus-only research is normally exempt, but a one-line statement is editorial standard).
+
+---
+
+## B. Issues specific to the **English manuscript** (`manuscriptEnglish.pdf`, 33 pp.)
+
+### B1. Unfilled editorial placeholders that must be removed before submission
+
+These are the most damaging items in the manuscript. They indicate the file is a draft, not a final version:
+
+1. **Page 4 (§1.3):** "Translation-criticism studies … identify it as a structural defect **[CITATION NEEDED for a specific recent example]**".
+2. **Page 4 (§1.3):** "Islamic psychology has begun to extract emotion-regulation models from Qur?anic and ?adith sources **[CITATION NEEDED for specific Islamic-psychology references]**".
+3. **Page 9 (Table 1, ?-f-f row, Maqayis column):** "irritation, vocal expression of distaste (ta?ajjur) **[TO BE EXPANDED FROM LEXICA]**".
+4. **Page 10 (Table 1, n-q-m row, Maqayis column):** "disapproval coupled with intent of retribution **[TO BE EXPANDED FROM LEXICA]**".
+5. **Page 10 (Table 1, ?-r-d row, Lisan al-?Arab column):** "anger plus deliberate denial **[TO BE EXPANDED FROM LEXICA]**".
+6. **Page 7 (§3.2):** "(see §**4.x** on karh)" — the *x* is an unresolved cross-reference; the actual section is presumably §4.3.1.
+
+Any one of these is grounds for desk-rejection at most journals. They should be filled in or removed.
+
+### B2. Cross-reference errors (figure / section numbering)
+
+The figure references in the prose do not match the actual figures in the file. Tracing them through the page screenshots:
+
+| Citation in text | Actual figure (by page) | Problem |
+|---|---|---|
+| §4.4.4 "(Figure 4)" for aya-level co-occurrence | Figure 5 (p. 22) | Wrong number (Figure 4 is morphological breakdown). |
+| §4.4.4 "(Figure 7)" for centrality | Figure 6 (p. 23) | Wrong number. |
+| §4.6.2 "(Figure 7)" for gha?ab betweenness | Figure 6 (p. 23) | Wrong number. |
+| §4.7.1 "Figure 6 visualises this conceptual structure" (referring to ghay?–ka?m container) | Figure 7 (p. 28) | Wrong number — Figure 6 actually shows centrality bar charts, not the container schema. |
+| §4.8.2 "Figure 7 and Table 4 below" | Figure 6 (p. 23) | Wrong number. |
+
+Pages 13–14 caption Figure 2 ("Per-root and per-stage frequency"), but no in-text reference to Figure 2 ever occurs (search "Figure 2"). Figure 3 (Meccan/Medinan stacked bars) on p. 14 is also never cited in the body. Please reconcile every figure with at least one in-text citation, in order.
+
+### B3. Typography / line-breaking / formatting errors
+
+- **Page 2, abstract:** "*sakha?* attests exclusively in**Medinan** suras" — missing space.
+- **Page 2, abstract:** "Quranic" appears once, "Qur?an/Qur?anic" elsewhere — choose one orthography and apply throughout.
+- **Page 8, §3.3:** the inline code "`analysis/extract_co`" runs into the right margin and is **truncated** — the line breaks mid-filename. The full filename "analysis/extract_concordance.py" is split across visual lines mid-string.
+- **Page 8, §3.3:** the command-line block "`python analysis/extract_concordance.py && python analysis/visualize_spectrum.py && python analysis/visualize_advanced.py`" mixes monospace and proportional text in an unusual way — please typeset as a proper code block.
+- Inconsistent hyphenation: "Quranic" / "Qur?anic" / "Qur'anic" all appear; "Lakoff and Kövecses" / "Lakoff & Kövecses" alternate; "phenomenological" is sometimes "phenomenologi-cal" with hyphenation across line breaks where the existing style template should suppress it.
+- Several tables (especially Table 1 spanning pp. 9–11) have orphaned rows whose stage-numbers suggest cross-page row continuations are visually disconnected; consider repeating header rows on each page.
+
+### B4. Visual / figure-quality issues
+
+- **Figure 1 (p. 7):** the node labels use Buckwalter-style abbreviations (Aff, Hzn, gDb, gyZ, bgy, Tgy, Etw) **inside the figure**, but the legend, prose, and tables use scientific transliteration (?ff, ?zn, g?b, gy?, bgy, ?gy, ?tw). The two systems should be reconciled — and the in-figure labels are extremely difficult to read for non-Arabists.
+- **Figure 5 (p. 22):** the aya-level co-occurrence network is laid out poorly. Several nodes (e.g. *uff* top-right; *?tw* bottom-left; *g?b* visually disconnected at lower-right) appear as **isolated nodes** — visually contradicting the prose claim that the spectrum forms a coordinated network. Please use a force-directed layout (Fruchterman-Reingold or ForceAtlas2) with edge weights, label all nodes, and ensure the rendering preserves the topological story the prose tells.
+- **Figure 6 (p. 23):** the three sub-panel x-axis labels are unreadable at the printed size (text appears as ~5pt). Increase font size and rotate 90° if necessary.
+- **Figure 4 (morphological profile, p. 14):** the colour legend (VERB / NOUN / ADJ / PCPL / OTHER) is present but several bars are not visibly subdivided — small categories such as "OTHER" disappear entirely. Either drop them or use a stacked-percentage view.
+- **Figure 7 (container schema, p. 28):** the Arabic labels "???", "??? + ???", and "????" should be glossed in English alongside, since the document is otherwise English.
+
+### B5. Editorial / scholarly conventions
+
+- **Author affiliation footnotes:** the corresponding author is given, but the second author has only "Urmia University, Urmia, Iran" — no department, no email. Most journals require a full ORCID for each author.
+- **Date "April 2026"** appears on the title page; if this is a *future* date intended as a placeholder, please update at submission.
+- **§ "Data and Code Availability"** is on p. 31 (after the conclusion) — most journals expect this at the end immediately preceding references; check the target journal's house style.
+- The reference list (pp. 31–33) mixes formats: some entries have Hijri dates ("(1416 AH)"), some use solar Hijri ("1402 SH/2024"), some use only Gregorian. Please harmonise to "[Solar Hijri / Gregorian]" for Persian works and Gregorian-only for Western works.
+- Several Persian-language references (Narimani et al.; Qarizadeh et al.; Qa?iminiya) are in transliteration only, with no original Persian title — please add the Persian script in square brackets, as the journal target audience may want it.
+- The "Acknowledgements" section is two sentences; consider adding funding-source and competing-interests disclosures.
+
+---
+
+## C. Issues specific to the **Persian manuscript** (`manuscriptPersian.pdf`, 45 pp.)
+
+### C1. Critical typographic / font / BiDi rendering problems
+
+These problems are visible *in the rendered PDF itself* and are blocking issues:
+
+1. **Missing-glyph boxes ("???") in Table 2 (p. 16):** the row for *???* (*sakha?*) shows the p-value as "(p = ?????)" — i.e. five tofu/box characters. The font does not contain the digits or characters intended (likely "0.026" or "0.005"). Compare with Persian-numeral cells elsewhere in the same table that render correctly. This must be regenerated with a font that has the necessary Latin-digit + period glyphs or with Persian-digit equivalents.
+2. **Missing-glyph boxes on p. 12, §3-5 (??? ?????):** "????????? ???? (markers: ??? ?????? …)" — large visible run of empty boxes where the marker tokens (likely Latin or Greek symbols) should appear.
+3. **Wrong character (typo) in Figure 7 title (p. 38):** the heading reads **«???? ???? ??? ??? ????»** ("Anger is a *side* under pressure"). This should be **«???? ???? ??? ??? ????»** ("Anger is a *vessel/container* under pressure"). The letters ? (?a?) and ? (?a?) are visually similar but semantically completely different. Critical typo at the heading of a key figure.
+4. **Stage labels mis-numbered in Figure 7 (p. 38):** the three figure panels are labelled
+ - "????? ?: ???" — should be **????? ?** (Stage 4)
+ - "????? ? (???): ??? + ???" — should be **????? ? (???)**
+ - "????? ? (?): ????" — should be **????? ? (?)**
+ The figure caption (??? ?) correctly names "????? ?" and "????? ?" in the description, but the *in-figure labels* are wrong, contradicting both the caption and the body of the paper.
+5. **BiDi reversal in the data-availability URL (p. 45):** the URL "github.com/ali-kin4/quranic-emotion-spectrum" renders as **«/quranic-emotion-spectrum?github.com/ali-kin»** — the slash, the dash, and the digit "4" (rendered as "?" Persian-Eastern Arabic) are reordered by the RTL bidirectional algorithm. The number 4 should be ASCII "4", and the URL should be wrapped in an LTR override (`U+202A` or a `\textenglish{…}` macro) so it renders left-to-right correctly. As printed, the URL is unusable.
+6. **BiDi issues in the references (p. 42 and surrounding):** the Wierzbicka entry renders as **"and Diversity Cultures: and Languages Across Emotions .(1999) A. Wierzbicka,"** — the title "Emotions Across Languages and Cultures: Diversity and Universals" has been visually word-reversed by the RTL engine because no LTR isolate was applied. Every Western reference shows similar partial reversal. Please wrap each Latin-script reference in a left-to-right paragraph override.
+7. **"[CI-TATION NEEDED]" placeholders, broken across a hyphenated line (p. 5):** the same English placeholders left in the English version persist *unmodified* in the Persian draft, and the line-breaking engine has split "CITATION" as "CI-TATION", creating a particularly awkward visual. Two instances visible.
+8. **Latin/Persian numeral mixing:** dates and statistics are sometimes in Latin numerals ("1959", "(2010)", "2007"), sometimes in Persian-Eastern numerals ("????", "????", "????"), sometimes both within the same sentence. Choose a single house style and apply it.
+
+### C2. Text-content issues
+
+- The Persian abstract is nearly twice as long as the English abstract; most Persian-language journals impose a 250–300-word ceiling. Please trim.
+- The Persian title — *???????????? ???? ??????? ??? ?? ???? ????* — is direct; the English subtitle ("A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum") has a Persian counterpart that is slightly differently scoped: *?????? ????? ??????? ????????? ?????????? ? ???????? ?? ???? ?????? ???? ???*. This is acceptable, but the term "Inflammation" ? "??????????" loses the medical-metaphor connotation; consider "???????? ??????" or a footnote-gloss.
+- The Persian rendering of "Action-Intensity Continuum" is "??????? ???? ???" — the ezafah marks in the visible text are inconsistent (some are explicit *??*, some are dropped). The journal's house style should be applied uniformly.
+- The Persian §1.3 reproduces the same five-line literature taxonomy as the English §1.3, including the **same two [CITATION NEEDED]** placeholders. They have not been localised to Persian-language references — yet the natural Persian-language audience for this paper would expect Persian-language exemplars (e.g. Hashemi-Pourafzal on translation criticism; ?asan-Zadeh Amoli on Islamic psychology).
+- The Persian body uses both *????* and *?????* and *??? ??* with a stretched dash; choose one.
+- The Persian section-numbering uses two competing styles ("§?-?-?" with hyphens, and "§?.?.?" with dots) — choose one. I observed both forms within five pages of each other.
+
+### C3. Persian-version figure quality
+
+- **Persian Figure 5 (p. 30, ??? ?):** the network visualization shows the same isolated-nodes problem as English Figure 5 (e.g. *??* (uff) is alone at the top-left). Identical layout problem; same remedy (use a force-directed layout that keeps connected components together).
+- **Persian Figure 2 / 6:** Persian numerals in axis tick labels are mixed with Latin numerals — e.g. some bars show "??" while axis ticks show "100". Use one numbering system per figure.
+- **Persian Figure 7 (p. 38):** in addition to the typo and label problems noted in C1.3 / C1.4, the small Arabic Qur'an citations under the panels (????????????? ????????? — Q 3:134; ??????? ????????? ???? ????????? — Q 67:8) appear at sub-readable size (~6pt). Please increase.
+
+### C4. Persian-version length and structure
+
+The Persian version is 45 pp. for content that, in the English version, fits in 33 pp. The expansion comes mainly in the introductory and methodological sections. Consider tightening — Persian journals (e.g. *????????? ???????????? ????*, *????????? ???? ? ????*) generally cap research articles at about 25–30 pp. before references.
+
+---
+
+## D. Summary recommendation
+
+**Major Revision required.** The substantive contribution — proposing a six-stage action-intensity continuum across fourteen Qur?anic anger-spectrum roots, validated by a reproducible corpus pipeline — is genuinely worthwhile and would, if the issues above are addressed, make a strong publication in a journal such as *Journal of Qur?anic Studies*, *Arabica*, *Pizhuhish-ha-yi Zabanshinakhti-yi Qur?an*, or *Cognitive Linguistics*.
+
+The **non-negotiable items** that must be fixed before a revised submission can be evaluated on its merits are:
+
+1. Removal of all five `[CITATION NEEDED]` / `[TO BE EXPANDED FROM LEXICA]` / `§4.x` placeholders (English §1.3, Table 1; Persian §1-3).
+2. Correction of the figure-numbering errors in §4.4.4, §4.6.2, §4.7.1, §4.8.2 (English).
+3. Correction of the Persian Figure 7 typo (???? ? ????) and the Stage-4/5 mis-labelling.
+4. Correction of the missing-glyph boxes ("?") in Persian Table 2 and §3-5.
+5. Correction of the BiDi reversal in the github URL (Persian p. 45) and in all Latin-script references.
+6. Resolution of the p-value inconsistency for *sakha?* (English Abstract reports p = 0.005; Table 2 reports p = 0.026).
+7. Reformulation of the ?²(1) = 1.55 result so it is no longer presented as positive evidence for bidirectional causation.
+
+The **strongly-recommended items** are A1 (originality framing), A3 (root-selection criteria), A6 (universality claim re Q. 67:8), A7 (missing literature), and B4 (figure quality, especially Figure 5 / ??? ?).
+
+I look forward to seeing a revised version.
+
+— *Reviewer (PhD-level, Qur?anic studies / Arabic computational linguistics / cognitive semantics)*

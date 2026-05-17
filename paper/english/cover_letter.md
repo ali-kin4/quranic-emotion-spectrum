@@ -1,0 +1,40 @@
+# Cover Letter
+
+Karim Jabbary (corresponding author)
+Ali Jabbary
+Department of Arabic Language and Literature
+Faculty of Letters and Humanities, Urmia University
+Urmia, Iran
+Email: k.jabbary@urmia.ac.ir
+Email: a.jabbary@urmia.ac.ir
+
+9 May 2026
+
+Professor M.A.S. Abdel Haleem
+Editor-in-Chief, *Journal of Qur'anic Studies*
+Centre of Islamic Studies, SOAS, University of London
+Edinburgh University Press
+
+Dear Professor Abdel Haleem,
+
+We are pleased to submit for consideration in *Journal of Qur'anic Studies* our manuscript, "The Phenomenology of the Anger Spectrum in the Qur'an: A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum" (main body ~9,800 words; abstract ~250 words). The paper argues that fourteen Arabic roots in the Qur'an form a graded six-stage continuum of anger phenomena -- from pre-anger displeasure through inner pressure, evaluative aversion, active anger, and compressed rage to behavioural outcomes -- and operationalises that argument under a fully reproducible computational pipeline released under MIT licence.
+
+We believe the study addresses three concerns recurrent in JQS readership. First, it offers a **methodological synthesis** of Izutsu's semantic-field method, Kennedy and Sassoon's scalar semantics, and the Lakoff-Kovecses tradition of conceptual metaphor, applied at corpus scale to the Quranic Arabic Corpus (Dukes 2011) with every figure, table, and statistic traceable to a versioned script. Second, it reports a **novel empirical finding**: the exclusively Medinan distribution of *sakhat* (raw *p* = 0.005; Holm-adjusted *p* = 0.050, at the conventional FDR threshold), alongside three roots that survive Holm-Bonferroni correction emphatically (*karh*, *baghy*, *ghayz*). Third, it advances a **bidirectional-causation reading of Stage 6**, validated through a kappa = 0.79 tafsir-coding audit of all 145 Stage-6 attestations against *al-Mizan*, *al-Kashshaf*, *Majma' al-Bayan*, and *al-Tahrir wa-l-Tanwir*: only 26% are anger-derived, 49% structurally derived (greed, *istikbar*, *'ulw fi al-ard*), and 25% joint -- reconciling a previously puzzling distributional pattern with the structurally driven character of *baghy*, *tughyan*, and *'utuww* in classical exegesis. The paper additionally proposes Q. 67:8 of sūrat al-Mulk as an early and unusually transparent instance of the "container-collapse" failure mode in conceptual-metaphor theory, calibrated against a focused six-tradition philological survey (Akkadian, Biblical Hebrew, Homeric Greek, Vedic/Sanskrit, Classical Chinese, pre-Islamic Jāhilī Arabic) that acknowledges Job 32:19 (*bāqaʿ*) as the one clear Northwest-Semitic precedent.
+
+Methodologically, the paper aims to extend the linguistic-philological work of Sinai (2017, 2023) and Neuwirth (2019) and the corpus tradition typified in JQS through state-of-the-art uncertainty-aware reporting (10,000-permutation marginal-preserving null; Spearman, Mann-Kendall, and Cochran-Armitage trend tests; Holm-Bonferroni FDR control; baseline-sensitivity tabulation; bootstrap 95% CIs on every centrality measure). It engages directly with the cognitive-semantic frameworks consolidated in Kovecses, Benczes and Szelid (2025, De Gruyter) -- which omits Classical Arabic from its twenty-two-language survey -- and with recent corpus-Arabic NLP advances exemplified by Gaanoun and Alsuhaibani (2025, *Nature HSSC*) and Khan et al. (2025).
+
+In compliance with COPE and ICMJE secondary-publication guidance, we disclose that a Persian-language paper using the same corpus dataset is concurrently under consideration at *پژوهش‌های زبان‌شناختی قرآن* (NRGS, University of Isfahan), entitled «اوجِ طیفِ خشم در قرآن کریم: قرائتی تطبیقی-تفسیری از مرحله‌های فعّال، متراکم، و پیامدی». The two papers are independent works that share only the empirical dataset (QAC v0.4, Dukes 2011) and the reproducible analysis pipeline. They do not cite each other and have no content overlap. The JQS submission presents the comprehensive fourteen-root, six-stage continuum with the full computational methodology described above. The NRGS submission, by contrast, undertakes a tafsīr-comparative analysis focused on Stages 4--6 through nine-mufassir engagement (Ṭabarī, Qurṭubī, Ibn Kathīr, Zamakhsharī, Ṭabrisī, Ṭabāṭabāʾī, Ibn ʿĀshūr, Sayyid Quṭb, Rashīd Riḍā) and dialogue with the Iranian-Islamic cognitive-semantic tradition (Qā'imīniā, Pākatchī, Narīmānī, Qārīzādeh). The two studies address distinct scholarly audiences with distinct methodological signatures.
+
+We respectfully suggest the following potential reviewers, each internationally recognised and, to our knowledge, without conflicts of interest with the authors:
+
+- **Professor Nicolai Sinai** (University of Oxford) -- Qur'anic semantics and lexical fields; *Key Terms of the Qur'an* (Princeton, 2023).
+- **Dr Karen Bauer** (Institute of Ismaili Studies, London) -- emotion and rhetoric in the Qur'an.
+- **Professor Eric Atwell** (University of Leeds) -- computational corpus linguistics and the Quranic Arabic Corpus.
+- **Professor Zoltán Kövecses** (Eötvös Loránd University, Budapest) -- conceptual metaphor theory and cross-linguistic anger studies; co-editor *Metaphors of ANGER across Languages* (De Gruyter, 2025).
+
+We thank you and the editorial team for considering this manuscript and would be glad to provide any additional materials. The corresponding author can be reached at k.jabbary@urmia.ac.ir; ORCIDs will be supplied at submission.
+
+Yours sincerely,
+
+Karim Jabbary
+(on behalf of both authors)

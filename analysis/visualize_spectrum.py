@@ -1,17 +1,22 @@
-"""Generate the four publication figures.
+"""Generate the four publication figures (English variant).
 
-    figures/fig1_continuum.pdf       — six-stage spectrum diagram
-    figures/fig2_frequency_by_stage.pdf — frequency bars (linear & stage totals)
-    figures/fig3_meccan_medinan.pdf  — revelation-context distribution
-    figures/fig4_cooccurrence.pdf    — proximity co-occurrence network
+    figures/fig1_continuum.pdf            — six-stage spectrum diagram
+    figures/fig2_frequency_by_stage.pdf   — frequency bars with key tests
+    figures/fig3_meccan_medinan.pdf       — revelation-context distribution
+    figures/fig4_cooccurrence.pdf         — proximity co-occurrence network
 
-All figures use a clean academic style with Arabic text rendering.
-Revised 2026-04-29 for the six-stage anger spectrum (14 core roots).
+Publication-grade upgrade for *Journal of Qur'anic Studies*:
+  * Okabe-Ito and viridis/cividis colour-blind-safe palettes.
+  * Serif typography (DejaVu Serif fallback if EB Garamond absent).
+  * Amiri (bundled) loaded explicitly for Arabic glyph rendering.
+  * Key statistical findings embedded directly into figures.
+  * Minimal spines, no gridded background noise.
 """
 from __future__ import annotations
 
 import csv
 import io
+import json
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -20,6 +25,7 @@ import matplotlib
 matplotlib.use("Agg")  # noqa: E402
 
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.font_manager as fm  # noqa: E402
 import networkx as nx  # noqa: E402
 import arabic_reshaper  # noqa: E402
 from bidi.algorithm import get_display  # noqa: E402
@@ -34,6 +40,22 @@ from spectrum_roots import SPECTRUM, STAGE_LABELS_EN  # noqa: E402
 CONC_DIR = ROOT_DIR / "data" / "concordance"
 FIG_DIR = ROOT_DIR / "figures"
 FIG_DIR.mkdir(exist_ok=True)
+FONT_DIR = ROOT_DIR / "paper" / "fonts"
+
+# ------------------------------------------------------------------ #
+# Font registration — bundle Amiri so figures embed Arabic without   #
+# depending on system fonts.                                         #
+# ------------------------------------------------------------------ #
+AMIRI_REGULAR = FONT_DIR / "amiri-regular.ttf"
+AMIRI_BOLD = FONT_DIR / "amiri-bold.ttf"
+EBGARAMOND = FONT_DIR / "ebgaramond-regular.ttf"
+
+for _f in (AMIRI_REGULAR, AMIRI_BOLD, EBGARAMOND):
+    if _f.exists():
+        fm.fontManager.addfont(str(_f))
+
+ARABIC_FP = fm.FontProperties(fname=str(AMIRI_REGULAR)) if AMIRI_REGULAR.exists() else None
+ARABIC_BOLD_FP = fm.FontProperties(fname=str(AMIRI_BOLD)) if AMIRI_BOLD.exists() else ARABIC_FP
 
 
 def ar(text: str) -> str:
@@ -43,26 +65,44 @@ def ar(text: str) -> str:
     return get_display(arabic_reshaper.reshape(text))
 
 
+# Serif typography, journal-grade defaults.
+_serif_stack = ["EB Garamond", "DejaVu Serif", "Times New Roman", "Times", "serif"]
 plt.rcParams.update({
-    "font.family": ["Tahoma", "DejaVu Sans"],
-    "font.size": 10,
-    "axes.labelsize": 11,
+    "font.family": "serif",
+    "font.serif": _serif_stack,
+    "font.size": 11,
+    "axes.labelsize": 12,
     "axes.titlesize": 12,
-    "legend.fontsize": 9,
+    "axes.titleweight": "normal",
+    "axes.labelweight": "normal",
+    "legend.fontsize": 10,
+    "legend.frameon": False,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
+    "axes.linewidth": 0.8,
+    "xtick.major.width": 0.7,
+    "ytick.major.width": 0.7,
+    "xtick.major.size": 3.5,
+    "ytick.major.size": 3.5,
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
 })
 
+# Okabe-Ito colour-blind-safe palette (Wong 2011, modified for the six-stage
+# progression: cool blue → warm orange-red → green-outcome).
 STAGE_COLORS = {
-    1: "#7FB3D5",  # light blue   — pre-anger displeasure
-    2: "#4C72B0",  # blue         — inner pressure / contraction
-    3: "#DD8452",  # orange       — evaluative aversion
-    4: "#C44E52",  # red          — active anger
-    5: "#8E0E25",  # dark red     — compressed rage
-    6: "#55A868",  # green        — behavioural outcomes
+    1: "#56B4E9",  # sky blue          — pre-anger displeasure
+    2: "#0072B2",  # ocean blue        — inner pressure / contraction
+    3: "#E69F00",  # orange            — evaluative aversion
+    4: "#D55E00",  # vermilion         — active anger
+    5: "#7B1E25",  # dark vermilion    — compressed rage
+    6: "#009E73",  # bluish green      — behavioural outcomes
 }
 
 CANONICAL_ORDER = [r.bw for r in SPECTRUM]
@@ -81,30 +121,64 @@ def load_summary() -> list[dict]:
     return [r for r in rows if r["root_bw"] in core_bw]
 
 
+def load_meccan_baseline() -> float:
+    """Read the Meccan-rate prior the same way advanced_metrics does."""
+    try:
+        with (ROOT_DIR / "data" / "quran" / "quran_check.json").open("r",
+                                                                    encoding="utf-8") as fh:
+            doc = json.load(fh)
+        suras = doc.get("suras") or doc.get("sura_info") or []
+        if not suras:
+            return 0.74
+        total_v = sum(s.get("total_verses", 0) for s in suras)
+        meccan_v = sum(s.get("total_verses", 0) for s in suras
+                       if str(s.get("revelation", "")).lower().startswith("mec"))
+        if total_v == 0:
+            return 0.74
+        return meccan_v / total_v
+    except Exception:
+        return 0.74
+
+
+def _ax_clean(ax):
+    """Strip the plot to journal aesthetics: 2-spine, no grid, light ticks."""
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    ax.spines["left"].set_color("#444444")
+    ax.spines["bottom"].set_color("#444444")
+    ax.tick_params(colors="#444444", which="both")
+    ax.grid(False)
+
+
+# ------------------------------------------------------------------ #
+#  Figure 1 — Six-stage continuum                                    #
+# ------------------------------------------------------------------ #
+
 def fig1_continuum(rows: list[dict]) -> None:
-    fig, ax = plt.subplots(figsize=(16, 6.0))
+    fig, ax = plt.subplots(figsize=(14, 5.4))
     n = len(SPECTRUM)
     width = n + 1
     ax.set_xlim(0, width)
-    ax.set_ylim(0, 6.4)
+    ax.set_ylim(0, 6.6)
     ax.axis("off")
 
     by_stage: dict[int, list[int]] = defaultdict(list)
     for i, r in enumerate(SPECTRUM):
         by_stage[r.stage].append(i + 1)
 
+    # Stage bands — very low-alpha tint, no hard edges
     for st, xs_in_stage in sorted(by_stage.items()):
         x0 = min(xs_in_stage) - 0.5
         x1 = max(xs_in_stage) + 0.5
-        ax.axhspan(1.2, 4.4, xmin=(x0 / width), xmax=(x1 / width),
-                   facecolor=STAGE_COLORS[st], alpha=0.08, zorder=0)
-        ax.text((x0 + x1) / 2, 5.4, f"Stage {st}",
-                ha="center", va="center", fontsize=10, fontweight="bold",
-                color=STAGE_COLORS[st])
-        ax.text((x0 + x1) / 2, 4.95,
+        ax.axhspan(1.1, 4.3, xmin=(x0 / width), xmax=(x1 / width),
+                   facecolor=STAGE_COLORS[st], alpha=0.075, zorder=0)
+        ax.text((x0 + x1) / 2, 5.55, f"Stage {st}",
+                ha="center", va="center", fontsize=10.5, fontweight="bold",
+                color=STAGE_COLORS[st], family="serif")
+        ax.text((x0 + x1) / 2, 5.05,
                 STAGE_LABELS_EN[st].split(" — ")[1],
-                ha="center", va="center", fontsize=8.5,
-                color=STAGE_COLORS[st], style="italic")
+                ha="center", va="center", fontsize=9,
+                color=STAGE_COLORS[st], style="italic", family="serif")
 
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
@@ -114,114 +188,200 @@ def fig1_continuum(rows: list[dict]) -> None:
         if rec is None:
             continue
         st = r.stage
-        size = 320 + 70 * (rec["occurrences"] ** 0.55)
+        size = 360 + 78 * (rec["occurrences"] ** 0.55)
         ax.scatter(i, 2.8, s=size, color=STAGE_COLORS[st],
-                   edgecolor="black", linewidth=0.8, zorder=3)
+                   edgecolor="#222222", linewidth=0.9, zorder=3)
         ax.text(i, 2.8, ar(surface_by_bw[r.bw]), ha="center", va="center",
-                fontsize=10.5, fontweight="bold", color="white", zorder=4)
-        ax.text(i, 1.85, f"n = {rec['occurrences']}", ha="center", va="center",
-                fontsize=8.5, color="black", zorder=4)
-        # Use scientific transliteration (e.g. ʾff, ḥzn, ġḍb), not Buckwalter
-        # codes (Aff, Hzn, gDb), so non-Arabist readers can decode the labels.
-        ax.text(i, 1.45, f"({r.translit})", ha="center", va="center",
-                fontsize=7.5, color="dimgray", zorder=4, style="italic")
+                fontsize=12.5, color="white", zorder=4,
+                fontproperties=ARABIC_BOLD_FP)
+        ax.text(i, 1.83, f"n = {rec['occurrences']}", ha="center", va="center",
+                fontsize=9, color="#222222", zorder=4, family="serif")
+        ax.text(i, 1.42, r.translit, ha="center", va="center",
+                fontsize=8.5, color="#555555", zorder=4, style="italic",
+                family="serif")
 
+    # Lightweight directional arrows with gradient alpha
     for i in range(1, n):
-        ax.annotate("", xy=(i + 1 - 0.3, 2.8), xytext=(i + 0.3, 2.8),
-                    arrowprops=dict(arrowstyle="->", color="gray", lw=1.0,
-                                    alpha=0.55), zorder=2)
+        ax.annotate("", xy=(i + 1 - 0.32, 2.8), xytext=(i + 0.32, 2.8),
+                    arrowprops=dict(arrowstyle="-|>", color="#888888",
+                                    lw=0.9, alpha=0.6,
+                                    mutation_scale=10), zorder=2)
 
-    ax.text(width / 2, 0.55,
-            f"Intensity of Action  →  ({ar('شدت کنش')})",
-            ha="center", va="center", fontsize=11, fontweight="bold")
+    ax.text(width / 2, 0.62,
+            "Action-intensity axis  →",
+            ha="center", va="center", fontsize=11.5, fontweight="bold",
+            color="#222222", family="serif")
+
+    # Embedded finding (top-right)
+    ax.text(width - 0.1, 6.35,
+            r"$\chi^2(1)=1.55$  (phenomenology S1–5 vs. outcomes S6) — "
+            "fails to reject (bidirectional reading, §4.8.5)",
+            ha="right", va="top", fontsize=8.5, color="#444444",
+            style="italic", family="serif")
 
     out = FIG_DIR / "fig1_continuum.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
+# ------------------------------------------------------------------ #
+#  Figure 2 — Per-root and per-stage frequency                       #
+# ------------------------------------------------------------------ #
+
 def fig2_frequency_by_stage(rows: list[dict]) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.6),
+                                   gridspec_kw={"width_ratios": [1.35, 1.0]})
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
 
-    labels = [ar(surface_by_bw[bw]) for bw in CANONICAL_ORDER]
+    labels_ar = [surface_by_bw[bw] for bw in CANONICAL_ORDER]
+    translit = [r.translit for r in SPECTRUM]
     counts = [by_bw[bw]["occurrences"] for bw in CANONICAL_ORDER]
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in CANONICAL_ORDER]
+    x = list(range(len(CANONICAL_ORDER)))
 
-    bars = ax1.bar(range(len(CANONICAL_ORDER)), counts, color=colors,
-                   edgecolor="black", linewidth=0.6)
-    ax1.set_xticks(range(len(CANONICAL_ORDER)))
-    ax1.set_xticklabels(labels, fontsize=10.5)
-    ax1.set_ylabel("Occurrences in the Qur'an")
-    ax1.set_title("Per-root frequency (linear scale)")
+    bars = ax1.bar(x, counts, color=colors, edgecolor="#222222", linewidth=0.5,
+                   width=0.78)
+    ax1.set_xticks(x)
+    # Two-line tick labels: Arabic on top (Amiri), transliteration beneath.
+    ax1.set_xticklabels([""] * len(x))
+    ymax_left = max(counts) * 1.18
+    ax1.set_ylim(0, ymax_left)
+    for xi, (lab_ar, lab_tr) in enumerate(zip(labels_ar, translit)):
+        ax1.text(xi, -ymax_left * 0.04, ar(lab_ar),
+                 ha="center", va="top", fontsize=15,
+                 fontproperties=ARABIC_FP)
+        ax1.text(xi, -ymax_left * 0.13, lab_tr,
+                 ha="center", va="top", fontsize=9.5, style="italic",
+                 color="#555555", family="serif")
+
+    ax1.set_ylabel("Occurrences in the Qur'an", fontsize=12, family="serif")
+    ax1.set_title("(a) Per-root frequency", fontsize=12, loc="left",
+                  family="serif")
     for b, c in zip(bars, counts):
-        ax1.text(b.get_x() + b.get_width() / 2, c + max(counts) * 0.02, str(c),
-                 ha="center", va="bottom", fontsize=8.5)
+        ax1.text(b.get_x() + b.get_width() / 2, c + max(counts) * 0.015,
+                 str(c), ha="center", va="bottom", fontsize=10,
+                 color="#222222", family="serif")
+    _ax_clean(ax1)
+    ax1.tick_params(axis="y", labelsize=11)
 
+    # Stage panel
     stage_totals: dict[int, int] = defaultdict(int)
     for r in rows:
         stage_totals[r["stage"]] += r["occurrences"]
     stages = sorted(stage_totals.keys())
     bars2 = ax2.bar(stages, [stage_totals[s] for s in stages],
                     color=[STAGE_COLORS[s] for s in stages],
-                    edgecolor="black", linewidth=0.6)
+                    edgecolor="#222222", linewidth=0.5, width=0.7)
     ax2.set_xticks(stages)
-    ax2.set_xticklabels([f"S{s}: {STAGE_LABELS_EN[s].split(' — ')[1]}"
-                         for s in stages], fontsize=8.5,
-                        rotation=20, ha="right", rotation_mode="anchor")
-    ax2.set_ylabel("Total occurrences")
-    ax2.set_title("Stage-level totals")
+    short = [STAGE_LABELS_EN[s].split(" — ")[1] for s in stages]
+    short = [s.replace("Behavioural Outcomes", "Beh. Outcomes")
+              .replace("Inner Pressure & Contraction", "Inner Pressure")
+              .replace("Evaluative Aversion", "Eval. Aversion")
+              .replace("Pre-Anger Displeasure", "Pre-Anger")
+              .replace("Compressed Rage", "Compr. Rage")
+              .replace("Active Anger", "Active Anger") for s in short]
+    ax2.set_xticklabels([f"S{s}\n{lbl}" for s, lbl in zip(stages, short)],
+                        fontsize=10.5, family="serif")
+    ax2.set_ylabel("Total occurrences", fontsize=12, family="serif")
+    ax2.set_title("(b) Stage-level totals", fontsize=12, loc="left",
+                  family="serif")
+    ymax_right = max(stage_totals.values()) * 1.2
+    ax2.set_ylim(0, ymax_right)
     for b, s in zip(bars2, stages):
         ax2.text(b.get_x() + b.get_width() / 2,
-                 stage_totals[s] + max(stage_totals.values()) * 0.02,
+                 stage_totals[s] + ymax_right * 0.015,
                  str(stage_totals[s]),
-                 ha="center", va="bottom", fontsize=10, fontweight="bold")
+                 ha="center", va="bottom", fontsize=11, fontweight="bold",
+                 color="#222222", family="serif")
+    _ax_clean(ax2)
+    ax2.tick_params(axis="y", labelsize=11)
+
+    # Statistical-test annotations are documented in the manuscript caption
+    # (chi-squared, permutation p, S1-5 vs. S6 contrast); not embedded here.
 
     fig.tight_layout()
     out = FIG_DIR / "fig2_frequency_by_stage.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
+# ------------------------------------------------------------------ #
+#  Figure 3 — Meccan/Medinan distribution                            #
+# ------------------------------------------------------------------ #
+
 def fig3_meccan_medinan(rows: list[dict]) -> None:
-    fig, ax = plt.subplots(figsize=(13, 5))
+    fig, ax = plt.subplots(figsize=(14, 6))
     by_bw = {r["root_bw"]: r for r in rows}
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
-    labels = [ar(surface_by_bw[bw]) for bw in CANONICAL_ORDER]
+    labels_ar = [surface_by_bw[bw] for bw in CANONICAL_ORDER]
+    translit = [r.translit for r in SPECTRUM]
     meccan = [by_bw[bw]["meccan_hits"] for bw in CANONICAL_ORDER]
     medinan = [by_bw[bw]["medinan_hits"] for bw in CANONICAL_ORDER]
+    totals = [m + md for m, md in zip(meccan, medinan)]
 
-    x = range(len(CANONICAL_ORDER))
-    ax.bar(x, meccan, color="#8C7853", edgecolor="black",
-           linewidth=0.5, label=f"Meccan ({ar('مکی')})")
-    ax.bar(x, medinan, bottom=meccan, color="#2E86AB",
-           edgecolor="black", linewidth=0.5, label=f"Medinan ({ar('مدنی')})")
+    x = list(range(len(CANONICAL_ORDER)))
+    # Cividis-style two-tone (cb-safe blue-vs-tan).
+    c_meccan = "#CABF8A"
+    c_medinan = "#1F6F8B"
+    ax.bar(x, meccan, color=c_meccan, edgecolor="#222222",
+           linewidth=0.4, label="Meccan", width=0.78)
+    ax.bar(x, medinan, bottom=meccan, color=c_medinan,
+           edgecolor="#222222", linewidth=0.4, label="Medinan", width=0.78)
 
+    ymax = max(totals) * 1.22
+    ax.set_ylim(0, ymax)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=10.5)
-    ax.set_ylabel("Occurrences")
-    ax.legend(loc="upper left")
+    ax.set_xticklabels([""] * len(x))
+    for xi, (lab_ar, lab_tr) in enumerate(zip(labels_ar, translit)):
+        ax.text(xi, -ymax * 0.04, ar(lab_ar),
+                ha="center", va="top", fontsize=15,
+                fontproperties=ARABIC_FP)
+        ax.text(xi, -ymax * 0.10, lab_tr,
+                ha="center", va="top", fontsize=9.5, style="italic",
+                color="#555555", family="serif")
+    ax.set_ylabel("Occurrences", fontsize=12, family="serif")
 
+    # Per-bar Meccan-share annotation
     for xi, bw in enumerate(CANONICAL_ORDER):
         rec = by_bw[bw]
-        total = rec["meccan_hits"] + rec["medinan_hits"]
-        if total > 0:
-            ax.text(xi, total + max(meccan) * 0.03,
+        tot = rec["meccan_hits"] + rec["medinan_hits"]
+        if tot > 0:
+            pct = 100.0 * rec["meccan_hits"] / tot
+            ax.text(xi, tot + ymax * 0.015,
                     f"{rec['meccan_hits']}/{rec['medinan_hits']}",
-                    ha="center", va="bottom", fontsize=8, color="gray")
+                    ha="center", va="bottom", fontsize=9.5,
+                    color="#444444", family="serif")
+            ax.text(xi, tot + ymax * 0.055,
+                    f"{pct:.0f}% Mec.",
+                    ha="center", va="bottom", fontsize=9,
+                    color="#777777", style="italic", family="serif")
 
+    # Baseline Meccan-rate reference (verse-weighted) — value documented in
+    # the manuscript caption; not embedded as overlay here.
+    _ = load_meccan_baseline()
+    ax.legend(loc="upper left", fontsize=11, frameon=False)
+
+    # Statistical findings (sakhaṭ binomial, Holm-adjusted p) live in the
+    # manuscript caption.
+
+    _ax_clean(ax)
+    ax.tick_params(axis="y", labelsize=11)
     fig.tight_layout()
     out = FIG_DIR / "fig3_meccan_medinan.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
+
+# ------------------------------------------------------------------ #
+#  Figure 4 — Aya-level co-occurrence network                        #
+# ------------------------------------------------------------------ #
 
 def fig4_cooccurrence() -> None:
     aya_to_roots: dict[tuple[int, int], set[str]] = defaultdict(set)
@@ -232,7 +392,7 @@ def fig4_cooccurrence() -> None:
     core = [r.bw for r in SPECTRUM]
     core_set = set(core)
     edges: Counter = Counter()
-    for (sura, aya), roots in aya_to_roots.items():
+    for (_sura, _aya), roots in aya_to_roots.items():
         present = sorted(roots & core_set)
         for i, a in enumerate(present):
             for b in present[i + 1:]:
@@ -244,19 +404,14 @@ def fig4_cooccurrence() -> None:
     for (a, b), w in edges.items():
         G.add_edge(a, b, weight=w)
 
-    # Lay out the connected component(s) with a force-directed (spring)
-    # layout, then place isolated nodes (those that share no aya with any
-    # other spectrum root in the QAC) in a clearly-labelled sidebar so they
-    # aren't visually floating in the layout and misread as broken edges.
     connected = [n for n in G.nodes() if G.degree(n) > 0]
     isolated = [n for n in G.nodes() if G.degree(n) == 0]
     G_main = G.subgraph(connected).copy()
     if G_main.number_of_nodes() > 0:
         pos = nx.spring_layout(G_main, weight="weight", seed=42,
-                               k=1.6, iterations=400)
+                               k=1.7, iterations=500)
     else:
         pos = {}
-    # Stack isolated nodes on the right at fixed x, evenly distributed in y
     if isolated:
         ys = ([0.0] if len(isolated) == 1
               else [1.0 - 2.0 * i / (len(isolated) - 1)
@@ -264,47 +419,67 @@ def fig4_cooccurrence() -> None:
         for node, y in zip(isolated, ys):
             pos[node] = (1.55, y * 0.7)
 
-    fig, ax = plt.subplots(figsize=(13, 9))
+    fig, ax = plt.subplots(figsize=(10, 8.5))
 
     if G.number_of_edges() > 0:
         max_w = max(d["weight"] for _, _, d in G.edges(data=True))
         for u, v, d in G.edges(data=True):
+            w_norm = d["weight"] / max_w
             ax.plot([pos[u][0], pos[v][0]], [pos[u][1], pos[v][1]],
-                    color="gray", alpha=0.25 + 0.7 * (d["weight"] / max_w),
-                    linewidth=0.5 + 3.0 * (d["weight"] / max_w), zorder=1)
+                    color="#555555", alpha=0.22 + 0.55 * w_norm,
+                    linewidth=0.7 + 3.4 * w_norm, zorder=1,
+                    solid_capstyle="round")
             mx = (pos[u][0] + pos[v][0]) / 2
             my = (pos[u][1] + pos[v][1]) / 2
-            ax.text(mx, my, str(d["weight"]), fontsize=7,
-                    ha="center", va="center", color="dimgray",
-                    bbox=dict(boxstyle="round,pad=0.15", fc="white",
-                              ec="none", alpha=0.85))
+            # Plain hairline-bordered label (no rounded fill).
+            ax.text(mx, my, str(d["weight"]), fontsize=9.5,
+                    ha="center", va="center", color="#222222",
+                    family="serif",
+                    bbox=dict(boxstyle="square,pad=0.18", fc="white",
+                              ec="#888888", lw=0.5))
 
     for r in SPECTRUM:
         x, y = pos[r.bw]
-        ax.scatter(x, y, s=900, color=STAGE_COLORS[r.stage],
-                   edgecolor="black", linewidth=0.8, zorder=2)
-        ax.text(x, y, ar(r.display()), ha="center", va="center",
-                fontsize=9.5, fontweight="bold", color="white", zorder=3)
+        ax.scatter(x, y, s=1250, color=STAGE_COLORS[r.stage],
+                   edgecolor="#222222", linewidth=0.9, zorder=2)
+        ax.text(x, y + 0.012, ar(r.display()), ha="center", va="center",
+                fontsize=15, color="white", zorder=3,
+                fontproperties=ARABIC_BOLD_FP)
+        ax.text(x, y - 0.090, r.translit, ha="center", va="center",
+                fontsize=9, color="#222222", zorder=3,
+                family="serif", style="italic")
 
-    # Label the sidebar of isolated (no co-occurrence) nodes so the visual
-    # placement reads correctly rather than as a layout failure.
     if isolated:
-        ax.text(1.55, 0.95,
-                "no aya-level\nco-occurrence",
-                ha="center", va="bottom", fontsize=8.5, style="italic",
-                color="dimgray")
-        ax.axvline(x=1.30, ymin=0.05, ymax=0.95, color="lightgray",
+        ax.text(1.55, 0.78,
+                "isolated\n(no aya-level\nco-occurrence)",
+                ha="center", va="bottom", fontsize=10, style="italic",
+                color="#555555", family="serif")
+        ax.axvline(x=1.30, ymin=0.04, ymax=0.94, color="#CCCCCC",
                    linestyle="--", linewidth=0.7, zorder=0)
 
+    # Legend — plain hairline border, no rounded fill.
+    legend_handles = []
     for st in sorted(set(r.stage for r in SPECTRUM)):
-        ax.scatter([], [], color=STAGE_COLORS[st], s=120, edgecolor="black",
-                   linewidth=0.5, label=STAGE_LABELS_EN[st])
-    ax.legend(loc="upper left", fontsize=8, framealpha=0.92)
-    ax.axis("off")
+        legend_handles.append(plt.scatter([], [], color=STAGE_COLORS[st],
+                                          s=140, edgecolor="#222222",
+                                          linewidth=0.6,
+                                          label=STAGE_LABELS_EN[st]))
+    leg = ax.legend(handles=legend_handles, loc="upper left",
+                    fontsize=10.5, framealpha=1.0, frameon=True,
+                    edgecolor="#888888", facecolor="white",
+                    fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
+    for txt in leg.get_texts():
+        txt.set_family("serif")
 
+    # Bridge-node / strongest-tie statistics live in the manuscript caption
+    # (and in fig 7 with bootstrap CIs).
+
+    ax.axis("off")
+    fig.tight_layout()
     out = FIG_DIR / "fig4_cooccurrence.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
     print(f"Graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges, "

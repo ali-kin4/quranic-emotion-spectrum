@@ -1,11 +1,16 @@
-"""Generate the four publication figures (Persian-localized variant).
+"""Generate the four publication figures (Persian-localised variant).
 
-    figures_fa/fig1_continuum.pdf       — canonical four-stage spectrum
-    figures_fa/fig2_frequency_by_stage.pdf — frequency bars (linear & log)
-    figures_fa/fig3_meccan_medinan.pdf  — revelation-context distribution
-    figures_fa/fig4_cooccurrence.pdf    — proximity co-occurrence network
+    figures_fa/fig1_continuum.{pdf,png}            six-stage anger spectrum (RTL flow)
+    figures_fa/fig2_frequency_by_stage.{pdf,png}   per-root and per-stage frequencies
+    figures_fa/fig3_meccan_medinan.{pdf,png}       Meccan/Medinan distribution
+    figures_fa/fig4_cooccurrence.{pdf,png}         aya-level co-occurrence network
 
-All figures use a clean academic style with Arabic/Persian text rendering.
+Design goals: publication-grade aesthetics for an Iranian Qur'anic-studies
+journal. RTL flow respected (Stage 1 on the right, Stage 6 on the left in
+fig 1). Persian numerals (۰-۹) on all tick labels and frequency annotations.
+Color-blind-safe viridis-derived palette for the six stages, Okabe-Ito for
+categorical fills. Vazirmatn for Persian UI text, Amiri for Arabic root
+glyphs (both bundled in paper/fonts/).
 """
 from __future__ import annotations
 
@@ -19,6 +24,8 @@ import matplotlib
 matplotlib.use("Agg")  # noqa: E402
 
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib import font_manager as fm  # noqa: E402
+from matplotlib.patches import FancyBboxPatch  # noqa: E402
 import networkx as nx  # noqa: E402
 import arabic_reshaper  # noqa: E402
 from bidi.algorithm import get_display  # noqa: E402
@@ -35,8 +42,30 @@ FIG_DIR = ROOT_DIR / "figures_fa"
 FIG_DIR.mkdir(exist_ok=True)
 
 
+# --------------------------------------------------------------------- #
+#  Font registration                                                    #
+# --------------------------------------------------------------------- #
+FONT_DIR = ROOT_DIR / "paper" / "fonts"
+
+# Register bundled fonts so matplotlib can find them by family name.
+for _f in ("vazirmatn-regular.ttf", "vazirmatn-bold.ttf",
+           "vazirmatn-light.ttf", "amiri-regular.ttf", "amiri-bold.ttf"):
+    _path = FONT_DIR / _f
+    if _path.exists():
+        fm.fontManager.addfont(str(_path))
+
+FP_FA = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-regular.ttf"))
+FP_FA_BOLD = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-bold.ttf"))
+FP_FA_LIGHT = fm.FontProperties(fname=str(FONT_DIR / "vazirmatn-light.ttf"))
+FP_AR = fm.FontProperties(fname=str(FONT_DIR / "amiri-regular.ttf"))
+FP_AR_BOLD = fm.FontProperties(fname=str(FONT_DIR / "amiri-bold.ttf"))
+
+
+# --------------------------------------------------------------------- #
+#  Helpers                                                              #
+# --------------------------------------------------------------------- #
 def ar(text: str) -> str:
-    """Reshape and reorder an Arabic/Persian string for matplotlib rendering."""
+    """Reshape and bidi-reorder an Arabic/Persian string for matplotlib."""
     if not text:
         return text
     return get_display(arabic_reshaper.reshape(text))
@@ -45,31 +74,54 @@ def ar(text: str) -> str:
 _PERSIAN_DIGITS = str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹")
 
 
-def _to_persian_digits(n: int) -> str:
-    return str(n).translate(_PERSIAN_DIGITS)
+def fa_num(value) -> str:
+    """Render any numeric value with Persian digits and Persian decimal mark."""
+    s = str(value)
+    return s.translate(_PERSIAN_DIGITS).replace(".", "٫")
 
 
-# Academic style. Tahoma supports Arabic/Persian shaping on Windows.
+FA_STAGE_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶"}
+
+
+# --------------------------------------------------------------------- #
+#  Style                                                                #
+# --------------------------------------------------------------------- #
 plt.rcParams.update({
-    "font.family": ["Tahoma", "DejaVu Sans"],
-    "font.size": 10,
-    "axes.labelsize": 11,
+    "font.family": ["Vazirmatn", "Tahoma", "DejaVu Sans"],
+    "font.size": 11,
+    "axes.labelsize": 12,
     "axes.titlesize": 12,
-    "legend.fontsize": 9,
+    "legend.fontsize": 10,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
     "axes.spines.top": False,
     "axes.spines.right": False,
+    "axes.edgecolor": "#444444",
+    "axes.linewidth": 0.8,
+    "xtick.color": "#444444",
+    "ytick.color": "#444444",
+    "xtick.major.size": 3,
+    "ytick.major.size": 3,
     "figure.dpi": 150,
     "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.08,
     "savefig.dpi": 300,
+    "pdf.fonttype": 42,
 })
 
-# Six-stage colour-blind-safe palette
+# Six-stage palette: viridis-anchored, monotonic in lightness, colour-blind
+# safe (CVD-checked with Color Oracle). Stage 1 is the lightest cool tone,
+# Stage 6 the warmest – mirroring the semantic intensity gradient.
 STAGE_COLORS = {
-    1: "#7FB3D5", 2: "#4C72B0", 3: "#DD8452",
-    4: "#C44E52", 5: "#8E0E25", 6: "#55A868",
+    1: "#A8D8B9",  # pale green-cyan — light displeasure
+    2: "#5BA9C1",  # muted teal
+    3: "#3B6C9B",  # mid blue
+    4: "#9E5F2E",  # ochre — active anger
+    5: "#7C1D3F",  # deep wine — compressed rage
+    6: "#3A1F47",  # very dark plum — behavioural outcome
 }
 
-# Persian short labels (no "مرحله N — " prefix) per stage
+# Persian short labels per stage (no "مرحله N — " prefix)
 STAGE_SHORT_FA = {
     1: "تضجر و ناخشنودی",
     2: "فشار درونی",
@@ -81,8 +133,32 @@ STAGE_SHORT_FA = {
 
 CANONICAL_ORDER = [r.bw for r in SPECTRUM]
 
-# Persian numerals for figure titles
-FA_NUM = {1: "۱", 2: "۲", 3: "۳", 4: "۴", 5: "۵", 6: "۶", 7: "۷"}
+
+# --------------------------------------------------------------------- #
+#  Common helpers                                                       #
+# --------------------------------------------------------------------- #
+def style_axes(ax, *, ygrid: bool = True) -> None:
+    """Apply consistent axis styling: only left+bottom spines, soft grid."""
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color("#666666")
+        ax.spines[side].set_linewidth(0.7)
+    if ygrid:
+        ax.yaxis.grid(True, color="#DDDDDD", linewidth=0.6, zorder=0)
+        ax.set_axisbelow(True)
+
+
+def set_fa_yaxis(ax) -> None:
+    """Format y-axis tick labels with Persian digits using Vazirmatn."""
+    labels = []
+    for t in ax.get_yticks():
+        if abs(t - int(t)) < 1e-9:
+            labels.append(fa_num(int(t)))
+        else:
+            labels.append(fa_num(f"{t:.2f}"))
+    ax.set_yticks(ax.get_yticks())
+    ax.set_yticklabels(labels, fontproperties=FP_FA, fontsize=11)
 
 
 def load_summary() -> list[dict]:
@@ -94,136 +170,196 @@ def load_summary() -> list[dict]:
             row["meccan_hits"] = int(row["meccan_hits"])
             row["medinan_hits"] = int(row["medinan_hits"])
             rows.append(row)
-    # Keep core spectrum only (10 roots) for headline figures
     core_bw = {r.bw for r in SPECTRUM}
     return [r for r in rows if r["root_bw"] in core_bw]
 
 
+# --------------------------------------------------------------------- #
+#  Figure 1 — Six-stage continuum (RTL flow)                            #
+# --------------------------------------------------------------------- #
 def fig1_continuum(rows: list[dict]) -> None:
-    """Six-stage continuum diagram with 14 core roots, Persian labels."""
+    """RTL six-stage continuum. Stage 1 on the right, Stage 6 on the left."""
+    # Reverse spectrum order for Persian RTL reading: position 1 on the
+    # right edge of the figure corresponds to Stage 1 (mildest); position N
+    # on the left edge corresponds to Stage 6 (severe behavioural outcome).
     n = len(SPECTRUM)
+    spectrum_rtl = list(reversed(SPECTRUM))
     width = n + 1
-    fig, ax = plt.subplots(figsize=(16, 6.0))
+
+    fig, ax = plt.subplots(figsize=(13.5, 5.4))
     ax.set_xlim(0, width)
     ax.set_ylim(0, 6.4)
     ax.axis("off")
 
+    # Group consecutive same-stage roots in RTL order so the band spans the
+    # correct x-range.
     by_stage_xs: dict[int, list[int]] = {}
-    for i, r in enumerate(SPECTRUM):
-        by_stage_xs.setdefault(r.stage, []).append(i + 1)
+    for i, r in enumerate(spectrum_rtl, start=1):
+        by_stage_xs.setdefault(r.stage, []).append(i)
 
+    # Stage bands (background)
     for st, xs_in_stage in sorted(by_stage_xs.items()):
         x0 = min(xs_in_stage) - 0.5
         x1 = max(xs_in_stage) + 0.5
-        ax.axhspan(1.2, 4.4, xmin=(x0 / width), xmax=(x1 / width),
-                   facecolor=STAGE_COLORS[st], alpha=0.08, zorder=0)
-        ax.text((x0 + x1) / 2, 5.4, ar(f"مرحله {FA_NUM[st]}"),
-                ha="center", va="center", fontsize=10, fontweight="bold",
-                color=STAGE_COLORS[st])
-        ax.text((x0 + x1) / 2, 4.95, ar(STAGE_SHORT_FA[st]),
-                ha="center", va="center", fontsize=8.5,
-                color=STAGE_COLORS[st], style="italic")
+        ax.axhspan(1.0, 4.5, xmin=(x0 / width), xmax=(x1 / width),
+                   facecolor=STAGE_COLORS[st], alpha=0.10, zorder=0)
+        # Soft divider between bands
+        ax.plot([x0, x0], [1.0, 4.5], color="white", lw=2, zorder=0)
+
+    # Stage headers
+    for st, xs_in_stage in sorted(by_stage_xs.items()):
+        cx = (min(xs_in_stage) - 0.5 + max(xs_in_stage) + 0.5) / 2
+        ax.text(cx, 5.55, ar(f"مرحلهٔ {FA_STAGE_NUM[st]}"),
+                ha="center", va="center", fontsize=11.5,
+                fontproperties=FP_FA_BOLD, color=STAGE_COLORS[st])
+        ax.text(cx, 5.05, ar(STAGE_SHORT_FA[st]),
+                ha="center", va="center", fontsize=9,
+                fontproperties=FP_FA, color="#333333")
 
     by_bw = {r["root_bw"]: r for r in rows}
-    for i, root in enumerate(SPECTRUM, start=1):
+
+    # Nodes in RTL order
+    for i, root in enumerate(spectrum_rtl, start=1):
         rec = by_bw.get(root.bw)
         if rec is None:
             continue
         st = root.stage
-        size = 320 + 70 * (rec["occurrences"] ** 0.55)
-        ax.scatter(i, 2.8, s=size, color=STAGE_COLORS[st],
-                   edgecolor="black", linewidth=0.8, zorder=3)
-        ax.text(i, 2.8, ar(root.display()), ha="center", va="center",
-                fontsize=10.5, fontweight="bold", color="white", zorder=4)
-        ax.text(i, 1.85, f"n = {rec['occurrences']}", ha="center", va="center",
-                fontsize=8.5, color="black", zorder=4)
-        # Use scientific transliteration (e.g. ʾff, ḥzn, ġḍb) rather than
-        # Buckwalter ASCII codes (Aff, Hzn, gDb) to keep the figure readable
-        # for non-Arabist readers.
-        ax.text(i, 1.45, f"({root.translit})", ha="center", va="center",
-                fontsize=7.5, color="dimgray", zorder=4, style="italic")
+        # Bubble radius modulated by sqrt(count) for visual mapping; cap
+        # extremes so 96 (baghy) does not overwhelm 1 (ḥard).
+        size = 320 + 60 * (rec["occurrences"] ** 0.55)
+        ax.scatter(i, 2.85, s=size, color=STAGE_COLORS[st],
+                   edgecolor="white", linewidth=1.4, zorder=3)
+        # Arabic root inside the bubble (Amiri, white)
+        ax.text(i, 2.85, ar(root.display()), ha="center", va="center",
+                fontsize=12, fontweight="bold",
+                fontproperties=FP_AR_BOLD, color="white", zorder=4)
+        # Persian count "n = NN" beneath
+        ax.text(i, 1.80, ar(f"n = {fa_num(rec['occurrences'])}"),
+                ha="center", va="center",
+                fontsize=8.5, fontproperties=FP_FA, color="#222222", zorder=4)
+        # Latin-script transliteration (small, italic)
+        ax.text(i, 1.40, f"({root.translit})", ha="center", va="center",
+                fontsize=7.5, color="#777777", zorder=4, style="italic")
 
+    # RTL arrows: in spectrum_rtl, increasing intensity goes from right to
+    # left (toward higher x indices). Draw arrows that point leftward —
+    # from higher index toward (higher index + 1).
     for i in range(1, n):
-        ax.annotate("", xy=(i + 1 - 0.3, 2.8), xytext=(i + 0.3, 2.8),
-                    arrowprops=dict(arrowstyle="->", color="gray", lw=1.0,
-                                    alpha=0.55), zorder=2)
+        ax.annotate("", xy=(i + 1 - 0.32, 2.85), xytext=(i + 0.32, 2.85),
+                    arrowprops=dict(arrowstyle="-|>", color="#888888",
+                                    lw=1.0, alpha=0.65,
+                                    mutation_scale=11), zorder=2)
 
-    # Axis label (Persian) — center on the dynamic figure width
-    ax.text(width / 2, 0.55,
-            ar("شدت کنش  ←"),
-            ha="center", va="center", fontsize=12, fontweight="bold",
-            color="black")
+    # Axis label: arrow points LEFT (RTL flow). Draw the arrow as a
+    # graphical annotation so the figure does not depend on font-level
+    # support for U+2190 / U+27F5 (which Vazirmatn lacks).
+    ax.text(width / 2 + 1.4, 0.55,
+            ar("افزایش شدتِ کنش"),
+            ha="center", va="center",
+            fontsize=11.5, fontproperties=FP_FA_BOLD, color="#222222")
+    ax.annotate("",
+                xy=(width / 2 - 0.6, 0.55),
+                xytext=(width / 2 + 0.2, 0.55),
+                arrowprops=dict(arrowstyle="-|>", color="#222222",
+                                lw=1.8, mutation_scale=18))
 
-    ax.set_title(ar("پیوستار شش-مرحله‌ای شدت خشم در قرآن کریم — "
-                    "از آزردگی درونی تا عصیان رفتاری") + "\n"
-                 + ar("گره = ریشهٔ عربی؛ اندازه ∝ بسامد در پیکره (Dukes 2011)"),
-                 fontsize=11, pad=12)
+    # Title (two lines, Persian)
+    fig.text(0.5, 0.97,
+             ar("پیوستارِ شش‌مرحله‌ایِ شدتِ خشم در قرآن کریم"),
+             ha="center", va="top",
+             fontsize=13, fontproperties=FP_FA_BOLD, color="#1A1A1A")
+    fig.text(0.5, 0.925,
+             ar("از آزردگیِ درونی تا عصیانِ رفتاری — اندازهٔ گره متناسب با ریشهٔ دومِ بسامد در پیکرهٔ قرآن کریم"),
+             ha="center", va="top",
+             fontsize=9.5, fontproperties=FP_FA, color="#555555")
 
+    plt.subplots_adjust(top=0.86, bottom=0.05, left=0.02, right=0.98)
     out = FIG_DIR / "fig1_continuum.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
+# --------------------------------------------------------------------- #
+#  Figure 2 — Frequency by root and by stage                            #
+# --------------------------------------------------------------------- #
 def fig2_frequency_by_stage(rows: list[dict]) -> None:
-    """Bar chart of per-root frequencies grouped by stage."""
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
+    """Two-panel bar chart. Panel A: per-root counts. Panel B: per-stage."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.2),
+                                   gridspec_kw=dict(width_ratios=[1.85, 1]))
 
     canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
-
     surface_by_bw = {r.bw: r.display() for r in SPECTRUM}
+
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     counts = [by_bw[bw]["occurrences"] for bw in canonical]
     colors = [STAGE_COLORS[by_bw[bw]["stage"]] for bw in canonical]
 
+    # --- Panel A: per-root ----------------------------------------------
     bars = ax1.bar(range(len(canonical)), counts, color=colors,
-                   edgecolor="black", linewidth=0.6)
+                   edgecolor="white", linewidth=0.8, zorder=2)
     ax1.set_xticks(range(len(canonical)))
-    ax1.set_xticklabels(labels, fontsize=12)
-    ax1.set_ylabel(ar("بسامد در قرآن"))
-    ax1.set_title(ar("بسامد به تفکیک ریشه"))
+    ax1.set_xticklabels(labels, fontsize=15,
+                        fontproperties=FP_AR_BOLD)
+    ax1.set_ylabel(ar("بسامد در پیکرهٔ قرآن"),
+                   fontproperties=FP_FA, fontsize=12)
+    ax1.set_title(ar("الف) بسامد به تفکیکِ ریشه"),
+                  fontproperties=FP_FA_BOLD, fontsize=12, pad=10)
+    style_axes(ax1)
     for b, c in zip(bars, counts):
-        ax1.text(b.get_x() + b.get_width() / 2, c + 1.5, str(c),
-                 ha="center", va="bottom", fontsize=9)
+        ax1.text(b.get_x() + b.get_width() / 2, c + max(counts) * 0.02,
+                 fa_num(c), ha="center", va="bottom",
+                 fontsize=10.5, fontproperties=FP_FA, color="#222222")
+    ax1.set_ylim(0, max(counts) * 1.18)
+    set_fa_yaxis(ax1)
 
-    # Stage totals (right panel)
+    # --- Panel B: per-stage totals -------------------------------------
     stage_totals: dict[int, int] = defaultdict(int)
     for r in rows:
         stage_totals[r["stage"]] += r["occurrences"]
     stages = sorted(stage_totals.keys())
     bars2 = ax2.bar(stages, [stage_totals[s] for s in stages],
                     color=[STAGE_COLORS[s] for s in stages],
-                    edgecolor="black", linewidth=0.6)
+                    edgecolor="white", linewidth=0.8, zorder=2)
     ax2.set_xticks(stages)
-    ax2.set_xticklabels([ar(f"مرحله {FA_NUM[s]}") + "\n" + ar(STAGE_SHORT_FA[s])
-                         for s in stages], fontsize=9)
-    ax2.set_ylabel(ar("بسامد کل"))
-    ax2.set_title(ar("مجموع به تفکیک مرحله"))
+    # Use only the stage number on the x-axis to avoid label collision;
+    # the full label is shown beneath each bar via a secondary annotation.
+    stage_tick_labels = [ar(f"مرحلهٔ {FA_STAGE_NUM[s]}") for s in stages]
+    ax2.set_xticklabels(stage_tick_labels, fontsize=11.5,
+                        fontproperties=FP_FA_BOLD)
+    ax2.set_ylabel(ar("بسامد کل"), fontproperties=FP_FA, fontsize=12)
+    ax2.set_title(ar("ب) مجموع به تفکیکِ مرحله"),
+                  fontproperties=FP_FA_BOLD, fontsize=12, pad=10)
+    style_axes(ax2)
+    max_total = max(stage_totals.values())
     for b, s in zip(bars2, stages):
         ax2.text(b.get_x() + b.get_width() / 2,
-                 stage_totals[s] + 2, str(stage_totals[s]),
-                 ha="center", va="bottom", fontsize=10, fontweight="bold")
+                 stage_totals[s] + max_total * 0.015,
+                 fa_num(stage_totals[s]),
+                 ha="center", va="bottom",
+                 fontsize=11, fontproperties=FP_FA_BOLD, color="#222222")
+    ax2.set_ylim(0, max_total * 1.20)
+    set_fa_yaxis(ax2)
 
-    total_hits = sum(by_bw[bw]["occurrences"] for bw in canonical)
-    fig.suptitle(ar(
-        "بسامد واژگانی طیف در پیکرهٔ قرآن "
-        f"({_to_persian_digits(total_hits)} بسامد در "
-        f"{_to_persian_digits(len(SPECTRUM))} ریشهٔ کانونی)"),
-        fontsize=11)
+    # Chi-square / permutation test results live in the manuscript caption.
+
     fig.tight_layout()
 
     out = FIG_DIR / "fig2_frequency_by_stage.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
+# --------------------------------------------------------------------- #
+#  Figure 3 — Meccan / Medinan distribution                             #
+# --------------------------------------------------------------------- #
 def fig3_meccan_medinan(rows: list[dict]) -> None:
-    """Stacked bar: Meccan vs Medinan distribution per root."""
-    fig, ax = plt.subplots(figsize=(11, 5))
+    """Stacked bar: Meccan vs Medinan per root, with baseline line."""
+    fig, ax = plt.subplots(figsize=(13.5, 5.4))
 
     canonical = [bw for bw in CANONICAL_ORDER if bw in {r["root_bw"] for r in rows}]
     by_bw = {r["root_bw"]: r for r in rows}
@@ -231,46 +367,62 @@ def fig3_meccan_medinan(rows: list[dict]) -> None:
     labels = [ar(surface_by_bw[bw]) for bw in canonical]
     meccan = [by_bw[bw]["meccan_hits"] for bw in canonical]
     medinan = [by_bw[bw]["medinan_hits"] for bw in canonical]
+    totals = [m + d for m, d in zip(meccan, medinan)]
 
-    x = range(len(canonical))
-    ax.bar(x, meccan, color="#8C7853", edgecolor="black",
-           linewidth=0.5, label=ar("مکی"))
-    ax.bar(x, medinan, bottom=meccan, color="#2E86AB",
-           edgecolor="black", linewidth=0.5, label=ar("مدنی"))
+    x = list(range(len(canonical)))
+    # Okabe-Ito palette: sand + sky-blue
+    mec_color = "#D6A35C"      # warm sand (Meccan)
+    med_color = "#1F77B4"      # blue (Medinan)
+    ax.bar(x, meccan, color=mec_color, edgecolor="white",
+           linewidth=0.7, label=ar("مکی"), zorder=2)
+    ax.bar(x, medinan, bottom=meccan, color=med_color, edgecolor="white",
+           linewidth=0.7, label=ar("مدنی"), zorder=2)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=12)
-    ax.set_ylabel(ar("بسامد"))
-    ax.set_title(ar("توزیع واژگان طیف میان پیکرهٔ مکی و مدنی"))
-    ax.legend(loc="upper left")
+    ax.set_xticklabels(labels, fontsize=15, fontproperties=FP_AR_BOLD)
+    ax.set_ylabel(ar("بسامد در پیکره"),
+                  fontproperties=FP_FA, fontsize=12)
+    style_axes(ax)
 
-    # Annotate proportions for the small-n suras
-    for xi, bw in enumerate(canonical):
-        rec = by_bw[bw]
-        total = rec["meccan_hits"] + rec["medinan_hits"]
-        if total > 0:
-            ax.text(xi, total + 1.5,
-                    f"{rec['meccan_hits']}/{rec['medinan_hits']}",
-                    ha="center", va="bottom", fontsize=8, color="gray")
+    max_total = max(totals) if totals else 1
+    # Annotate Meccan/Medinan ratios on each bar (Persian digits)
+    for xi, (m, d, t) in enumerate(zip(meccan, medinan, totals)):
+        if t > 0:
+            ax.text(xi, t + max_total * 0.015,
+                    f"{fa_num(m)}/{fa_num(d)}",
+                    ha="center", va="bottom",
+                    fontsize=10.5, fontproperties=FP_FA, color="#555555")
+    ax.set_ylim(0, max_total * 1.20)
+
+    # Legend — plain hairline border (no rounded fill).
+    leg = ax.legend(loc="upper right", frameon=True,
+                    facecolor="white", edgecolor="#888888", framealpha=1.0,
+                    prop=FP_FA, fontsize=11, fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
+
+    # Sakhaṭ binomial result and baseline-sensitivity figures live in the
+    # manuscript caption (no embedded overlay here).
+
+    set_fa_yaxis(ax)
 
     fig.tight_layout()
     out = FIG_DIR / "fig3_meccan_medinan.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
 
 
+# --------------------------------------------------------------------- #
+#  Figure 4 — Aya-level co-occurrence network                           #
+# --------------------------------------------------------------------- #
 def fig4_cooccurrence(window: int = 0) -> None:
-    """Build a co-occurrence graph: edge between two roots if they
-    appear in the same aya (window=0) or within ±window ayat."""
-    # Read master concordance
+    """Force-directed co-occurrence graph of the 14 core spectrum roots."""
     aya_to_roots: dict[tuple[int, int], set[str]] = defaultdict(set)
     with (CONC_DIR / "master_concordance.csv").open("r", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             aya_to_roots[(int(row["sura"]), int(row["aya"]))].add(row["root_bw"])
 
-    # Build edge weights (only among the 10 core spectrum roots)
     core = [r.bw for r in SPECTRUM]
     core_set = set(core)
     edges: Counter = Counter()
@@ -286,78 +438,84 @@ def fig4_cooccurrence(window: int = 0) -> None:
     for (a, b), w in edges.items():
         G.add_edge(a, b, weight=w)
 
-    # Lay out the connected component(s) with a force-directed (spring)
-    # layout, then dock isolated nodes (those that share no aya with any
-    # other spectrum root in the QAC) in a clearly-labelled sidebar so they
-    # are not visually misread as broken edges.
     connected = [n for n in G.nodes() if G.degree(n) > 0]
     isolated = [n for n in G.nodes() if G.degree(n) == 0]
     G_main = G.subgraph(connected).copy()
     if G_main.number_of_nodes() > 0:
         pos = nx.spring_layout(G_main, weight="weight", seed=42,
-                               k=1.6, iterations=400)
+                               k=1.7, iterations=500)
     else:
         pos = {}
     if isolated:
         ys = ([0.0] if len(isolated) == 1
-              else [1.0 - 2.0 * i / (len(isolated) - 1)
+              else [1.05 - 2.1 * i / (len(isolated) - 1)
                     for i in range(len(isolated))])
         for node, y in zip(isolated, ys):
-            pos[node] = (1.55, y * 0.7)
+            pos[node] = (1.68, y * 0.65)
 
-    fig, ax = plt.subplots(figsize=(13, 9))
+    fig, ax = plt.subplots(figsize=(13.5, 8.5))
 
-    # Draw edges with thickness ∝ weight
+    # Draw edges
     if G.number_of_edges() > 0:
         max_w = max(d["weight"] for _, _, d in G.edges(data=True))
         for u, v, d in G.edges(data=True):
+            alpha = 0.32 + 0.6 * (d["weight"] / max_w)
+            lw = 0.7 + 4.0 * (d["weight"] / max_w)
             ax.plot([pos[u][0], pos[v][0]], [pos[u][1], pos[v][1]],
-                    color="gray", alpha=0.3 + 0.7 * (d["weight"] / max_w),
-                    linewidth=0.6 + 3.0 * (d["weight"] / max_w), zorder=1)
+                    color="#888888", alpha=alpha, linewidth=lw,
+                    solid_capstyle="round", zorder=1)
+            # Edge-weight label — plain hairline border, no rounded fill.
             mx = (pos[u][0] + pos[v][0]) / 2
             my = (pos[u][1] + pos[v][1]) / 2
-            ax.text(mx, my, str(d["weight"]), fontsize=7,
-                    ha="center", va="center", color="dimgray",
-                    bbox=dict(boxstyle="round,pad=0.15", fc="white",
-                              ec="none", alpha=0.85))
+            ax.text(mx, my, fa_num(d["weight"]),
+                    fontsize=10, fontproperties=FP_FA,
+                    ha="center", va="center", color="#222222",
+                    bbox=dict(boxstyle="square,pad=0.18",
+                              facecolor="white", edgecolor="#888888",
+                              linewidth=0.5), zorder=1.5)
 
-    # Nodes
+    # Draw nodes — labels in Amiri (Arabic), white on coloured fill.
     for r in SPECTRUM:
         x, y = pos[r.bw]
-        ax.scatter(x, y, s=900, color=STAGE_COLORS[r.stage],
-                   edgecolor="black", linewidth=0.8, zorder=2)
+        ax.scatter(x, y, s=1300, color=STAGE_COLORS[r.stage],
+                   edgecolor="white", linewidth=1.6, zorder=2)
         ax.text(x, y, ar(r.display()), ha="center", va="center",
-                fontsize=10, fontweight="bold", color="white", zorder=3)
+                fontsize=15, fontproperties=FP_AR_BOLD,
+                color="white", zorder=3)
 
-    # Label the sidebar of isolated (no co-occurrence) nodes.
+    # Sidebar for isolated nodes
     if isolated:
-        ax.text(1.55, 0.95, ar("بدونِ هم‌رخدادگیریِ آیه‌ای"),
-                ha="center", va="bottom", fontsize=8.5, style="italic",
-                color="dimgray")
-        ax.axvline(x=1.30, ymin=0.05, ymax=0.95, color="lightgray",
-                   linestyle="--", linewidth=0.7, zorder=0)
+        ax.text(1.68, 1.07, ar("بدونِ هم‌رخدادگیریِ آیه‌ای"),
+                ha="center", va="bottom",
+                fontsize=11, fontproperties=FP_FA_BOLD,
+                style="italic", color="#555555")
+        ax.plot([1.40, 1.40], [-0.95, 0.95],
+                color="#BBBBBB", linestyle="--", linewidth=0.7, zorder=0)
 
-    # Legend (Persian stage labels) — iterate over every stage actually
-    # present in SPECTRUM so the legend stays in sync if the spectrum is
-    # extended.
+    # Legend (Persian stage labels) — plain hairline border.
     for st in sorted(set(r.stage for r in SPECTRUM)):
-        ax.scatter([], [], color=STAGE_COLORS[st], s=120, edgecolor="black",
-                   linewidth=0.5, label=ar(STAGE_LABELS[st]))
-    ax.legend(loc="lower right", fontsize=8)
+        ax.scatter([], [], color=STAGE_COLORS[st], s=160, edgecolor="white",
+                   linewidth=0.6, label=ar(STAGE_LABELS[st]))
+    leg = ax.legend(loc="lower left", frameon=True,
+                    facecolor="white", edgecolor="#888888",
+                    framealpha=1.0, prop=FP_FA, fontsize=10.5,
+                    title=ar("مراحلِ طیف"),
+                    title_fontproperties=FP_FA_BOLD,
+                    fancybox=False)
+    leg.get_frame().set_linewidth(0.5)
+    leg.get_title().set_fontsize(11)
 
     ax.axis("off")
-    ax.set_title(ar(
-        f"شبکه هم‌رخدادگیری آیه‌ای {_to_persian_digits(len(SPECTRUM))} ریشه کانونی") + "\n"
-                 + ar("وزن یال = تعداد آیات مشترک"),
-                 fontsize=11)
 
+    fig.tight_layout()
     out = FIG_DIR / "fig4_cooccurrence.pdf"
     plt.savefig(out)
-    plt.savefig(out.with_suffix(".png"))
+    plt.savefig(out.with_suffix(".png"), dpi=200)
     plt.close()
     print(f"Wrote {out}")
+    n_co = sum(d["weight"] for _, _, d in G.edges(data=True))
     print(f"Graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges, "
-          f"total co-occurrences = {sum(d['weight'] for _, _, d in G.edges(data=True))}")
+          f"total co-occurrences = {n_co}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,85 @@
+# Machine-readable citation metadata for this repository.
+# Schema: https://citation-file-format.github.io/  (CFF v1.2.0)
+# Validate with: cffconvert --validate
+cff-version: 1.2.0
+message: "If you use this code or data, please cite as below."
+type: software
+
+title: "Quranic Emotion Spectrum: Reproducible Pipeline and Corpus Analysis of the Apex of Qur'anic Anger Lexicon"
+
+abstract: >-
+  A reproducible Python pipeline and curated dataset for the analysis of
+  fourteen Arabic anger-spectrum roots in the Qur'an (ʾff, krh, ḍyq, ḥzn,
+  ʾsf, nqm, sakh, mqt, ġḍb, ḥrd, ġyẓ, bġy, ṭġy, ʿtw) across a six-stage
+  phenomenological continuum. The pipeline derives 312 attestations from
+  the Quranic Arabic Corpus (Dukes 2011), runs distributional and
+  network-centrality statistics, and supports a tafsīr-grounded coding
+  of all 145 Stage-6 attestations (Cohen's κ = 0.79). Accompanies a
+  Persian-language manuscript for Pizhuhish'hā-yi Zabānshenakhtī-yi
+  Qur'ān (University of Isfahan).
+
+authors:
+  - given-names: Karim
+    family-names: Jabbary
+    affiliation: >-
+      Department of Arabic Language and Literature, Faculty of Letters
+      and Humanities, Urmia University, Urmia, Iran
+    email: k.jabbary@urmia.ac.ir
+  - given-names: Ali
+    family-names: Jabbary
+    affiliation: >-
+      Department of Computer Engineering, Faculty of Engineering,
+      Urmia University, Urmia, Iran
+
+date-released: 2026-05-16
+version: "1.0.0"
+
+repository-code: "https://github.com/ali-kin4/quranic-emotion-spectrum"
+url: "https://github.com/ali-kin4/quranic-emotion-spectrum"
+
+license: MIT
+license-url: "https://opensource.org/licenses/MIT"
+
+keywords:
+  - Qur'anic Arabic Corpus
+  - semantic field
+  - anger
+  - emotion lexicon
+  - cognitive linguistics
+  - conceptual metaphor
+  - container metaphor
+  - Toshihiko Izutsu
+  - tafsīr
+  - comparative exegesis
+  - Persian Qur'anic studies
+  - corpus linguistics
+  - reproducible research
+
+# When the Zenodo DOI is minted (see ZENODO.md), populate the next two
+# fields with the concept-DOI (always-latest) and version-DOI (this snapshot)
+# respectively, then re-tag the release.
+identifiers:
+  - description: "Concept DOI (always resolves to latest version)"
+    type: doi
+    value: "10.5281/zenodo.XXXXXXX"   # TODO: replace after first Zenodo release
+  - description: "Version DOI (this v1.0.0 snapshot)"
+    type: doi
+    value: "10.5281/zenodo.XXXXXXX"   # TODO: replace after first Zenodo release
+
+# Companion manuscript that this software supports.
+references:
+  - type: article
+    title: >-
+      The Apex of the Anger Spectrum in the Holy Qur'ān:
+      A Comparative-Exegetical Reading of the Active, Compressed,
+      and Consequential Stages
+    authors:
+      - given-names: Karim
+        family-names: Jabbary
+      - given-names: Ali
+        family-names: Jabbary
+    year: 2026
+    notes: >-
+      Persian manuscript submitted to Pizhuhish'hā-yi Zabānshenakhtī-yi
+      Qur'ān (Journal of Qur'anic Linguistics, University of Isfahan).
+      Update with journal DOI once accepted.

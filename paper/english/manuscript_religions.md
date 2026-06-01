@@ -21,7 +21,7 @@ type: "Article"
 
 ^2^ Faculty of Computer Engineering, Urmia University, Urmia, Iran; a.jabbary@urmia.ac.ir
 
-\* Correspondence: k.jabbary@urmia.ac.ir; ORCID: [to be completed at submission]
+\* Correspondence: k.jabbary@urmia.ac.ir; ORCID: 0009-0006-7079-1137
 
 ---
 

@@ -1,0 +1,164 @@
+% Custom LaTeX template for the English manuscript
+% Karim Jabbary & Ali Jabbary Ã¢â‚¬â€ Quranic Emotion Spectrum
+% Designed for compilation with XeLaTeX so the Arabic insertions render
+% via system fonts.
+
+\documentclass[11pt,a4paper]{article}
+
+% Page geometry Ã¢â‚¬â€ generous margins, single column for journal-friendly layout
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+
+% Fonts (XeLaTeX) ------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{EB Garamond}[
+  Path           = ../fonts/,
+  Extension      = .ttf,
+  UprightFont    = ebgaramond-regular,
+  BoldFont       = ebgaramond-regular,        % Variable font; LaTeX picks weight
+  ItalicFont     = ebgaramond-regular,
+  BoldItalicFont = ebgaramond-regular,
+  Numbers        = OldStyle,
+]
+\newfontfamily\arabicfont{Amiri}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = amiri-regular,
+  BoldFont    = amiri-bold,
+  Script      = Arabic,
+]
+
+% Convenience macros for inline Arabic text.
+% In an English-primary document with sparse Arabic insertions, we use an
+% \arb{...} switching command that just changes the active font. We avoid
+% bidi / polyglossia because they make tabular environments fragile and we
+% only need short Arabic runs inside otherwise-LTR text.
+\newcommand{\textarabic}[1]{{\arabicfont #1}}
+\DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
+
+% Microtypography Ã¢â‚¬â€ improves justification quality
+\usepackage{microtype}
+
+% Section numbering Ã¢â‚¬â€ manuscripts use manual section numbers in the heading
+% text ("3. Methods", "4. Findings"), so suppress LaTeX auto-numbering to
+% avoid double prefixes like "0.4  3. Methods".
+\setcounter{secnumdepth}{-1}
+
+% Section formatting
+\usepackage[explicit]{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{#1}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.6em}{#1}
+\titlespacing*{\section}{0pt}{1.6ex plus 0.3ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 0.3ex minus 0.2ex}{0.8ex plus 0.2ex}
+
+% Lines and spacing
+\usepackage{setspace}
+\setstretch{1.16}        % Slight loosening for readability
+\setlength{\parskip}{0.2\baselineskip}
+\setlength{\parindent}{1.4em}
+
+% Pandoc compatibility macros Ã¢â‚¬â€ generated tables, lists, and code blocks
+% rely on these.
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{calc}
+\providecommand{\real}[1]{#1}
+\usepackage{xcolor}
+\providecommand{\pandocbounded}[1]{#1}
+
+% Fancyvrb for pandoc-emitted code blocks
+\usepackage{fancyvrb}
+\fvset{frame=single,fontsize=\small,formatcom={\color[RGB]{50,50,50}}}
+\providecommand{\NormalTok}[1]{#1}
+\providecommand{\KeywordTok}[1]{\textcolor[RGB]{0,90,162}{\textbf{#1}}}
+\providecommand{\StringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\CommentTok}[1]{\textcolor[RGB]{120,120,120}{\textit{#1}}}
+\providecommand{\BuiltInTok}[1]{#1}
+\providecommand{\AttributeTok}[1]{#1}
+\providecommand{\OperatorTok}[1]{#1}
+\providecommand{\OtherTok}[1]{#1}
+\providecommand{\FunctionTok}[1]{#1}
+\providecommand{\ExtensionTok}[1]{#1}
+\providecommand{\DataTypeTok}[1]{\textcolor[RGB]{0,135,90}{#1}}
+\providecommand{\ImportTok}[1]{\textbf{#1}}
+\providecommand{\ControlFlowTok}[1]{\textbf{#1}}
+\providecommand{\DecValTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\BaseNTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\FloatTok}[1]{\textcolor[RGB]{120,80,40}{#1}}
+\providecommand{\CharTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\ConstantTok}[1]{#1}
+\providecommand{\SpecialCharTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\SpecialStringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\VerbatimStringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\VariableTok}[1]{#1}
+\providecommand{\BuiltInTok}[1]{#1}
+\providecommand{\PreprocessorTok}[1]{#1}
+\providecommand{\AlertTok}[1]{\textbf{#1}}
+\providecommand{\ErrorTok}[1]{\textbf{#1}}
+\providecommand{\WarningTok}[1]{\textbf{#1}}
+\providecommand{\AnnotationTok}[1]{\textit{#1}}
+\providecommand{\CommentVarTok}[1]{\textcolor[RGB]{120,120,120}{\textit{#1}}}
+\providecommand{\DocumentationTok}[1]{\textit{#1}}
+\providecommand{\InformationTok}[1]{\textit{#1}}
+\providecommand{\RegionMarkerTok}[1]{#1}
+\providecommand{\StringTok}[1]{\textcolor[RGB]{162,40,40}{#1}}
+\providecommand{\NormalTok}[1]{#1}
+\newenvironment{Shaded}{}{}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+
+% Figures, tables, captions
+\usepackage{graphicx}
+\graphicspath{{../../figures/}}
+\usepackage[font=small,labelfont=bf,labelsep=period,justification=justified]{caption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.18}
+
+% Typography niceties
+\usepackage{csquotes}
+\usepackage[normalem]{ulem}
+\usepackage{enumitem}
+\setlist{leftmargin=1.6em,topsep=0.3ex,itemsep=0.3ex}
+
+% Hyperlinks
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={The Phenomenology of the Anger Spectrum in the Qur'an},
+  pdfauthor={Karim Jabbary; Ali Jabbary},
+  pdfsubject={Qur'anic Studies; Cognitive Linguistics; Semantic Fields},
+  pdfkeywords={Qur'an; semantic field; cognitive linguistics; scalar semantics; emotion regulation; Izutsu},
+  bookmarksdepth=2,
+  bookmarksnumbered=true,
+  colorlinks=false,
+}
+
+% Title block
+\title{\Large\bfseries The Phenomenology of the Anger Spectrum in the Qur'\=an\\[0.4em]
+  \normalsize\textit{A Semantic-Network Analysis of Displeasure, Inflammation, and Destructiveness Along an Action-Intensity Continuum}}
+
+\author{
+  \textsc{Karim Jabbary}\thanks{Corresponding author. Department of Arabic Language and Literature, Faculty of Literature and Humanities, Urmia University, Urmia, Iran. \href{mailto:k.jabbary@urmia.ac.ir}{k.jabbary@urmia.ac.ir}}\\
+  \textsc{Ali Jabbary}\thanks{Urmia University, Urmia, Iran.}\\[0.6em]
+  \small\textit{Urmia University, Iran}
+}
+
+\date{April 2026}
+
+% Abstract environment styled academically
+\renewenvironment{abstract}{%
+  \vspace{0.6em}\noindent\rule{\linewidth}{0.4pt}\\[0.6em]
+  \small\textbf{Abstract.}\hspace{0.5em}\ignorespaces}{%
+  \\[0.4em]\noindent\rule{\linewidth}{0.4pt}\vspace{0.6em}}
+
+% Suppress orphan/widow lines
+\widowpenalty=10000
+\clubpenalty=10000
+
+\newcounter{none}
+\begin{document}
+$body$
+
+\end{document}

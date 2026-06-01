@@ -1,0 +1,159 @@
+% Custom XeLaTeX/xepersian template for the Persian manuscript
+% Karim Jabbary & Ali Jabbary â€” Quranic Emotion Spectrum
+% Designed for compilation with XeLaTeX so xepersian can manage RTL.
+
+\documentclass[12pt,a4paper]{article}
+
+% Page geometry
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+
+% Fonts (XeLaTeX) ------------------------------------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+
+% Latin (for inline English in citations, technical terms, references)
+\setmainfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+  Numbers     = Lining,
+]
+
+% Arabic font for Quranic insertions
+\newfontfamily\arabicfont{Amiri}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = amiri-regular,
+  BoldFont    = amiri-bold,
+  Script      = Arabic,
+]
+\newcommand{\textarabic}[1]{{\arabicfont #1}}
+\DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
+
+% xepersian â€” must come AFTER fontspec
+\usepackage{xepersian}
+\settextfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  BoldFont    = vazirmatn-bold,
+  Script      = Arabic,
+  Scale       = 1.0,
+]
+\setlatintextfont{EB Garamond}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = ebgaramond-regular,
+]
+% Digits: keep Persian digits in body, Latin digits in math
+\setdigitfont{Vazirmatn}[
+  Path        = ../fonts/,
+  Extension   = .ttf,
+  UprightFont = vazirmatn-regular,
+  Script      = Arabic,
+]
+
+% Section numbering â€” Persian manuscript uses manual numbering ("Û³. Ø±ÙˆØ´")
+% so suppress LaTeX auto-numbers to prevent double prefixes.
+\setcounter{secnumdepth}{-1}
+
+% Section formatting
+\usepackage[explicit]{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{#1}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.6em}{#1}
+\titlespacing*{\section}{0pt}{1.6ex plus 0.3ex minus 0.2ex}{1ex plus 0.2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 0.3ex minus 0.2ex}{0.8ex plus 0.2ex}
+
+% Spacing
+\usepackage{setspace}
+\setstretch{1.35}        % Persian needs more line spacing for clarity
+\setlength{\parskip}{0.3\baselineskip}
+\setlength{\parindent}{1.4em}
+
+% Pandoc compatibility macros
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{calc}
+\providecommand{\real}[1]{#1}
+\usepackage{xcolor}
+\providecommand{\pandocbounded}[1]{#1}
+
+% Tables, figures, captions
+\usepackage{graphicx}
+\graphicspath{{../../figures_fa/}{../../figures/}}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+% Persianise the figure / table prefixes
+\renewcommand{\figurename}{Ø´Ú©Ù„}
+\renewcommand{\tablename}{Ø¬Ø¯ÙˆÙ„}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.25}
+
+% Lists
+\usepackage{enumitem}
+\setlist{leftmargin=1.6em,topsep=0.3ex,itemsep=0.3ex}
+
+% Hyperlinks (load near end)
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Ù¾Ø¯ÛŒØ¯Ø§Ø±Ø´Ù†Ø§Ø³ÛŒ Ø·ÛŒÙ Ù‡ÛŒØ¬Ø§Ù†ÛŒ Ø®Ø´Ù… Ø¯Ø± Ù‚Ø±Ø¢Ù† Ú©Ø±ÛŒÙ…},
+  pdfauthor={Karim Jabbary},
+  pdfsubject={Quranic Studies; Cognitive Linguistics},
+  pdfkeywords={Quran; semantic field; cognitive linguistics; emotion regulation},
+  bookmarksdepth=2,
+  bookmarksnumbered=true,
+  colorlinks=false,
+}
+
+% Suppress orphan/widow lines
+\widowpenalty=10000
+\clubpenalty=10000
+
+% polyglossia compatibility shim â€” pandoc emits \begin{otherlanguage}{persian}
+% around content; xepersian already makes Persian the default, so we make these
+% commands no-ops to preserve compilability.
+\providecommand{\otherlanguage}[1]{}
+\newenvironment{Otherlanguage}[1]{}{}
+\let\beginotherlanguage\relax
+\makeatletter
+\@namedef{otherlanguage}#1{}
+\@namedef{endotherlanguage}{}
+\makeatother
+
+% English-abstract environment: forces LTR direction, EB Garamond body font,
+% Latin digits, and Western punctuation regardless of the surrounding xepersian
+% RTL flow. Uses xepersian's \setlatintextfont mechanism via \textlatin to
+% defeat the global digit-substitution that otherwise renders Latin numerals
+% as missing-glyph boxes inside xepersian-controlled pages.
+%
+% Use as `\begin{englishabstract}...\end{englishabstract}`.
+% Pre-declare a Latin font family so we can switch to it cleanly inside
+% the english abstract; this avoids inline \fontspec invocation that
+% xepersian's tokeniser sometimes mis-handles when followed by [options].
+\newfontfamily\ebgaramondbodyswitch{EB Garamond}[Path=../fonts/, Extension=.ttf,%
+  UprightFont=ebgaramond-regular, ItalicFont=ebgaramond-regular,%
+  BoldFont=ebgaramond-regular, Numbers=Lining]
+% xepersian provides \DefaultMathsDigits etc. to suppress auto-conversion
+% of ASCII digits. We use \LRE around digits inside an LTR block â€” but a
+% blanket no-conversion is cleanest. \DefaultMathsDigits + the LTR env
+% achieves a clean Latin-digit render with EB Garamond.
+\newenvironment{englishabstract}
+  {%
+    \clearpage
+    \begin{LTR}%
+    \resetlatinfont
+    \setstretch{1.25}%
+    \setlength{\parindent}{0pt}%
+    \setlength{\parskip}{0.6em plus 0.2em}%
+  }%
+  {\end{LTR}}
+
+\newcounter{none}
+\begin{document}
+
+$body$
+
+\end{document}

@@ -6,7 +6,7 @@
 **نویسنده:** کریم جباری\
 گروه زبان و ادبیات عرب، دانشکده‌ی ادبیات و علوم انسانی، دانشگاه ارومیه، ارومیه، ایران\
 رایانامه: \lr{k.jabbary@urmia.ac.ir}\
-شناسه‌ی ارکید: [در زمانِ ارسال تکمیل می‌شود]
+شناسه‌ی ارکید: \lr{0009-0006-7079-1137}
 
 ---
 
@@ -478,9 +478,7 @@ A Comparative-Exegetical Reading of the Active, Compressed, and Consequential St
 
 \vspace{6pt}
 
-\textbf{Karim Jabbary} (Corresponding author) — Department of Arabic Language and Literature, Faculty of Letters and Humanities, Urmia University, Urmia, Iran. Email: k.jabbary@urmia.ac.ir.
-
-\textbf{Ali Jabbary} — Department of Mechanical Engineering, Faculty of Engineering, Urmia University, Urmia, Iran. Email: st\_a.jabbary@urmia.ac.ir. ORCID: 0000-0003-0573-6909.
+\textbf{Karim Jabbary} (Corresponding author) — Department of Arabic Language and Literature, Faculty of Letters and Humanities, Urmia University, Urmia, Iran. Email: k.jabbary@urmia.ac.ir. ORCID: 0009-0006-7079-1137.
 
 \vspace{8pt}
 

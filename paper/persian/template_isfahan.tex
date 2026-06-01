@@ -1,11 +1,11 @@
 % Custom XeLaTeX/xepersian template for the Persian manuscript
-% Karim Jabbary & Ali Jabbary â€” Quranic Emotion Spectrum
+% Karim Jabbary & Ali Jabbary Ã¢â‚¬â€ Quranic Emotion Spectrum
 % Designed for compilation with XeLaTeX so xepersian can manage RTL.
 
 \documentclass[12pt,a4paper]{article}
 
 % Page geometry
-\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
 
 % Fonts (XeLaTeX) ------------------------------------------------------
 \usepackage{fontspec}
@@ -30,7 +30,7 @@
 \newcommand{\textarabic}[1]{{\arabicfont #1}}
 \DeclareRobustCommand{\arb}[1]{{\arabicfont #1}}
 
-% xepersian â€” must come AFTER fontspec
+% xepersian Ã¢â‚¬â€ must come AFTER fontspec
 \usepackage{xepersian}
 \settextfont{Vazirmatn}[
   Path        = ../fonts/,
@@ -53,7 +53,7 @@
   Script      = Arabic,
 ]
 
-% Section numbering â€” Persian manuscript uses manual numbering ("Û³. Ø±ÙˆØ´")
+% Section numbering Ã¢â‚¬â€ Persian manuscript uses manual numbering ("Ã›Â³. Ã˜Â±Ã™Ë†Ã˜Â´")
 % so suppress LaTeX auto-numbers to prevent double prefixes.
 \setcounter{secnumdepth}{-1}
 
@@ -67,8 +67,8 @@
 
 % Spacing
 \usepackage{setspace}
-\setstretch{1.35}        % Persian needs more line spacing for clarity
-\setlength{\parskip}{0.3\baselineskip}
+\setstretch{1.15}        % Persian needs more line spacing for clarity
+\setlength{\parskip}{0.12\baselineskip}
 \setlength{\parindent}{1.4em}
 
 % Pandoc compatibility macros
@@ -83,8 +83,8 @@
 \graphicspath{{../../figures_fa/}{../../figures/}}
 \usepackage[font=small,labelfont=bf,labelsep=period]{caption}
 % Persianise the figure / table prefixes
-\renewcommand{\figurename}{Ø´Ú©Ù„}
-\renewcommand{\tablename}{Ø¬Ø¯ÙˆÙ„}
+\renewcommand{\figurename}{Ã˜Â´ÃšÂ©Ã™â€ž}
+\renewcommand{\tablename}{Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€ž}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
@@ -99,7 +99,7 @@
 % Hyperlinks (load near end)
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
-  pdftitle={Ù¾Ø¯ÛŒØ¯Ø§Ø±Ø´Ù†Ø§Ø³ÛŒ Ø·ÛŒÙ Ù‡ÛŒØ¬Ø§Ù†ÛŒ Ø®Ø´Ù… Ø¯Ø± Ù‚Ø±Ø¢Ù† Ú©Ø±ÛŒÙ…},
+  pdftitle={Ã™Â¾Ã˜Â¯Ã›Å’Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â´Ã™â€ Ã˜Â§Ã˜Â³Ã›Å’ Ã˜Â·Ã›Å’Ã™Â Ã™â€¡Ã›Å’Ã˜Â¬Ã˜Â§Ã™â€ Ã›Å’ Ã˜Â®Ã˜Â´Ã™â€¦ Ã˜Â¯Ã˜Â± Ã™â€šÃ˜Â±Ã˜Â¢Ã™â€  ÃšÂ©Ã˜Â±Ã›Å’Ã™â€¦},
   pdfauthor={Karim Jabbary},
   pdfsubject={Quranic Studies; Cognitive Linguistics},
   pdfkeywords={Quran; semantic field; cognitive linguistics; emotion regulation},
@@ -112,7 +112,7 @@
 \widowpenalty=10000
 \clubpenalty=10000
 
-% polyglossia compatibility shim â€” pandoc emits \begin{otherlanguage}{persian}
+% polyglossia compatibility shim Ã¢â‚¬â€ pandoc emits \begin{otherlanguage}{persian}
 % around content; xepersian already makes Persian the default, so we make these
 % commands no-ops to preserve compilability.
 \providecommand{\otherlanguage}[1]{}
@@ -137,7 +137,7 @@
   UprightFont=ebgaramond-regular, ItalicFont=ebgaramond-regular,%
   BoldFont=ebgaramond-regular, Numbers=Lining]
 % xepersian provides \DefaultMathsDigits etc. to suppress auto-conversion
-% of ASCII digits. We use \LRE around digits inside an LTR block â€” but a
+% of ASCII digits. We use \LRE around digits inside an LTR block Ã¢â‚¬â€ but a
 % blanket no-conversion is cleanest. \DefaultMathsDigits + the LTR env
 % achieves a clean Latin-digit render with EB Garamond.
 \newenvironment{englishabstract}
